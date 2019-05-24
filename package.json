@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "next",
-    "build": "next build",
-    "start": "next start"
+    "dev": "next ./src",
+    "build": "next build ./src",
+    "start": "next start ./src"
   },
   "repository": {
     "type": "git",
@@ -20,8 +20,10 @@
   },
   "homepage": "https://github.com/devuxd/observe.dev#readme",
   "dependencies": {
+    "bootstrap": "^4.3.1",
     "next": "^8.1.0",
     "react": "^16.8.6",
+    "react-bootstrap": "^1.0.0-beta.8",
     "react-dom": "^16.8.6"
   },
   "husky": {
