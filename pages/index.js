@@ -1,5 +1,5 @@
 import Layouts from "./layouts";
-import Main from "./components/main";
+import Main from "../components/main";
 const Index = () => (
   <div>
     <Layouts>
