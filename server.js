@@ -11,8 +11,8 @@ app.prepare().then(() => {
 
  
 
-  server.get("/b", (req, res) => {
-    return app.render(req, res, "/b", req.query);
+  server.get("/search/:annotation", (req, res) => {
+    return app.render(req, res, "/search", {annotation: req.params.annotation});
   });
 
   server.get("/posts/:id", (req, res) => {
@@ -25,6 +25,7 @@ app.prepare().then(() => {
   server.get("*", (req, res) => {
     return app.render(req, res, "/index", req.query);
   });
+
 
   server.listen(port, err => {
     if (err) throw err;
