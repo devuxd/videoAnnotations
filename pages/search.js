@@ -41,6 +41,12 @@ export default class search extends React.Component {
           <br />
           Annotations : {JSON.stringify(this.state.annotations)}
         </Layouts>
+        <Layouts>{VideoList()}</Layouts>
+        You searched for : {JSON.stringify(this.props.query.annotation)}
+        <br />
+        <br />
+        <br />
+        Annotations : {JSON.stringify(this.state.annotations)}
       </div>
     );
   }
