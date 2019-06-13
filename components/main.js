@@ -8,6 +8,10 @@ const homePageStyle = {
   padding: "15%"
 };
 
+const pictureStyle = {
+  justifycontent: "center"
+};
+
 // const videoLinkStlye = {
 //   padding: '15%'
 // };
@@ -26,7 +30,12 @@ export default class Main extends React.Component {
           <div className="col-lrg">
             <a href="/">
               <img
-                style={{ width: "500px", display: "grid", margin: "auto" }}
+                style={{
+                  width: "70%",
+                  display: "block",
+                  marginLeft: "auto",
+                  marginRight: "auto"
+                }}
                 src="../static/observedev.png"
               />
             </a>
@@ -38,7 +47,6 @@ export default class Main extends React.Component {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Recipient's username"
                 aria-label="Recipient's username"
                 aria-describedby="basic-addon2"
                 list="annotations"
