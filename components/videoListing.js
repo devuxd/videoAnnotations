@@ -40,7 +40,6 @@ function mapAnnotations(finalArray) {
 
 function VideoListing(video) {
   // below for potentially using youtube API to retrieve video titles
-  // var ytApiKey = "AIzaSyBuLHqdTc3IUcmb6kwbvY-bF2slca0pXu0";
   // var videoId = video.VideoURL.replace("https://youtu.be/","");
 
   const videoId = video.VideoURL.replace("https://youtu.be/", "");
@@ -67,7 +66,6 @@ function VideoListing(video) {
           </p>
 
           <p>All annotations: </p>
-
           {mapAnnotations(annotations(video.Annotations))}
 
           <a href="/">JavaScript Debugging</a>
