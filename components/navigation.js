@@ -15,7 +15,8 @@ function Navigation() {
               width: "100%",
               display: "block",
               marginLeft: "1%",
-              marginRight: "0px"
+              marginRight: "0px",
+              marginBottom: "7%"
             }}
             src="../static/observedev.png"
           />

@@ -29,24 +29,21 @@ export default class search extends React.Component {
 
   // eventually put in .filter depending on annotation entered
   render() {
-    console.log(this.state.annotations);
     return (
       <div>
         <Layouts>
           <Navigation />
-          {VideoList()}
-          You searched for : {JSON.stringify(this.props.query.annotation)}
+          <p style={{ paddingLeft: "5%" }}>
+            You searched for : {JSON.stringify(this.props.query.annotation)}
+          </p>
+          <br />
+          <br />
+          {VideoList(this.state.annotations)}
           <br />
           <br />
           <br />
-          Annotations : {JSON.stringify(this.state.annotations)}
+          {/* Annotations : {JSON.stringify(this.state.annotations)} */}
         </Layouts>
-        <Layouts>{VideoList()}</Layouts>
-        You searched for : {JSON.stringify(this.props.query.annotation)}
-        <br />
-        <br />
-        <br />
-        Annotations : {JSON.stringify(this.state.annotations)}
       </div>
     );
   }

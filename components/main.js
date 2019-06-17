@@ -8,10 +8,6 @@ const homePageStyle = {
   padding: "15%"
 };
 
-const pictureStyle = {
-  justifycontent: "center"
-};
-
 // const videoLinkStlye = {
 //   padding: '15%'
 // };
