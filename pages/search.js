@@ -6,7 +6,6 @@ import Router from "next/router";
 import VideoList from "../components/videoList.js";
 import Layouts from "./layouts";
 import Navigation from "../components/navigation.js";
-//import Navigation from '../components/navigation.js';
 // this line causing error: "Module not found"
 // import { createRequireFromPath } from "module";
 import collection from "../API/db";
@@ -38,7 +37,7 @@ export default class search extends React.Component {
           </p>
           <br />
           <br />
-          {VideoList(this.state.annotations)}
+          <VideoList videoArray={this.state.annotations} />
           <br />
           <br />
           <br />

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faAlignCenter } from "@fortawesome/free-solid-svg-icons";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import Router from "next/router";
+import { render } from "react-dom";
 
 /**
  * annotations(annArray) : function that returns 1 array of all the annotation tags
@@ -14,7 +15,7 @@ function annotations(annArray) {
     var returnArray = [];
     return annArray.map(x => returnArray.concat(x.Tags)).flat();
   } else {
-    //console.log(returnArray)
+    console.log(returnArray);
   }
 }
 
@@ -30,56 +31,84 @@ function mapAnnotations(finalArray) {
     return Array.from(new Set(finalArray)).map(y => (
       <div>
         <a href={"/search/" + y}>{y}</a>
-        <br />
       </div>
     ));
   } else {
-    //console.log(finalArray)
+    console.log(finalArray);
   }
 }
 
-function VideoListing(video) {
+/**
+ * VideoListing: component for each video
+ */
+class VideoListing extends React.Component {
   // below for potentially using youtube API to retrieve video titles
   // var videoId = video.VideoURL.replace("https://youtu.be/","");
+  constructor(props) {
+    super(props);
+    this.state = { videoTitle: undefined };
+  }
 
-  const videoId = video.VideoURL.replace("https://youtu.be/", "");
+  render() {
+    // console.log(this.props.videoElement.VideoURL)
+    var videoElementFinal = this.props.videoElement;
+    const videoId = videoElementFinal.VideoURL.replace("https://youtu.be/", "");
+    const url =
+      "https://noembed.com/embed?url=https://www.youtube.com/watch?v=" +
+      videoId;
 
-  return (
-    <div className="col-lrg" style={{ paddingLeft: "5%", paddingRight: "2%" }}>
-      <div class="media">
-        <a href={"/" + videoId}>
-          <img
-            class="mr-3"
-            style={{ width: "500px" }}
-            src={"https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"}
-            alt="YouTube Thumbnail Goes Here"
-          />
-        </a>
-        <div class="media-body">
-          <h5 class="mt-0">{video.VideoURL}</h5>
+    async function fetchData(endpoint) {
+      const res = await fetch(endpoint);
+      let data = await res.json();
+      data = data.title;
+      return data;
+    }
 
-          {/* would be something like annotations(video.Annotations).filter(x === query).length */}
-          <p>Number of Instances: </p>
-          <p>
-            Total Time: {video.VideoLength.hours}:{video.VideoLength.minutes}:
-            {video.VideoLength.seconds}
-          </p>
+    let videoData = fetchData(url);
+    videoData.then(result => {
+      this.setState({ videoTitle: result });
+    });
 
-          <p>All annotations: </p>
-          {mapAnnotations(annotations(video.Annotations))}
+    return (
+      <div
+        className="col-lrg"
+        style={{ paddingLeft: "5%", paddingRight: "2%" }}
+      >
+        <div class="media">
+          <a href={"/" + videoId}>
+            <img
+              class="mr-3"
+              style={{ width: "500px" }}
+              src={
+                "https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"
+              }
+              alt="YouTube Thumbnail Goes Here"
+            />
+          </a>
+          <div class="media-body">
+            <h5 class="mt-0">
+              <a href={"/" + videoId}>{this.state.videoTitle}</a>
+            </h5>
 
-          <a href="/">JavaScript Debugging</a>
-          <br />
-          <a href="/">Java Debugging</a>
-          <br />
+            {/* would be something like annotations(video.Annotations).filter(x === query).length */}
+            <p>Number of Instances: </p>
+            <p>
+              Total Time: {videoElementFinal.VideoLength.hours}:
+              {videoElementFinal.VideoLength.minutes}:
+              {videoElementFinal.VideoLength.seconds}
+            </p>
+            <p>All annotations: </p>
+            {mapAnnotations(annotations(videoElementFinal.Annotations))}
+            <br />
+          </div>
         </div>
+        <br />
+        <br />
+        <br />
+        <br />
       </div>
-      <br />
-      <br />
-      <br />
-      <br />
-    </div>
-  );
+    );
+  }
 }
 
 export default VideoListing;

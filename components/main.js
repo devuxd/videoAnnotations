@@ -4,14 +4,6 @@ import { faSearch, faAlignCenter } from "@fortawesome/free-solid-svg-icons";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import Router from "next/router";
 
-const homePageStyle = {
-  padding: "15%"
-};
-
-// const videoLinkStlye = {
-//   padding: '15%'
-// };
-
 export default class Main extends React.Component {
   constructor(props) {
     super(props);
@@ -20,7 +12,7 @@ export default class Main extends React.Component {
 
   render() {
     return (
-      <div className="container" style={homePageStyle}>
+      <div className="container" style={{ padding: "15%" }}>
         <div className="row">
           <div className="col-sm" />
           <div className="col-lrg">

@@ -6,6 +6,20 @@ import Router from "next/router";
 import VideoListing from "../components/videoListing.js";
 import { render } from "react-dom";
 
+// psuedo code for dynamic rows/columns:
+// <div className="container">
+// for ( i = 0, i < array.length, i = i + 2){
+//   for (j = 0, j < 2, j ++ ) {
+//     <div className="row">
+//       <div className="col-sm">
+//         if (array[i + j] exists)
+//           VideoListing( array[i + j] )
+//       </div>
+//   }
+//   </div>
+// }
+// </div>
+
 /**
  * VideoExists: helper function to check whether a certain index contains a video element
  *              and calls VideoListing component if it does
@@ -58,26 +72,31 @@ function VideoListMapper(videoArray) {
   }
 }
 
-// passing in the full collections array
-function VideoList(videoArray) {
-  // psuedo code:
-  // <div className="container">
-  // for ( i = 0, i < array.length, i = i + 2){
-  //   for (j = 0, j < 2, j ++ ) {
-  //     <div className="row">
-  //       <div className="col-sm">
-  //         if (array[i + j] exists)
-  //           VideoListing( array[i + j] )
-  //       </div>
-  //   }
-  //   </div>
-  // }
-  // </div>
+/**
+ * VideoList: component for the list of videos
+ *
+ * need to do: finish implementing dynamic row and column system
+ *
+ */
+class VideoList extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 
-  if (Array.isArray(videoArray)) {
-    return <div>{videoArray.map(x => VideoListing(x))}</div>;
-  } else {
-    return <div style={{ paddingLeft: "5%" }}>Oops something went wrong!</div>;
+  render() {
+    if (Array.isArray(this.props.videoArray)) {
+      return (
+        <div>
+          {this.props.videoArray.map(x => (
+            <VideoListing videoElement={x} />
+          ))}
+        </div>
+      );
+    } else {
+      return (
+        <div style={{ paddingLeft: "5%" }}>Oops something went wrong!</div>
+      );
+    }
   }
 }
 
