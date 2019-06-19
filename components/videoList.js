@@ -30,7 +30,7 @@ import { render } from "react-dom";
  */
 function VideoExists(videoArray, num1, num2) {
   if (!(typeof videoArray[num1 + num2] === "undefined")) {
-    return VideoListing(videoArray[num1 + num2]);
+    return <VideoListing videoElement={videoArray[num1 + num2]} />;
   }
 }
 
@@ -53,12 +53,16 @@ function addColBreak(num1) {
  * @param {*} num : passing in index for outer for loop
  */
 function VideoColumnMaker(videoArray, num) {
-  for (j = 0; j < 2; j = j + 1) {
-    <div className="col-lrg" style={{ paddingLeft: "2%", paddingRight: "2%" }}>
-      {VideoExists(videoArray, num, j)}
-    </div>;
-    addColBreak(j);
+  let rows = [];
+  for (var j = 0; j < 2; j = j + 1) {
+    rows.push(
+      <div className="col-md" style={{ paddingLeft: "8%", paddingRight: "8%" }}>
+        {VideoExists(videoArray, num, j)}
+        {addColBreak(j)}
+      </div>
+    );
   }
+  return rows;
 }
 
 /**
@@ -67,9 +71,12 @@ function VideoColumnMaker(videoArray, num) {
  * @param {*} videoArray : passing in array of videos
  */
 function VideoListMapper(videoArray) {
-  for (i = 0; i < videoArray.length; i = i + 2) {
-    <div className="row">{VideoColumnMaker(videoArray, i)}</div>;
+  let rows = [];
+  for (var i = 0; i < videoArray.length; i += 2) {
+    rows.push(<div className="row">{VideoColumnMaker(videoArray, i)}</div>);
   }
+  console.log(rows);
+  return rows;
 }
 
 /**
@@ -85,13 +92,7 @@ class VideoList extends React.Component {
 
   render() {
     if (Array.isArray(this.props.videoArray)) {
-      return (
-        <div>
-          {this.props.videoArray.map(x => (
-            <VideoListing videoElement={x} />
-          ))}
-        </div>
-      );
+      return <div>{VideoListMapper(this.props.videoArray)}</div>;
     } else {
       return (
         <div style={{ paddingLeft: "5%" }}>Oops something went wrong!</div>

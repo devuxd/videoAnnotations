@@ -36,7 +36,14 @@ let collection = [
           start: { hours: "0", minutes: "10", seconds: "20" },
           end: { hours: "0", minutes: "11", seconds: "26" }
         },
-        Tags: ["Compiler Error", "Debugging", "python"],
+        Tags: [
+          "Compiler Error",
+          "Debugging",
+          "python",
+          "scala",
+          "functional programming",
+          "object oriented design"
+        ],
         Description:
           "The developer fixes compiler errors. Notice how the error message tells exactly what the problem is"
       },
@@ -66,7 +73,9 @@ let collection = [
           "Code navigation",
           "logging",
           "API",
-          "python"
+          "python",
+          "react components",
+          "react state"
         ],
         Description:
           "developer used new API and he is trying to make it work. He is not sure how to properly use an API to implement a feature."
@@ -147,7 +156,9 @@ let collection = [
           "Debugging",
           "vim",
           "slow debugging",
-          "python"
+          "python",
+          "api requests",
+          "fetch"
         ],
         Description:
           "The debugging process was slow because each time the application restart, it hast to load an index big files. The developers utilized this time by reading on API documentation that he want to do and actually implementing it. the fixes are easy but the time to restart the application is every expensive. he suggested that to make debugging easier is to create smaller application with less indexes:2:16:00"

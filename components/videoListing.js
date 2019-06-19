@@ -3,106 +3,101 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faAlignCenter } from "@fortawesome/free-solid-svg-icons";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import Router from "next/router";
+import AnnotationList from "../components/annotationList";
 import { render } from "react-dom";
-
-/**
- * annotations(annArray) : function that returns 1 array of all the annotation tags
- *
- * @param {*} annArray : array of annotations (which each annotation contains an array of tags)
- */
-function annotations(annArray) {
-  if (Array.isArray(annArray)) {
-    var returnArray = [];
-    return annArray.map(x => returnArray.concat(x.Tags)).flat();
-  } else {
-    console.log(returnArray);
-  }
-}
-
-/**
- * mapAnnotations(finalArray) : function that gets unique set of all tags and returns them as XML links
- *
- * need to fix: doesn't work properly with different cases of tags (e.g. uppercase/lowercase)
- *
- * @param {*} finalArray : array of all tags in the array
- */
-function mapAnnotations(finalArray) {
-  if (Array.isArray(finalArray)) {
-    return Array.from(new Set(finalArray)).map(y => (
-      <div>
-        <a href={"/search/" + y}>{y}</a>
-      </div>
-    ));
-  } else {
-    console.log(finalArray);
-  }
-}
 
 /**
  * VideoListing: component for each video
  */
 class VideoListing extends React.Component {
-  // below for potentially using youtube API to retrieve video titles
-  // var videoId = video.VideoURL.replace("https://youtu.be/","");
   constructor(props) {
     super(props);
-    this.state = { videoTitle: undefined };
+    this.state = { videoTitle: undefined, isLoading: false, stateError: null };
   }
 
-  render() {
-    // console.log(this.props.videoElement.VideoURL)
+  /**
+   * Making API request to noembed.com to retrieve video titles
+   */
+  componentDidMount() {
     var videoElementFinal = this.props.videoElement;
     const videoId = videoElementFinal.VideoURL.replace("https://youtu.be/", "");
     const url =
       "https://noembed.com/embed?url=https://www.youtube.com/watch?v=" +
       videoId;
 
-    async function fetchData(endpoint) {
-      const res = await fetch(endpoint);
-      let data = await res.json();
-      data = data.title;
-      return data;
+    this.setState({ isLoading: true });
+
+    fetch(url)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Oops! We weren't able to get the video title!");
+        }
+      })
+      .then(data => this.setState({ videoTitle: data.title, isLoading: false }))
+      .catch(error => this.setState({ stateError: error, isLoading: false }));
+  }
+
+  render() {
+    var videoElementFinal = this.props.videoElement;
+    const videoId = videoElementFinal.VideoURL.replace("https://youtu.be/", "");
+    const url =
+      "https://noembed.com/embed?url=https://www.youtube.com/watch?v=" +
+      videoId;
+
+    const { hits, isLoading, error } = this.state;
+    if (error) {
+      return <p>Oops! Something went wrong!</p>;
     }
 
-    let videoData = fetchData(url);
-    videoData.then(result => {
-      this.setState({ videoTitle: result });
-    });
+    if (isLoading) {
+      return <p>Loading...</p>;
+    }
 
     return (
-      <div
-        className="col-lrg"
-        style={{ paddingLeft: "5%", paddingRight: "2%" }}
-      >
-        <div class="media">
-          <a href={"/" + videoId}>
-            <img
-              class="mr-3"
-              style={{ width: "500px" }}
-              src={
-                "https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"
-              }
-              alt="YouTube Thumbnail Goes Here"
-            />
-          </a>
-          <div class="media-body">
-            <h5 class="mt-0">
-              <a href={"/" + videoId}>{this.state.videoTitle}</a>
-            </h5>
+      <div>
+        <div
+          style={{
+            paddingTop: "2%",
+            paddingBottom: "1.3%",
+            paddingLeft: "5%",
+            paddingRight: "5%",
+            borderStyle: "solid",
+            borderColor: "lightgray",
+            borderRadius: "8px"
+          }}
+        >
+          <div class="media">
+            <a href={"/" + videoId}>
+              <img
+                class="mr-3"
+                style={{ width: "170px" }}
+                src={
+                  "https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"
+                }
+                alt="YouTube Thumbnail Goes Here"
+              />
+            </a>
+            <div class="media-body">
+              <h6 class="mt-0">
+                <a href={"/" + videoId}>{this.state.videoTitle}</a>
+              </h6>
 
-            {/* would be something like annotations(video.Annotations).filter(x === query).length */}
-            <p>Number of Instances: </p>
-            <p>
-              Total Time: {videoElementFinal.VideoLength.hours}:
-              {videoElementFinal.VideoLength.minutes}:
-              {videoElementFinal.VideoLength.seconds}
-            </p>
-            <p>All annotations: </p>
-            {mapAnnotations(annotations(videoElementFinal.Annotations))}
+              {/* number of instances would be something like annotations(video.Annotations).filter(x === query).length */}
+              <h7>
+                Instances: 2 <br />
+                Total Time: {videoElementFinal.VideoLength.hours}:
+                {videoElementFinal.VideoLength.minutes}:
+                {videoElementFinal.VideoLength.seconds}
+              </h7>
+            </div>
+          </div>
+          <div>
             <br />
+            <AnnotationList videoAnnotations={videoElementFinal.Annotations} />
           </div>
         </div>
-        <br />
         <br />
         <br />
         <br />
