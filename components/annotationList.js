@@ -9,8 +9,7 @@ import { render } from "react-dom";
  */
 function annotations(annArray) {
   if (annArray.length === 0) {
-    var returnArray = [];
-    return annArray.map(x => returnArray.concat(x.Tags)).flat();
+    return annArray.reduce((initialArray, obj) => initialArray.concat(obj.Tags),[]);
   }
 }
 
