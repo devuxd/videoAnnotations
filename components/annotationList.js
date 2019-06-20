@@ -14,15 +14,7 @@ function annotations(annArray) {
 }
 
 function mapAnnotationsHelper(uniqueArray) {
-  let rows = [];
-  for (var j = 0; j < uniqueArray.length; j++) {
-    rows.push(
-      <div>
-        <a href={"/search/" + uniqueArray[j]}>{uniqueArray[j]}</a>
-      </div>
-    );
-  }
-  return rows;
+  return uniqueArray.map (item => <div><a href={"/search/" + item }>{item }</a> </div>
 }
 
 /**
