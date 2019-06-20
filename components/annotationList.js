@@ -8,11 +8,9 @@ import { render } from "react-dom";
  * @param {*} annArray : array of annotations (which each annotation contains an array of tags)
  */
 function annotations(annArray) {
-  if (Array.isArray(annArray)) {
+  if (annArray.length === 0) {
     var returnArray = [];
     return annArray.map(x => returnArray.concat(x.Tags)).flat();
-  } else {
-    console.log(annArray);
   }
 }
 
