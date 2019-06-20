@@ -1,13 +1,8 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faAlignCenter } from "@fortawesome/free-solid-svg-icons";
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import Router from "next/router";
 import VideoList from "../components/videoList.js";
 import Layouts from "./layouts";
 import Navigation from "../components/navigation.js";
-// this line causing error: "Module not found"
-// import { createRequireFromPath } from "module";
 import collection from "../API/db";
 
 export default class search extends React.Component {
@@ -41,7 +36,6 @@ export default class search extends React.Component {
           <br />
           <br />
           <br />
-          {/* Annotations : {JSON.stringify(this.state.annotations)} */}
         </Layouts>
       </div>
     );
