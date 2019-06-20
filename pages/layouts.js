@@ -1,9 +1,7 @@
-import Header from './header/header'
-import Footer from './footer/footer'
-export default  ({ children }) => (
+import Header from "./header/header";
+export default ({ children }) => (
   <div>
     <Header />
-    { children }
-    <Footer />
+    {children}
   </div>
-)
+);

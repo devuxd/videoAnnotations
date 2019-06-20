@@ -1,4 +1,8 @@
 import React from "react";
+import Router from "next/router";
+import VideoList from "../components/videoList.js";
+import Layouts from "./layouts";
+import Navigation from "../components/navigation.js";
 import collection from "../API/db";
 
 export default class search extends React.Component {
@@ -16,16 +20,23 @@ export default class search extends React.Component {
     );
     this.setState({ annotations: LocalAnnotations });
   }
+
+  // eventually put in .filter depending on annotation entered
   render() {
-    console.log(this.state.annotations);
     return (
       <div>
-        You searched for : {JSON.stringify(this.props.query.annotation)}
-        <br/>
-        <br/>
-        <br/>
-        Annotations : {JSON.stringify(this.state.annotations)}
-
+        <Layouts>
+          <Navigation />
+          <p style={{ paddingLeft: "5%" }}>
+            You searched for : {JSON.stringify(this.props.query.annotation)}
+          </p>
+          <br />
+          <br />
+          <VideoList videoArray={this.state.annotations} />
+          <br />
+          <br />
+          <br />
+        </Layouts>
       </div>
     );
   }

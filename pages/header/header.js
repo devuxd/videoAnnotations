@@ -1,4 +1,3 @@
-import Alert from "react-bootstrap/alert";
 import Head from "next/head";
 const Header = () => (
   <div>
@@ -10,8 +9,6 @@ const Header = () => (
         crossOrigin="anonymous"
       />
     </Head>
-    <Alert variant="success"> Header </Alert>
-
   </div>
 );
 

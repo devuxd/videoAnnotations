@@ -23,13 +23,10 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.19",
     "@fortawesome/free-solid-svg-icons": "^5.9.0",
     "@fortawesome/react-fontawesome": "^0.1.4",
-    "babel-preset-es2015": "^6.24.1",
-    "bootstrap": "^4.3.1",
     "express": "^4.17.0",
     "firebase": "^6.0.4",
     "next": "^8.1.0",
     "react": "^16.8.6",
-    "react-bootstrap": "^1.0.0-beta.8",
     "react-dom": "^16.8.6"
   },
   "husky": {
@@ -43,8 +40,10 @@
     "@types/react": "^16.8.18",
     "@types/react-dom": "^16.8.4",
     "cross-env": "^5.2.0",
+    "css-loader": "^3.0.0",
     "husky": "^2.3.0",
     "prettier": "^1.17.1",
-    "pretty-quick": "^1.11.0"
+    "pretty-quick": "^1.11.0",
+    "style-loader": "^0.23.1"
   }
 }
