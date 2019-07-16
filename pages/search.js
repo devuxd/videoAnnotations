@@ -10,29 +10,34 @@ export default class search extends React.Component {
     console.log(`You searched for ${query}`);
     return { query };
   }
+
   constructor() {
     super();
-    this.state = { annotations: [] };
+    this.state = { annotations: [], query: null };
   }
   componentDidMount() {
     let LocalAnnotations = this.searchForAnnotation(
       this.props.query.annotation
     );
-    this.setState({ annotations: LocalAnnotations });
+    this.setState({
+      annotations: LocalAnnotations,
+      query: this.props.query.annotation
+    });
   }
 
-  // eventually put in .filter depending on annotation entered
   render() {
     return (
-      <div>
+      <div style={{ fontFamily: "Lato" }}>
         <Layouts>
           <Navigation />
           <p style={{ paddingLeft: "5%" }}>
-            You searched for : {JSON.stringify(this.props.query.annotation)}
+            You searched for : {this.state.query}
           </p>
           <br />
-          <br />
-          <VideoList videoArray={this.state.annotations} />
+          <VideoList
+            searchQuery={this.state.query}
+            videoArray={this.state.annotations}
+          />
           <br />
           <br />
           <br />
