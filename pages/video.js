@@ -1,7 +1,7 @@
 import Layouts from "./layouts";
 import Video from "../components/video";
 const vid = () => (
-  <div>
+  <div style={{ fontFamily: "Lato" }}>
     <Layouts>
       <Video />
     </Layouts>
