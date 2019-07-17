@@ -8,13 +8,28 @@ import { render } from "react-dom";
  * @param {*} annArray : array of annotations (which each annotation contains an array of tags)
  */
 function annotations(annArray) {
-  if (annArray.length === 0) {
-    return annArray.reduce((initialArray, obj) => initialArray.concat(obj.Tags),[]);
+  if (Array.isArray(annArray)) {
+    return annArray.reduce(
+      (initialArray, obj) => initialArray.concat(obj.Tags),
+      []
+    );
   }
 }
 
-function mapAnnotationsHelper(uniqueArray) {
-  return uniqueArray.map (item => <div><a href={"/search/" + item }>{item }</a> </div>
+function mapAnnotationsHelper(uniqueArray, videoID, searchResult) {
+  if (searchResult) {
+    return uniqueArray.map((item, index) => (
+      <div key={index.toString()}>
+        <a href={"/search/" + item}>{item}</a>
+      </div>
+    ));
+  } else {
+    return uniqueArray.map((item, index) => (
+      <div key={index.toString()}>
+        <a href={"/posts/" + videoID + "/" + item}>{item}</a>
+      </div>
+    ));
+  }
 }
 
 /**
@@ -24,7 +39,7 @@ function mapAnnotationsHelper(uniqueArray) {
  *
  * @param {*} finalArray : array of all tags in the array
  */
-function mapAnnotations(finalArray) {
+function mapAnnotations(finalArray, videoID, searchResult) {
   let rows = [];
   let uniqueArray = Array.from(new Set(finalArray));
   if (Array.isArray(uniqueArray)) {
@@ -35,27 +50,30 @@ function mapAnnotations(finalArray) {
     );
     rows.push(
       <div
+        key={videoID}
         className="row"
         style={{
           borderStyle: "solid",
-          borderColor: "gray",
-          backgroundColor: "lightgray",
-          borderRadius: "8px"
+          borderColor: "#DCDCDC",
+          backgroundColor: "#DCDCDC",
+          borderRadius: "8px",
+          paddingTop: "2%",
+          paddingBottom: "1.3%",
+          paddingLeft: "5%",
+          paddingRight: "5%"
         }}
       >
         <div className="col-sm">
           All annotations:
-          {mapAnnotationsHelper(secondHalf)}
+          {mapAnnotationsHelper(secondHalf, videoID, searchResult)}
         </div>
         <div className="col-sm">
           <br />
-          {mapAnnotationsHelper(firstHalf)}
+          {mapAnnotationsHelper(firstHalf, videoID, searchResult)}
         </div>
       </div>
     );
     return rows;
-  } else {
-    console.log(uniqueArray);
   }
 }
 
@@ -65,11 +83,34 @@ function mapAnnotations(finalArray) {
 class AnnotationList extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      annotationsElement: null,
+      isLoaded: false,
+      searchResult: null,
+      videoID: this.props.videoID
+    };
+  }
+
+  componentDidMount() {
+    if (!this.state.isLoaded) {
+      this.setState({
+        annotationsElement: this.props.videoElem.Annotations,
+        searchResult: this.props.searchResult,
+        videoID: this.props.videoID,
+        isLoaded: true
+      });
+    }
   }
 
   render() {
     return (
-      <div>{mapAnnotations(annotations(this.props.videoAnnotations))}</div>
+      <div>
+        {mapAnnotations(
+          annotations(this.props.videoElem.Annotations),
+          this.state.videoID,
+          this.state.searchResult
+        )}
+      </div>
     );
   }
 }

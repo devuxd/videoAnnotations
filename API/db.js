@@ -1,22 +1,5 @@
-// const firebase = require("firebase");
-// require("firebase/firestore");
-// const app = require("../firebaseConfig");
-// firebase.initializeApp(app);
-// const db = firebase.firestore();
-
-// db.collection("test")
-//   .add({
-//     first: "Ada",
-//     last: "Lovelace",
-//     born: 1815
-//   })
-//   .then(function(docRef) {
-//     console.log("Document written with ID: ", docRef.id);
-//   })
-//   .catch(function(error) {
-//     console.error("Error adding document: ", error);
-//   });
-
+const fetch = require("node-fetch");
+const { key } = require("./config"); // create file in API folder and call it config.js
 let collection = [
   {
     VideoURL: "https://youtu.be/L2DJhwANoUQ",
@@ -49,7 +32,7 @@ let collection = [
       },
       {
         Duration: {
-          start: { hours: "1", minutes: "45", seconds: "`14`" },
+          start: { hours: "1", minutes: "45", seconds: "14" },
           end: { hours: "2", minutes: "17", seconds: "12" }
         },
         Tags: [
@@ -60,11 +43,11 @@ let collection = [
           "python"
         ],
         Description:
-          "The debugging process was slow because each time the application restart, it hast to load an index big files. The developers utilized this time by reading on API documentation that he want to do and actually implementing it. the fixes are easy but the time to restart the application is every expensive. he suggested that to make debugging easier is to create smaller application with less indexes:2:16:00"
+          "The debugging process was slow because each time the application restart, it hast to load an index big files. The developers utilized this time by reading on API documentation that he want to do and actually implementing it. the fixes are easy but the time to restart the application is every expensive. he suggested that to make debugging easier is to create smaller application with less indexes"
       },
       {
         Duration: {
-          start: { hours: "2", minutes: "23", seconds: "0" },
+          start: { hours: "2", minutes: "23", seconds: "00" },
           end: { hours: "2", minutes: "42", seconds: "34" }
         },
         Tags: [
@@ -343,4 +326,15 @@ let collection = [
     ]
   }
 ];
-module.exports = collection;
+
+const getDataset = id =>
+  new Promise((res, rej) =>
+    fetch(
+      `https://content-sheets.googleapis.com/v4/spreadsheets/${id}?includeGridData=true&fields=sheets(data(rowData(values(hyperlink%2Cnote%2CuserEnteredValue))))&key=${key}`
+    )
+      .then(e => e.json())
+      .then(e => res(e))
+      .catch(e => rej(e))
+  );
+
+module.exports = { collection, getDataset };

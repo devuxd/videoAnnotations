@@ -24,7 +24,7 @@ class Navigation extends React.Component {
                 marginRight: "0px",
                 marginBottom: "7%"
               }}
-              src="../static/observedev.png"
+              src="https://i.ibb.co/JmfYfBD/observedev.png"
             />
           </a>
           <SearchBar annotation={this.annotation} />

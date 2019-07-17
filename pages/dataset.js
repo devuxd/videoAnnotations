@@ -3,11 +3,12 @@ import Router from "next/router";
 import VideoList from "../components/videoList.js";
 import Layouts from "./layouts";
 import Navigation from "../components/navigation.js";
-import collection from "../API/db";
+import {collection, getDataset} from "../API/db";
 
-export default class search extends React.Component {
+export default class dataset extends React.Component {
+  
+  
   static async getInitialProps({ query }) {
-    console.log(`You searched for ${query}`);
     return { query };
   }
 
@@ -15,13 +16,24 @@ export default class search extends React.Component {
     super();
     this.state = { annotations: [], query: null };
   }
-  componentDidMount() {
+
+  // This function fetch the data from google sheet
+   async componentDidMount() {
+     try{
+    const payload = await getDataset(this.props.query.sheetId);
+    console.dir(payload);
+    // TODO: work to make the json structure look like the one we used before     
+     // let localDataSet = payload.map( video =>{ */ do the mapping here */});
+  } 
+     catch (e){
+       console.error (e);
+     }
     let LocalAnnotations = this.searchForAnnotation(
       this.props.query.annotation
     );
     this.setState({
       annotations: LocalAnnotations,
-      query: this.props.query.annotation
+      query: this.props.query.sheetId
     });
   }
 
@@ -31,7 +43,7 @@ export default class search extends React.Component {
         <Layouts>
           <Navigation />
           <p style={{ paddingLeft: "5%" }}>
-            You searched for : {this.state.query}
+            You searched for : {this.state.query} dataset. <b>Look at the console for more info. each item in the array represent a video</b>
           </p>
           <br />
           <VideoList

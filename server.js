@@ -15,13 +15,18 @@ app.prepare().then(() => {
     });
   });
 
-  server.get("/posts/:id", (req, res) => {
-    return app.render(req, res, "/posts", { id: req.params.id });
-  });
-  server.get("/API", (req, res) => {
-    res.status(200).send({ hi: 12 });
+  server.get("/posts/:id/:search", (req, res) => {
+    return app.render(req, res, "/posts", {
+      id: req.params.id,
+      search: req.params.search
+    });
   });
 
+  server.get("/dataset/:id", (req, res) => {
+    return app.render(req, res, "/dataset", {
+      sheetId: req.params.id
+    });
+  });
   server.get("*", (req, res) => {
     return app.render(req, res, "/index", req.query);
   });

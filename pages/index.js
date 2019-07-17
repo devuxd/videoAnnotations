@@ -1,7 +1,7 @@
 import Layouts from "./layouts";
 import Main from "../components/main";
 const Index = () => (
-  <div>
+  <div style={{ fontFamily: "Lato" }}>
     <Layouts>
       <Main />
     </Layouts>

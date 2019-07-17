@@ -23,11 +23,17 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.19",
     "@fortawesome/free-solid-svg-icons": "^5.9.0",
     "@fortawesome/react-fontawesome": "^0.1.4",
+    "@types/d3": "^5.7.2",
+    "cubism": "^1.6.0",
+    "d3": "^5.9.7",
     "express": "^4.17.0",
     "firebase": "^6.0.4",
     "next": "^8.1.0",
+    "node-fetch": "^2.6.0",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "react-player": "^1.11.1",
+    "screenfull": "^4.2.0"
   },
   "husky": {
     "hooks": {

@@ -1,0 +1,35 @@
+import React from "react";
+import Chart from "./chart.js";
+
+/**
+ * AnnotationVisual: component for visual annotations under status bar
+ *
+ * takes in annotation element, video length
+ */
+export default class AnnotationVisual extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    var filteredAnnotations = this.props.videoElem.Annotations.filter(x =>
+      x.Tags.includes(this.props.searchQuery)
+    );
+    var vidLength =
+      this.props.videoElem.VideoLength.hours +
+      ":" +
+      this.props.videoElem.VideoLength.minutes +
+      ":" +
+      this.props.videoElem.VideoLength.seconds;
+
+    return (
+      <div>
+        <Chart
+          vidLength={vidLength}
+          annotations={filteredAnnotations}
+          searchQuery={this.props.searchQuery}
+        />
+      </div>
+    );
+  }
+}
