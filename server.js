@@ -22,10 +22,11 @@ app.prepare().then(() => {
     });
   });
 
-  server.get("/API", (req, res) => {
-    res.status(200).send({ hi: 12 });
+  server.get("/dataset/:id", (req, res) => {
+    return app.render(req, res, "/dataset", {
+      sheetId: req.params.id
+    });
   });
-
   server.get("*", (req, res) => {
     return app.render(req, res, "/index", req.query);
   });

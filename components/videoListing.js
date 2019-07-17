@@ -33,14 +33,14 @@ class VideoListing extends React.Component {
             borderRadius: "8px"
           }}
         >
-          <div class="media">
+          <div className="media">
             <div
               onClick={() =>
                 Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
               }
             >
               <img
-                class="mr-3"
+                className="mr-3"
                 style={{ width: "170px", cursor: "pointer" }}
                 src={
                   "https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"
@@ -48,13 +48,13 @@ class VideoListing extends React.Component {
                 alt="YouTube Thumbnail Goes Here"
               />
             </div>
-            <div class="media-body">
+            <div className="media-body">
               <div
                 onClick={() =>
                   Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
                 }
               >
-                <h6 class="mt-0" style={{ cursor: "pointer" }}>
+                <h6 className="mt-0" style={{ cursor: "pointer" }}>
                   <VideoTitle videoElem={videoElementFinal} />
                 </h6>
               </div>

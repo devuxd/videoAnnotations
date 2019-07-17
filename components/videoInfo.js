@@ -7,12 +7,12 @@ export default class VideoInfo extends React.Component {
 
   render() {
     return (
-      <h7>
+      <h6>
         Instances: 2 <br />
         Total Time: {this.props.vidElem.VideoLength.hours}:
         {this.props.vidElem.VideoLength.minutes}:
         {this.props.vidElem.VideoLength.seconds}
-      </h7>
+      </h6>
     );
   }
 }

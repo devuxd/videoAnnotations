@@ -1,22 +1,5 @@
-// const firebase = require("firebase");
-// require("firebase/firestore");
-// const app = require("../firebaseConfig");
-// firebase.initializeApp(app);
-// const db = firebase.firestore();
-
-// db.collection("test")
-//   .add({
-//     first: "Ada",
-//     last: "Lovelace",
-//     born: 1815
-//   })
-//   .then(function(docRef) {
-//     console.log("Document written with ID: ", docRef.id);
-//   })
-//   .catch(function(error) {
-//     console.error("Error adding document: ", error);
-//   });
-
+const fetch = require("node-fetch");
+const { key } = require("./config"); // create file in API folder and call it config.js
 let collection = [
   {
     VideoURL: "https://youtu.be/L2DJhwANoUQ",
@@ -343,4 +326,15 @@ let collection = [
     ]
   }
 ];
-module.exports = collection;
+
+const getDataset = id =>
+  new Promise((res, rej) =>
+    fetch(
+      `https://content-sheets.googleapis.com/v4/spreadsheets/${id}?includeGridData=true&fields=sheets(data(rowData(values(hyperlink%2Cnote%2CuserEnteredValue))))&key=${key}`
+    )
+      .then(e => e.json())
+      .then(e => res(e))
+      .catch(e => rej(e))
+  );
+
+module.exports = { collection, getDataset };
