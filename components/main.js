@@ -7,6 +7,7 @@ export default class Main extends React.Component {
   constructor(props) {
     super(props);
     this.annotation = React.createRef();
+
   }
 
   render() {
@@ -34,7 +35,7 @@ export default class Main extends React.Component {
             <br />
             <br />
             <FileUpload />
-            <a href="/">Learn more about the JSON structure for annotations</a>
+            <a href="https://docs.google.com/spreadsheets/d/1GBxfQqTuIwyj_ExmC_ct0wUxRqmoWjvfq8ibZsF2t60/edit?usp=sharing">Please use this template for your dataset</a>
           </div>
         </div>
       </div>

@@ -18,14 +18,14 @@ function annotations(annArray) {
 
 function mapAnnotationsHelper(uniqueArray, videoID, searchResult) {
   if (searchResult) {
-    return uniqueArray.map(item => (
-      <div>
+    return uniqueArray.map((item, index) => (
+      <div key={index.toString()}>
         <a href={"/search/" + item}>{item}</a>
       </div>
     ));
   } else {
-    return uniqueArray.map(item => (
-      <div>
+    return uniqueArray.map((item, index) => (
+      <div key={index.toString()}>
         <a href={"/posts/" + videoID + "/" + item}>{item}</a>
       </div>
     ));
@@ -50,6 +50,7 @@ function mapAnnotations(finalArray, videoID, searchResult) {
     );
     rows.push(
       <div
+        key={videoID}
         className="row"
         style={{
           borderStyle: "solid",
