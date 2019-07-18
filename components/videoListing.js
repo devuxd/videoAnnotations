@@ -61,7 +61,10 @@ class VideoListing extends React.Component {
 
               {/* number of instances would be something like annotations(video.Annotations).filter(x === query).length */}
 
-              <VideoInfo vidElem={videoElementFinal} />
+              <VideoInfo
+                searchQuery={this.props.searchQuery}
+                vidElem={videoElementFinal}
+              />
             </div>
           </div>
           <div>
