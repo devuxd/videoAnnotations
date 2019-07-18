@@ -5,6 +5,11 @@ import Navigation from "../components/navigation.js";
 import VideoBox from "../components/videoBox.js";
 import collection from "../API/db";
 
+/**
+ * Dynamic page for each individual video post page
+ * Need to fix: routing for a url like "/posts/videoID"
+ * currently only routes for a url like "/posts/videoID/annotation"
+ */
 export default class Posts extends React.Component {
   static async getInitialProps({ query }) {
     console.log(`You selected for ${query}`);

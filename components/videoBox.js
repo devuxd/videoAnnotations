@@ -3,6 +3,9 @@ import Router from "next/router";
 import VideoTitle from "../components/videoTitle.js";
 import MediaPlayer from "../components/mediaPlayer.js";
 
+/**
+ * VideoBox: component for holding video box in each video post page
+ */
 export default class VideoBox extends React.Component {
   constructor(props) {
     super(props);

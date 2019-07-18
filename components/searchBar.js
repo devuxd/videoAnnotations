@@ -4,6 +4,10 @@ import { faSearch, faAlignCenter } from "@fortawesome/free-solid-svg-icons";
 import Router from "next/router";
 import { render } from "react-dom";
 
+/**
+ * SearchBar: component for search bar
+ * need to fix: add event listener for enter key to search
+ */
 export default class SearchBar extends React.Component {
   constructor(props) {
     super(props);
@@ -27,13 +31,15 @@ export default class SearchBar extends React.Component {
           <option value="Reading code" />
           <option value="Writing code" />
         </datalist>
-        <div
-          className="input-group-append"
-          onClick={() =>
-            Router.push(`/search/${this.props.annotation.current.value}`)
-          }
-        >
-          <button className="btn btn-outline-secondary" type="submit">
+        <div className="input-group-append">
+          <button
+            id="myBtn"
+            onClick={() =>
+              Router.push(`/search/${this.props.annotation.current.value}`)
+            }
+            className="btn btn-outline-secondary"
+            type="submit"
+          >
             <FontAwesomeIcon icon={faSearch} /> &nbsp; Search
           </button>
         </div>

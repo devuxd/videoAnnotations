@@ -9,6 +9,7 @@ export default class AnnotationBox extends React.Component {
   }
 
   render() {
+    console.log(this.props.annElement);
     const totalStartSec =
       Number(this.props.annElement.Duration.start.hours * 60 * 60) +
       Number(this.props.annElement.Duration.start.minutes * 60) +
@@ -62,7 +63,7 @@ export default class AnnotationBox extends React.Component {
         <br />
         Description:
         <br />
-        <textarea rows="3" cols="60">
+        <textarea style={{ resize: "none" }} readOnly rows="3" cols="60">
           {this.props.annElement.Description}
         </textarea>
         <br />

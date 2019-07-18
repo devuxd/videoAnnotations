@@ -105,6 +105,7 @@ export default class MediaPlayer extends Component {
     return (
       <div>
         You searched for: {this.props.searchQuery}
+        <br />
         <div className="player-wrapper">
           <ReactPlayer
             ref={this.ref}
@@ -137,17 +138,33 @@ export default class MediaPlayer extends Component {
             )}
           </button>
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <input
-            style={{ width: "60%" }}
-            type="range"
-            min={0}
-            max={1}
-            step="any"
-            value={this.state.played}
-            onMouseDown={this.onSeekMouseDown}
-            onChange={this.onSeekChange}
-            onMouseUp={this.onSeekMouseUp}
-          />
+          <div style={{ display: "inline" }}>
+            <div
+              style={{ zIndex: "1", display: "inline", position: "relative" }}
+            >
+              <input
+                style={{ width: "65%" }}
+                type="range"
+                min={0}
+                max={1}
+                step="any"
+                value={this.state.played}
+                onMouseDown={this.onSeekMouseDown}
+                onChange={this.onSeekChange}
+                onMouseUp={this.onSeekMouseUp}
+              />
+            </div>
+            <div
+              id="ann-visual"
+              style={{ display: "inline", position: "relative" }}
+            >
+              <AnnotationVisual
+                passedSeek={this.passedSeek}
+                searchQuery={this.props.searchQuery}
+                videoElem={this.props.vidElem}
+              />
+            </div>
+          </div>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <button
             type="button"
@@ -171,20 +188,6 @@ export default class MediaPlayer extends Component {
             onChange={this.setVolume}
           />
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <button
-            type="button"
-            class="btn btn-outline-dark"
-            onClick={this.onClickFullscreen}
-          >
-            <FontAwesomeIcon icon={faExpand} />
-          </button>
-        </div>
-        <div id="ann-visual">
-          <AnnotationVisual
-            passedSeek={this.passedSeek}
-            searchQuery={this.props.searchQuery}
-            videoElem={this.props.vidElem}
-          />
         </div>
         <div id="ann-tooltip" />
         <br />
@@ -206,10 +209,13 @@ export default class MediaPlayer extends Component {
                 <VideoTitle videoElem={this.props.vidElem} />
                 <VideoAuthor videoElem={this.props.vidElem} />
                 <br />
-                <VideoInfo vidElem={this.props.vidElem} />
+                <VideoInfo
+                  searchQuery={this.props.searchQuery}
+                  vidElem={this.props.vidElem}
+                />
               </div>
             </div>
-            <div label="Detailed Annotations">
+            <div label="All Detailed Annotations">
               <div>
                 {this.props.vidElem.Annotations.map(item => (
                   <div>
