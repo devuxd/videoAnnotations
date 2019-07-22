@@ -1,8 +1,8 @@
 import React from "react";
 import Router from "next/router";
-import VideoList from "../components/videoList.js";
+import VideoList from "../components/videoList";
 import Layouts from "./layouts";
-import Navigation from "../components/navigation.js";
+import Navigation from "../components/navigation";
 
 export default class search extends React.Component {
   static async getInitialProps({ query }) {

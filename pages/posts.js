@@ -1,8 +1,8 @@
 import React from "react";
 import Router from "next/router";
-import Layouts from "./layouts.js";
-import Navigation from "../components/navigation.js";
-import VideoBox from "../components/videoBox.js";
+import Layouts from "./layouts";
+import Navigation from "../components/navigation";
+import VideoBox from "../components/videoBox";
 import collection from "../API/db";
 
 /**
@@ -12,7 +12,6 @@ import collection from "../API/db";
  */
 export default class Posts extends React.Component {
   static async getInitialProps({ query }) {
-    console.log(`You selected for ${query}`);
     return { query };
   }
 
@@ -26,14 +25,20 @@ export default class Posts extends React.Component {
   }
 
   componentWillMount() {
+    console.log(this.props.query);
     if (this.state.isLoaded === false) {
       let LocalVideo = this.searchForVideo(this.props.query.id);
-      let localQuery = this.props.query.search;
-      this.setState({
-        video: LocalVideo,
-        isLoaded: true,
-        searchQuery: localQuery
-      });
+      let localQuery = JSON.parse(this.props.query.videoElementFinal);
+      this.setState(
+        {
+          video: LocalVideo,
+          isLoaded: true,
+          searchQuery: localQuery
+        },
+        () => {
+          console.log(this.state);
+        }
+      );
     }
   }
 
@@ -51,18 +56,20 @@ export default class Posts extends React.Component {
     }
   }
 
+  // render() {
+  //     return (
+  //         <div style={{ fontFamily: "Lato" }}>
+  //             <Layouts>
+  //                 <Navigation />
+  //                 <VideoBox
+  //                     searchQuery={this.state.searchQuery}
+  //                     video={this.state.video}
+  //                 />
+  //             </Layouts>
+  //         </div>
+  //     );
+  // }
   render() {
-    console.log(req);
-    return (
-      <div style={{ fontFamily: "Lato" }}>
-        <Layouts>
-          <Navigation />
-          <VideoBox
-            searchQuery={this.state.searchQuery}
-            video={this.state.video}
-          />
-        </Layouts>
-      </div>
-    );
+    return <div> </div>;
   }
 }

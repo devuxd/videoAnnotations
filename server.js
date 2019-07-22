@@ -15,22 +15,23 @@ app.prepare().then(() => {
     });
   });
 
-  server.get("/posts/:id/:search", (req, res) => {
+  //   server.get("/posts/:id/:search", (req, res) => {
+  //     return app.render(req, res, "/posts", {
+  //       id: req.params.id,
+  //       search: req.params.search
+  //     });
+  //   });
+
+  server.get("/posts/:id/*", (req, res) => {
     return app.render(req, res, "/posts", {
       id: req.params.id,
-      search: req.params.search
+      videoElementFinal: req.params[0]
     });
   });
 
-  server.get("/posts/:id/", (req, res) => {
-    return app.render(req, res, "/posts", {
-      id: req.params.id
-    });
-  });
-
-  server.get("/posts", (req, res) => {
-    return app.render(req, res, "/posts", {});
-  });
+  //   server.get("/posts", (req, res) => {
+  //     return app.render(req, res, "/posts", {});
+  //   });
 
   server.get("/dataset/:id", (req, res) => {
     return app.render(req, res, "/dataset", {

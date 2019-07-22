@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import { findDOMNode } from "react-dom";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
-import Tabs from "../components/tabs.js";
-import AnnotationBox from "../components/annotationBox.js";
-import VideoAuthor from "../components/videoAuthor.js";
-import VideoInfo from "../components/videoInfo.js";
-import AnnotationList from "../components/annotationList.js";
-import VideoTitle from "../components/videoTitle.js";
-import AnnotationVisual from "./annotationVisual.js";
+import Tabs from "./tabs";
+import AnnotationBox from "./annotationBox";
+import VideoAuthor from "./videoAuthor";
+import VideoInfo from "./videoInfo";
+import AnnotationList from "./annotationList";
+import VideoTitle from "./videoTitle";
+import AnnotationVisual from "./annotationVisual";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,

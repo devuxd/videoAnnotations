@@ -1,7 +1,7 @@
 import React from "react";
 import Router from "next/router";
-import SearchBar from "./searchBar.js";
-import FileUpload from "./fileUpload.js";
+import SearchBar from "./searchBar";
+import FileUpload from "./fileUpload";
 
 export default class Main extends React.Component {
   constructor(props) {

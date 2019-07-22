@@ -1,7 +1,7 @@
 import React from "react";
 import Router from "next/router";
-import VideoTitle from "../components/videoTitle.js";
-import MediaPlayer from "../components/mediaPlayer.js";
+import VideoTitle from "./videoTitle";
+import MediaPlayer from "./mediaPlayer";
 
 /**
  * VideoBox: component for holding video box in each video post page

@@ -1,6 +1,6 @@
 import React from "react";
 import Router from "next/router";
-import SearchBar from "./searchBar.js";
+import SearchBar from "./searchBar";
 
 /**
  * Navigation: component for navigation bar
