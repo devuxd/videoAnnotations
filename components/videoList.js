@@ -1,6 +1,6 @@
 import React from "react";
 import Router from "next/router";
-import VideoListing from "../components/videoListing.js";
+import VideoListing from "./videoListing";
 import { render } from "react-dom";
 
 /**
@@ -55,8 +55,8 @@ class VideoList extends React.Component {
     let rows = [];
     for (var j = 0; j < 2; j = j + 1) {
       rows.push(
-        <div 
-        key = {j.toString()}
+        <div
+          key={j.toString()}
           className="col-md"
           style={{ paddingLeft: "8%", paddingRight: "8%" }}
         >
@@ -76,7 +76,9 @@ class VideoList extends React.Component {
     let rows = [];
     for (var i = 0; i < videoArray.length; i += 2) {
       rows.push(
-        <div key ={i.toString()} className="row">{this.VideoColumnMaker(videoArray, i)}</div>
+        <div key={i.toString()} className="row">
+          {this.VideoColumnMaker(videoArray, i)}
+        </div>
       );
     }
     return rows;

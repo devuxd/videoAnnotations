@@ -1,9 +1,9 @@
 import React from "react";
 import Router from "next/router";
-import AnnotationList from "../components/annotationList";
+import AnnotationList from "./annotationList";
 import { render } from "react-dom";
-import VideoTitle from "../components/videoTitle.js";
-import VideoInfo from "../components/videoInfo.js";
+import VideoTitle from "./videoTitle";
+import VideoInfo from "./videoInfo";
 
 /**
  * VideoListing: component for each video for search result page
@@ -36,7 +36,10 @@ class VideoListing extends React.Component {
           <div className="media">
             <div
               onClick={() =>
-                Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
+                // Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
+                Router.push(
+                  `/posts/ ${videoId}/${JSON.stringify(videoElementFinal)}`
+                )
               }
             >
               <img
@@ -51,7 +54,10 @@ class VideoListing extends React.Component {
             <div className="media-body">
               <div
                 onClick={() =>
-                  Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
+                  // Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
+                  Router.push(
+                    `/posts/ ${videoId}/${JSON.stringify(videoElementFinal)}`
+                  )
                 }
               >
                 <h6 className="mt-0" style={{ cursor: "pointer" }}>
