@@ -46,40 +46,36 @@ export default class dataset extends React.Component {
             video.data[0].rowData[2].values[1].userEnteredValue.stringValue;
         }
 
+        videoJSON.VideoLength = { hours: "", minutes: "", seconds: "" };
+
         if (
           typeof video.data[0].rowData[2].values[2].userEnteredValue ===
           "undefined"
         ) {
-          videoJSON.VideoLength = { hours: "" };
+          videoJSON.VideoLength.hours = "";
         } else {
-          videoJSON.VideoLength = {
-            hours:
-              video.data[0].rowData[2].values[2].userEnteredValue.numberValue
-          };
+          videoJSON.VideoLength.hours =
+            video.data[0].rowData[2].values[2].userEnteredValue.numberValue;
         }
 
         if (
           typeof video.data[0].rowData[2].values[3].userEnteredValue ===
           "undefined"
         ) {
-          videoJSON.VideoLength = { minutes: "" };
+          videoJSON.VideoLength.minutes = "";
         } else {
-          videoJSON.VideoLength = {
-            minutes:
-              video.data[0].rowData[2].values[3].userEnteredValue.numberValue
-          };
+          videoJSON.VideoLength.minutes =
+            video.data[0].rowData[2].values[3].userEnteredValue.numberValue;
         }
 
         if (
           typeof video.data[0].rowData[2].values[4].userEnteredValue ===
           "undefined"
         ) {
-          videoJSON.VideoLength = { seconds: "" };
+          videoJSON.VideoLength.seconds = "";
         } else {
-          videoJSON.VideoLength = {
-            seconds:
-              video.data[0].rowData[2].values[4].userEnteredValue.numberValue
-          };
+          videoJSON.VideoLength.seconds =
+            video.data[0].rowData[2].values[4].userEnteredValue.numberValue;
         }
 
         if (
@@ -214,6 +210,7 @@ export default class dataset extends React.Component {
     } catch (e) {
       console.error(e);
     }
+
     // let LocalAnnotations = this.searchForAnnotation(
     //   this.props.query.annotation
     // );
@@ -224,12 +221,13 @@ export default class dataset extends React.Component {
   }
 
   render() {
+    console.log(this.state.dataSet);
     return (
       <div style={{ fontFamily: "Lato" }}>
         <Layouts>
           <Navigation />
           <p style={{ paddingLeft: "5%" }}>
-            You searched for : {this.state.query} dataset.{" "}
+            Viewing: {this.state.query} dataset.{" "}
             <b>
               Look at the console for more info. each item in the array
               represent a video
@@ -244,6 +242,7 @@ export default class dataset extends React.Component {
       </div>
     );
   }
+
   searchForAnnotation(annotation) {
     // Hard coded return values.
     return collection;

@@ -22,6 +22,16 @@ app.prepare().then(() => {
     });
   });
 
+  server.get("/posts/:id/", (req, res) => {
+    return app.render(req, res, "/posts", {
+      id: req.params.id
+    });
+  });
+
+  server.get("/posts", (req, res) => {
+    return app.render(req, res, "/posts", {});
+  });
+
   server.get("/dataset/:id", (req, res) => {
     return app.render(req, res, "/dataset", {
       sheetId: req.params.id

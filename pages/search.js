@@ -3,7 +3,6 @@ import Router from "next/router";
 import VideoList from "../components/videoList.js";
 import Layouts from "./layouts";
 import Navigation from "../components/navigation.js";
-import collection from "../API/db";
 
 export default class search extends React.Component {
   static async getInitialProps({ query }) {
@@ -15,6 +14,7 @@ export default class search extends React.Component {
     super();
     this.state = { annotations: [], query: null };
   }
+
   componentDidMount() {
     let LocalAnnotations = this.searchForAnnotation(
       this.props.query.annotation

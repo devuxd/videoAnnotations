@@ -7,7 +7,6 @@ export default class Main extends React.Component {
   constructor(props) {
     super(props);
     this.annotation = React.createRef();
-
   }
 
   render() {
@@ -27,15 +26,19 @@ export default class Main extends React.Component {
               />
             </a>
             <br />
-            <p>Search for videos with specific annotations</p>
-            <SearchBar annotation={this.annotation} />
+            {/* <p>Search for videos with specific annotations</p>
+            <SearchBar annotation={this.annotation} /> */}
             <br />
             <br />
             <br />
-            <br />
-            <br />
+            <p>
+              Upload your video dataset here! Enter your spreadsheet ID below to
+              continue:
+            </p>
             <FileUpload />
-            <a href="https://docs.google.com/spreadsheets/d/1GBxfQqTuIwyj_ExmC_ct0wUxRqmoWjvfq8ibZsF2t60/edit?usp=sharing">Please use this template for your dataset</a>
+            <a href="https://docs.google.com/spreadsheets/d/1GBxfQqTuIwyj_ExmC_ct0wUxRqmoWjvfq8ibZsF2t60/edit?usp=sharing">
+              Please use this template for your dataset
+            </a>
           </div>
         </div>
       </div>

@@ -52,6 +52,7 @@ export default class Posts extends React.Component {
   }
 
   render() {
+    console.log(req);
     return (
       <div style={{ fontFamily: "Lato" }}>
         <Layouts>

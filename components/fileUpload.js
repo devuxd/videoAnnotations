@@ -12,7 +12,6 @@ export default class FileUpload extends React.Component {
     };
     this.updateSheetId = this.updateSheetId.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-
   }
   updateSheetId(event) {
     this.setState({ sheetId: event.target.value });
@@ -30,9 +29,10 @@ export default class FileUpload extends React.Component {
           className="form-control"
           aria-label="Recipient's username"
           aria-describedby="basic-addon2"
+          placeholder="Spreadsheet ID"
           list="annotations"
           onChange={this.updateSheetId}
-          value = {this.state.sheetId}
+          value={this.state.sheetId}
         />
         <div className="input-group-append">
           <button

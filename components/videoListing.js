@@ -36,7 +36,11 @@ class VideoListing extends React.Component {
           <div className="media">
             <div
               onClick={() =>
-                Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
+                // Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
+                Router.push({
+                  pathname: "/posts/" + { videoId },
+                  query: { object: videoElementFinal }
+                })
               }
             >
               <img
@@ -51,7 +55,11 @@ class VideoListing extends React.Component {
             <div className="media-body">
               <div
                 onClick={() =>
-                  Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
+                  // Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
+                  Router.push({
+                    pathname: "/posts/" + { videoId },
+                    query: { object: videoElementFinal }
+                  })
                 }
               >
                 <h6 className="mt-0" style={{ cursor: "pointer" }}>
