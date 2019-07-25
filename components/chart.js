@@ -1,6 +1,5 @@
 import React from "react";
 import * as d3 from "d3";
-import cubism from "cubism";
 
 /**
  * d3.js scatterplot component to visualize annotations
@@ -33,15 +32,46 @@ export default class extends React.Component {
 
     this.props.annotations.map(x =>
       timeData.push({
-        startHour: x.Duration.start.hours,
-        startMinute: x.Duration.start.minutes,
-        startSecond: x.Duration.start.seconds,
-        endHour: x.Duration.end.hours,
-        endMinute: x.Duration.end.minutes,
-        endSecond: x.Duration.end.seconds,
+        start: new Date(
+          2016,
+          1,
+          1,
+          Number(x.Duration.start.hours),
+          Number(x.Duration.start.minutes),
+          Number(x.Duration.start.seconds)
+        ),
+        end: new Date(
+          2016,
+          1,
+          1,
+          Number(x.Duration.end.hours),
+          Number(x.Duration.end.minutes),
+          Number(x.Duration.end.seconds)
+        ),
         tag: x.Tags.join(", ")
       })
     );
+
+    // restructuring to an array [each annotation] with an array [with time start and time end dates as only values]
+
+    var allGroup = [];
+
+    for (var i = 0; i < timeData.length; i++) {
+      allGroup.push("value" + i);
+    }
+
+    var dataReady = allGroup.map(function(grpName) {
+      var index = grpName[grpName.length - 1];
+      return {
+        name: grpName,
+        values: timeData[index]
+      };
+    });
+
+    var myColor = d3
+      .scaleOrdinal()
+      .domain(allGroup)
+      .range(d3.schemePaired);
 
     let vidLengthArray = this.props.vidLength.split(":");
     let vidLengthHour = Number(vidLengthArray[0]);
@@ -76,6 +106,18 @@ export default class extends React.Component {
           .tickFormat(d3.timeFormat("%H:%M"))
       );
 
+    // var line = d3.line()
+    //     .x(function(d) { return x(d.start) })
+    //     .x(function(d) { return x(d.end) })
+    // svg.selectAll("myLines")
+    //     .data(dataReady)
+    //     .enter()
+    //     .append("path")
+    //       .attr("d", function (d) { return line(d.values) })
+    //       .attr("stroke", function(d){ return myColor(d.name) })
+    //       .style("stroke-width", 4)
+    //       .style("fill", "none");
+
     // Tooltip
     var tooltip = d3
       .select("#ann-tooltip")
@@ -95,22 +137,15 @@ export default class extends React.Component {
     };
 
     var mousemove = function(d) {
+      console.log(d.values);
       tooltip
         .html(
           "Detailed Annotation: " +
-            d.startHour +
-            ":" +
-            d.startMinute +
-            ":" +
-            d.startSecond +
+            d.values.start +
             " until " +
-            d.endHour +
-            ":" +
-            d.endMinute +
-            ":" +
-            d.endSecond +
+            d.values.end +
             " - " +
-            d.tag
+            d.values.tag
         )
         .style("left", "37%")
         .style("top", "75%");
@@ -124,28 +159,26 @@ export default class extends React.Component {
         .style("opacity", 0);
     };
 
-    // Add dots
+    // console.log(myColor(value0));
+    // console.log(d3.schemePaired);
+    // console.log(myColor("value0"))
+    // console.log(dataReady);
+    // console.log(allGroup);
+
     svg
       .append("g")
       .selectAll("dot")
-      .data(timeData)
+      .data(dataReady)
       .enter()
       .append("circle")
       .attr("cx", function(d) {
-        return x(
-          new Date(
-            2016,
-            1,
-            1,
-            Number(d.startHour),
-            Number(d.startMinute),
-            Number(d.startSecond)
-          )
-        );
+        return x(d.values.start);
       })
-      .attr("r", 7)
-      .style("fill", "#228B22")
-      .style("opacity", 0.4)
+      .attr("r", 8)
+      .style("fill", function(d) {
+        return myColor(d.name);
+      })
+      .style("opacity", 0.7)
       .style("stroke", "white")
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
@@ -154,24 +187,17 @@ export default class extends React.Component {
     svg
       .append("g")
       .selectAll("dot")
-      .data(timeData)
+      .data(dataReady)
       .enter()
       .append("circle")
       .attr("cx", function(d) {
-        return x(
-          new Date(
-            2016,
-            1,
-            1,
-            Number(d.endHour),
-            Number(d.endMinute),
-            Number(d.endSecond)
-          )
-        );
+        return x(d.values.end);
       })
-      .attr("r", 7)
-      .style("fill", "red")
-      .style("opacity", 0.4)
+      .attr("r", 8)
+      .style("fill", function(d) {
+        return myColor(d.name);
+      })
+      .style("opacity", 0.7)
       .style("stroke", "white")
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)

@@ -1,6 +1,6 @@
 import React from "react";
 import Router from "next/router";
-import SearchBar from "./searchBar";
+// import SearchBar from "./searchBar";
 
 /**
  * Navigation: component for navigation bar
@@ -27,7 +27,7 @@ class Navigation extends React.Component {
               src="https://i.ibb.co/JmfYfBD/observedev.png"
             />
           </a>
-          <SearchBar annotation={this.annotation} />
+          {/* <SearchBar annotation={this.annotation} /> */}
         </nav>
         <br />
       </div>

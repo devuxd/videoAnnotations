@@ -10,14 +10,14 @@ export default class VideoBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      videoElement: this.props.video,
+      videoElement: null,
       isLoaded: false,
-      videoId: this.props.video.VideoURL.replace("https://youtu.be/", ""),
-      searchQuery: this.props.searchQuery
+      videoId: null,
+      searchQuery: null
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     if (this.state.isLoaded === false) {
       let videoProp = this.props.video;
       let searchProp = this.props.searchQuery;

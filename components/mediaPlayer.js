@@ -100,11 +100,9 @@ export default class MediaPlayer extends Component {
   };
 
   render() {
-    const color = "darkgreen";
-
     return (
       <div>
-        You searched for: {this.props.searchQuery}
+        Showing annotation: {this.props.searchQuery}
         <br />
         <div className="player-wrapper">
           <ReactPlayer
@@ -154,16 +152,6 @@ export default class MediaPlayer extends Component {
                 onMouseUp={this.onSeekMouseUp}
               />
             </div>
-            <div
-              id="ann-visual"
-              style={{ display: "inline", position: "relative" }}
-            >
-              <AnnotationVisual
-                passedSeek={this.passedSeek}
-                searchQuery={this.props.searchQuery}
-                videoElem={this.props.vidElem}
-              />
-            </div>
           </div>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <button
@@ -187,7 +175,16 @@ export default class MediaPlayer extends Component {
             value={this.state.volume}
             onChange={this.setVolume}
           />
-          &nbsp;&nbsp;&nbsp;&nbsp;
+          <div
+            id="ann-visual"
+            style={{ display: "inline", position: "relative" }}
+          >
+            <AnnotationVisual
+              passedSeek={this.passedSeek}
+              searchQuery={this.props.searchQuery}
+              videoElem={this.props.vidElem}
+            />
+          </div>
         </div>
         <div id="ann-tooltip" />
         <br />
@@ -206,18 +203,18 @@ export default class MediaPlayer extends Component {
                   paddingRight: "5%"
                 }}
               >
-                <VideoTitle videoElem={this.props.vidElem} />
-                <VideoAuthor videoElem={this.props.vidElem} />
+                <VideoTitle videoElem={this.state.videoElem} />
+                <VideoAuthor videoElem={this.state.videoElem} />
                 <br />
                 <VideoInfo
-                  searchQuery={this.props.searchQuery}
-                  vidElem={this.props.vidElem}
+                  searchQuery={this.state.seaeorchQuery}
+                  vidElem={this.state.videoElem}
                 />
               </div>
             </div>
             <div label="All Detailed Annotations">
               <div>
-                {this.props.vidElem.Annotations.map(item => (
+                {this.state.videoElem.Annotations.map(item => (
                   <div>
                     <AnnotationBox
                       passedSeek={this.passedSeek}
