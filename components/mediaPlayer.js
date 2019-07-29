@@ -121,7 +121,8 @@ export default class MediaPlayer extends Component {
             borderStyle: "solid",
             borderColor: "#DCDCDC",
             backgroundColor: "#DCDCDC",
-            borderRadius: "8px"
+            borderRadius: "8px",
+            height: "60px"
           }}
         >
           <button
@@ -177,7 +178,7 @@ export default class MediaPlayer extends Component {
           />
           <div
             id="ann-visual"
-            style={{ display: "inline", position: "relative" }}
+            style={{ bottom: "17px", display: "inline", position: "relative" }}
           >
             <AnnotationVisual
               passedSeek={this.passedSeek}
@@ -186,7 +187,10 @@ export default class MediaPlayer extends Component {
             />
           </div>
         </div>
-        <div id="ann-tooltip" />
+        <div
+          id="ann-tooltip"
+          style={{ position: "absolute", right: "400px", width: "700px" }}
+        />
         <br />
         <div>
           <Tabs>

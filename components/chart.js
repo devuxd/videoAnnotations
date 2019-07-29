@@ -14,6 +14,19 @@ export default class extends React.Component {
   }
 
   drawChart() {
+    /**
+     * numberFormatter: function to style single digits number with a preceding 0
+     *
+     * @param {*} num : number to style
+     */
+    var numberFormatter = num => {
+      if (num < 10) {
+        return "0" + num;
+      } else {
+        return num;
+      }
+    };
+
     // set the dimensions and margins of the graph
     var margin = { top: 10, right: 30, bottom: 30, left: 65 },
       width = 500 - margin.left - margin.right,
@@ -118,6 +131,30 @@ export default class extends React.Component {
     //       .style("stroke-width", 4)
     //       .style("fill", "none");
 
+    var line = d3
+      .line()
+      .x(function(d) {
+        return x(d.values.start);
+      })
+      .x(function(d) {
+        return x(d.values.end);
+      });
+    svg
+      .selectAll("myLines")
+      .data(dataReady)
+      .enter()
+      .append("path")
+      .attr("class", function(d) {
+        return d.name;
+      })
+      .attr("d", function(d) {
+        return line(d.values.start, d.values.end);
+      })
+      .style("fill", function(d) {
+        return myColor(d.name);
+      })
+      .style("stroke-width", 4);
+
     // Tooltip
     var tooltip = d3
       .select("#ann-tooltip")
@@ -137,13 +174,20 @@ export default class extends React.Component {
     };
 
     var mousemove = function(d) {
-      console.log(d.values);
       tooltip
         .html(
           "Detailed Annotation: " +
-            d.values.start +
+            numberFormatter(d.values.start.getHours()) +
+            ":" +
+            numberFormatter(d.values.start.getMinutes()) +
+            ":" +
+            numberFormatter(d.values.start.getSeconds()) +
             " until " +
-            d.values.end +
+            numberFormatter(d.values.end.getHours()) +
+            ":" +
+            numberFormatter(d.values.end.getMinutes()) +
+            ":" +
+            numberFormatter(d.values.end.getSeconds()) +
             " - " +
             d.values.tag
         )
@@ -157,6 +201,14 @@ export default class extends React.Component {
         .transition()
         .duration(100)
         .style("opacity", 0);
+    };
+
+    var mouseclick = function(d) {
+      const totalStartSec =
+        Number(d.values.start.getHours() * 60 * 60) +
+        Number(d.values.start.getMinutes() * 60) +
+        Number(d.values.start.getSeconds());
+      this.props.passedSeek(totalStartSec);
     };
 
     // console.log(myColor(value0));
@@ -178,11 +230,12 @@ export default class extends React.Component {
       .style("fill", function(d) {
         return myColor(d.name);
       })
-      .style("opacity", 0.7)
+      .style("opacity", 0.65)
       .style("stroke", "white")
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
       .on("mouseleave", mouseleave);
+    // .on("click", mouseclick);
 
     svg
       .append("g")
@@ -197,14 +250,15 @@ export default class extends React.Component {
       .style("fill", function(d) {
         return myColor(d.name);
       })
-      .style("opacity", 0.7)
+      .style("opacity", 0.65)
       .style("stroke", "white")
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
       .on("mouseleave", mouseleave);
+    // .on("click", mouseclick);
   }
 
   render() {
-    return <div id={"#" + this.props.id} />;
+    return <div />;
   }
 }

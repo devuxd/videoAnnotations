@@ -72,11 +72,13 @@ export default class AnnotationBox extends React.Component {
             {this.numberFormatter(this.props.annElement.Duration.end.seconds)}
           </button>
         </h7>
-        <br />
+        <div style={{ display: "inline", marginLeft: "65px" }}>
+          Tag(s): {this.props.annElement.Tags}
+        </div>
         <br />
         Description:
         <br />
-        <textarea style={{ resize: "none" }} readOnly rows="3" cols="60">
+        <textarea style={{ resize: "none" }} readOnly rows="3" cols="68">
           {this.props.annElement.Description}
         </textarea>
         <br />

@@ -26,6 +26,7 @@ export default class AnnotationVisual extends React.Component {
     return (
       <div>
         <Chart
+          passedSeek={this.props.passedSeek}
           vidLength={vidLength}
           annotations={filteredAnnotations}
           searchQuery={this.props.searchQuery}

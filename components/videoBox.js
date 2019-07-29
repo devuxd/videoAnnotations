@@ -49,11 +49,11 @@ export default class VideoBox extends React.Component {
         >
           <br />
           <div
-            onClick={() =>
-              Router.push(`/posts/${videoID}/${this.state.searchQuery}`)
-            }
+          // onClick={() =>
+          //   Router.push(`/posts/${videoID}/${this.state.searchQuery}`)
+          // }
           >
-            <h3 class="mt-0" style={{ cursor: "pointer" }}>
+            <h3 class="mt-0" style={{}}>
               <VideoTitle videoElem={this.state.videoElement} />
             </h3>
           </div>
