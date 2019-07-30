@@ -28,7 +28,7 @@ export default class extends React.Component {
     };
 
     // set the dimensions and margins of the graph
-    var margin = { top: 10, right: 30, bottom: 30, left: 65 },
+    var margin = { top: 10, right: 30, bottom: 30, left: 55 },
       width = 500 - margin.left - margin.right,
       height = 50 - margin.top - margin.bottom;
 
@@ -199,7 +199,7 @@ export default class extends React.Component {
     var mouseleave = function(d) {
       tooltip
         .transition()
-        .duration(100)
+        .duration(1000)
         .style("opacity", 0);
     };
 
