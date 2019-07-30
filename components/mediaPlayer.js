@@ -8,6 +8,7 @@ import VideoAuthor from "./videoAuthor";
 import VideoInfo from "./videoInfo";
 import AnnotationList from "./annotationList";
 import VideoTitle from "./videoTitle";
+import AnnotationPop from "./annotationPop";
 import AnnotationVisual from "./annotationVisual";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -102,8 +103,6 @@ export default class MediaPlayer extends Component {
   render() {
     return (
       <div>
-        Showing annotation: {this.props.searchQuery}
-        <br />
         <div className="player-wrapper">
           <ReactPlayer
             ref={this.ref}
@@ -187,9 +186,26 @@ export default class MediaPlayer extends Component {
             />
           </div>
         </div>
-        <div
-          id="ann-tooltip"
-          style={{ position: "absolute", right: "400px", width: "700px" }}
+        <div style={{ padding: "2%" }}>
+          Showing annotations for tag: {this.props.searchQuery}
+          <div
+            id="ann-tooltip"
+            style={{
+              display: "inline",
+              position: "absolute",
+              bottom: "65%",
+              right: "215px",
+              width: "600px"
+            }}
+          />
+        </div>
+
+        <div style={{ padding: "2%" }}>Current annotation(s) viewing:</div>
+
+        <AnnotationPop
+          passedSeek={this.passedSeek}
+          time={this.state.playedSeconds}
+          videoElem={this.props.vidElem}
         />
         <br />
         <div>

@@ -24,7 +24,7 @@ export default class Posts extends React.Component {
   }
 
   componentWillMount() {
-    console.log(this.props.query);
+    // console.log(this.props.query);
     if (this.state.isLoaded === false) {
       let localVideo = JSON.parse(this.props.query.videoElementFinal);
       let localQuery = this.props.query.tag;
@@ -36,7 +36,7 @@ export default class Posts extends React.Component {
           searchQuery: localQuery
         },
         () => {
-          console.log(this.state);
+          // console.log(this.state);
         }
       );
     }
@@ -57,7 +57,7 @@ export default class Posts extends React.Component {
   }
 
   render() {
-    console.log(this.state.video);
+    // console.log(this.state.video);
     return (
       <div style={{ fontFamily: "Lato" }}>
         <Layouts>
