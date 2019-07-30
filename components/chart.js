@@ -222,11 +222,12 @@ export default class extends React.Component {
       .selectAll("dot")
       .data(dataReady)
       .enter()
-      .append("circle")
+      .append("rect")
       .attr("cx", function(d) {
         return x(d.values.start);
       })
-      .attr("r", 8)
+      .attr("width", 30)
+      .attr("height", 10)
       .style("fill", function(d) {
         return myColor(d.name);
       })
@@ -237,24 +238,24 @@ export default class extends React.Component {
       .on("mouseleave", mouseleave);
     // .on("click", mouseclick);
 
-    svg
-      .append("g")
-      .selectAll("dot")
-      .data(dataReady)
-      .enter()
-      .append("circle")
-      .attr("cx", function(d) {
-        return x(d.values.end);
-      })
-      .attr("r", 8)
-      .style("fill", function(d) {
-        return myColor(d.name);
-      })
-      .style("opacity", 0.65)
-      .style("stroke", "white")
-      .on("mouseover", mouseover)
-      .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave);
+    // svg
+    //   .append("g")
+    //   .selectAll("dot")
+    //   .data(dataReady)
+    //   .enter()
+    //   .append("circle")
+    //   .attr("cx", function(d) {
+    //     return x(d.values.end);
+    //   })
+    //   .attr("r", 20)
+    //   .style("fill", function(d) {
+    //     return myColor(d.name);
+    //   })
+    //   .style("opacity", 0.65)
+    //   .style("stroke", "white")
+    //   .on("mouseover", mouseover)
+    //   .on("mousemove", mousemove)
+    //   .on("mouseleave", mouseleave);
     // .on("click", mouseclick);
   }
 
