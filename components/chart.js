@@ -99,11 +99,7 @@ export default class extends React.Component {
     };
 
     var mouseclick = d => {
-      const totalStartSec =
-        Number(d.values.start.getHours() * 60 * 60) +
-        Number(d.values.start.getMinutes() * 60) +
-        Number(d.values.start.getSeconds());
-      this.props.passedSeek(totalStartSec);
+      this.props.passedSeek(d.start);
     };
 
     const w = 926,
@@ -143,7 +139,18 @@ export default class extends React.Component {
       .attr("width", function(d) {
         return scale(d.end - d.start);
       })
-      .attr("height", 10);
+      .attr("height", 10)
+      .on("mouseover", function(d) {
+        console.log(d);
+        d3.select(this).style("opacity", 1);
+        d3.select(this).style("cursor", "pointer");
+      })
+      .on("mouseleave", function(d) {
+        d3.select(this).style("opacity", 0.8);
+        d3.select(this).style("cursor", "default");
+      })
+      .style("opacity", 0.8)
+      .on("click", mouseclick);
   }
 
   render() {
