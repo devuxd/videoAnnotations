@@ -75,7 +75,7 @@ export default class MediaPlayer extends Component {
         >
           <div
             id="ann-visual"
-            style={{ bottom: "75px", display: "inline", position: "relative" }}
+            style={{ bottom: "70px", display: "inline", position: "relative" }}
           >
             <AnnotationVisual
               passedSeek={this.passedSeek}

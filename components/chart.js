@@ -34,7 +34,7 @@ export default class extends React.Component {
       }
     };
 
-    let timeData = this.props.annotations.map(x => ({
+    let timeData = this.props.annotations.map((x, index) => ({
       start:
         Number(x.Duration.start.hours) * 60 * 60 +
         Number(x.Duration.start.minutes) * 60 +
@@ -43,16 +43,8 @@ export default class extends React.Component {
         Number(x.Duration.end.hours) * 60 * 60 +
         Number(x.Duration.end.minutes) * 60 +
         Number(x.Duration.end.seconds),
-      tag: x.Tags.join(", ")
-    }));
-    console.log(timeData);
-
-    timeData = timeData.map(x => ({
-      ...x,
-      scale: d3
-        .scaleLinear()
-        .domain([x.start, x.end])
-        .range([0, videoLength])
+      tag: x.Tags.join(", "),
+      name: x.Tags.join(", ") + index
     }));
     console.log(timeData);
 
@@ -114,44 +106,42 @@ export default class extends React.Component {
       this.props.passedSeek(totalStartSec);
     };
 
-    var m = [20, 15, 15, 120], //top right bottom left
-      w = 960 - m[1] - m[3],
-      h = 500 - m[0] - m[2],
-      miniHeight = 12 + 50,
-      mainHeight = h - miniHeight - 50;
+    const w = 926,
+      h = 100;
 
-    var chart = d3
+    var mini = d3
       .select("#ann-visual")
       .append("svg")
-      .attr("width", w + m[1] + m[3])
-      .attr("height", h + m[0] + m[2])
+      .attr("width", w)
+      .attr("height", 20)
+      .attr("style", "padding-left:10px")
       .attr("class", "chart");
 
-    var mini = chart
-      .append("g")
-      .attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]) + ")")
-      .attr("width", w)
-      .attr("height", miniHeight)
-      .attr("class", "mini");
+    var myColor = d3
+      .scaleOrdinal()
+      .domain(timeData)
+      .range(d3.schemePaired);
 
-    //mini item rects
+    let scale = d3
+      .scaleLinear()
+      .domain([0, videoLength])
+      .range([0, w]);
+
     mini
       .append("g")
-      .selectAll("dot")
+      .selectAll("miniItems")
 
       .data(timeData)
       .enter()
       .append("rect")
-      .attr("class", function(d) {
-        console.log(d);
-        return "miniItem" + d.tag;
+      .style("fill", function(d) {
+        return myColor(d.name);
       })
       .attr("x", function(d) {
-        return d.scale(d.start);
+        return scale(d.start);
       })
       .attr("width", function(d) {
-        console.log(d);
-        return d.scale(d.end - d.start);
+        return scale(d.end - d.start);
       })
       .attr("height", 10);
   }
