@@ -8,6 +8,7 @@ import VideoAuthor from "./videoAuthor";
 import VideoInfo from "./videoInfo";
 import AnnotationList from "./annotationList";
 import VideoTitle from "./videoTitle";
+import AnnotationPop from "./annotationPop";
 import AnnotationVisual from "./annotationVisual";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -18,178 +19,91 @@ import {
   faVolumeUp,
   faAlignCenter
 } from "@fortawesome/free-solid-svg-icons";
-
 /**
  * MediaPlayer: component for embedding video and parent for all video function components
  */
 export default class MediaPlayer extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      playing: false,
-      volume: 0.8,
-      muted: false,
-      played: 0,
-      loaded: 0,
-      duration: 0,
-      videoElem: null,
-      videoID: null
+    this.player;
+    this.passedSeek.bind(this);
+    this.state = { ready: false };
+  }
+
+  componentDidMount() {
+    const tag = document.createElement("script");
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName("script")[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    window.onload = () => {
+      this.player = new YT.Player("player");
+      this.setState(state => {
+        return { ready: true };
+      });
     };
   }
 
-  componentWillMount() {
-    this.setState({
-      videoElem: this.props.vidElem,
-      videoID: this.props.videoID
-    });
-  }
-
-  /**
-   * Following functions for adding functionality to video controls
-   */
-
-  playPause = () => {
-    this.setState({ playing: !this.state.playing });
-  };
-
-  setVolume = e => {
-    this.setState({ volume: parseFloat(e.target.value) });
-  };
-
-  toggleMuted = () => {
-    this.setState({ muted: !this.state.muted });
-  };
-
-  onSeekMouseDown = e => {
-    this.setState({ seeking: true });
-  };
-
-  onSeekChange = e => {
-    this.setState({ played: parseFloat(e.target.value) });
-    if (!this.state.playing) {
-      this.setState({ playing: true });
-    }
-  };
-
-  onSeekMouseUp = e => {
-    this.setState({ seeking: false });
-    this.player.seekTo(parseFloat(e.target.value), "fraction");
-  };
-
-  onProgress = state => {
-    console.log("onProgress", state);
-    // We only want to update time slider if we are not currently seeking
-    if (!this.state.seeking) {
-      this.setState(state);
-    }
-  };
-
-  onClickFullscreen = () => {
-    screenfull.request(findDOMNode(this.player));
-  };
-
-  ref = player => {
-    this.player = player;
-  };
-
-  passedSeek = x => {
-    this.player.seekTo(x, "seconds");
-    if (!this.state.playing) {
-      this.setState({ playing: true });
-    }
+  passedSeek = startTime => {
+    this.player.seekTo(startTime, true);
   };
 
   render() {
-    const color = "darkgreen";
-
+    console.log(this.state.ready);
     return (
       <div>
-        You searched for: {this.props.searchQuery}
-        <br />
         <div className="player-wrapper">
-          <ReactPlayer
-            ref={this.ref}
-            className="react-player"
-            url={this.props.vidURL}
-            playing={this.state.playing}
-            volume={this.state.volume}
-            muted={this.state.muted}
-            onSeek={e => console.log("onSeek", e)}
-            onProgress={this.onProgress}
-          />
+          <iframe
+            id="player"
+            type="text/html"
+            width="950"
+            height="550"
+            src={this.props.vidURL + "?enablejsapi=1"}
+            frameborder="0"
+          ></iframe>
         </div>
+
         <div
           style={{
             borderStyle: "solid",
             borderColor: "#DCDCDC",
             backgroundColor: "#DCDCDC",
-            borderRadius: "8px"
+            borderRadius: "2px",
+            height: "10px"
           }}
         >
-          <button
-            type="button"
-            class="btn btn-outline-dark"
-            onClick={this.playPause}
+          <div
+            id="ann-visual"
+            style={{ bottom: "70px", display: "inline", position: "relative" }}
           >
-            {this.state.playing ? (
-              <FontAwesomeIcon icon={faPause} />
-            ) : (
-              <FontAwesomeIcon icon={faPlay} />
-            )}
-          </button>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <div style={{ display: "inline" }}>
-            <div
-              style={{ zIndex: "1", display: "inline", position: "relative" }}
-            >
-              <input
-                style={{ width: "65%" }}
-                type="range"
-                min={0}
-                max={1}
-                step="any"
-                value={this.state.played}
-                onMouseDown={this.onSeekMouseDown}
-                onChange={this.onSeekChange}
-                onMouseUp={this.onSeekMouseUp}
-              />
-            </div>
-            <div
-              id="ann-visual"
-              style={{ display: "inline", position: "relative" }}
-            >
-              <AnnotationVisual
-                passedSeek={this.passedSeek}
-                searchQuery={this.props.searchQuery}
-                videoElem={this.props.vidElem}
-              />
-            </div>
+            <AnnotationVisual
+              passedSeek={this.passedSeek}
+              searchQuery={this.props.searchQuery}
+              videoElem={this.props.vidElem}
+            />
           </div>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <button
-            type="button"
-            class="btn btn-outline-dark"
-            onClick={this.toggleMuted}
-          >
-            {this.state.muted ? (
-              <FontAwesomeIcon icon={faVolumeMute} />
-            ) : (
-              <FontAwesomeIcon icon={faVolumeUp} />
-            )}
-          </button>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <input
-            style={{ width: "10%" }}
-            type="range"
-            min={0}
-            max={1}
-            step="any"
-            value={this.state.volume}
-            onChange={this.setVolume}
-          />
-          &nbsp;&nbsp;&nbsp;&nbsp;
         </div>
-        <div id="ann-tooltip" />
+        <div style={{ padding: "2%" }}>
+          Showing annotations for tag: {this.props.searchQuery}
+          <div
+            id="ann-tooltip"
+            style={{
+              display: "inline",
+              position: "absolute",
+              bottom: "65%",
+              right: "215px",
+              width: "600px"
+            }}
+          />
+        </div>
+
+        <div style={{ padding: "2%" }}>Current annotation(s) viewing:</div>
+
+        <AnnotationPop
+          passedSeek={this.passedSeek}
+          videoElem={this.props.vidElem}
+        />
         <br />
         <div>
           <Tabs>
@@ -210,7 +124,7 @@ export default class MediaPlayer extends Component {
                 <VideoAuthor videoElem={this.props.vidElem} />
                 <br />
                 <VideoInfo
-                  searchQuery={this.props.searchQuery}
+                  searchQuery={this.props.seaeorchQuery}
                   vidElem={this.props.vidElem}
                 />
               </div>
@@ -230,9 +144,9 @@ export default class MediaPlayer extends Component {
             </div>
             <div label="All Annotation Tags">
               <AnnotationList
-                videoElem={this.state.videoElem}
+                videoElem={this.props.vidElem}
                 searchResult={false}
-                videoID={this.state.videoID}
+                videoID={this.props.videoID}
               />
             </div>
           </Tabs>

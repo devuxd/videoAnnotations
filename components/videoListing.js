@@ -35,16 +35,16 @@ class VideoListing extends React.Component {
         >
           <div className="media">
             <div
-              onClick={() =>
-                // Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
-                Router.push(
-                  `/posts/ ${videoId}/${JSON.stringify(videoElementFinal)}`
-                )
-              }
+            // onClick={() =>
+            //   // Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
+            // Router.push(
+            //   `/posts/ ${videoId}/${JSON.stringify(videoElementFinal)}`
+            // )
+            // }
             >
               <img
                 className="mr-3"
-                style={{ width: "170px", cursor: "pointer" }}
+                style={{ width: "170px" }}
                 src={
                   "https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"
                 }
@@ -53,14 +53,14 @@ class VideoListing extends React.Component {
             </div>
             <div className="media-body">
               <div
-                onClick={() =>
-                  // Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
-                  Router.push(
-                    `/posts/ ${videoId}/${JSON.stringify(videoElementFinal)}`
-                  )
-                }
+              // onClick={() =>
+              //   // Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
+              //   Router.push(
+              //     `/posts/ ${videoId}/${JSON.stringify(videoElementFinal)}`
+              //   )
+              // }
               >
-                <h6 className="mt-0" style={{ cursor: "pointer" }}>
+                <h6 className="mt-0" style={{}}>
                   <VideoTitle videoElem={videoElementFinal} />
                 </h6>
               </div>
@@ -77,7 +77,7 @@ class VideoListing extends React.Component {
             <br />
             <AnnotationList
               videoElem={videoElementFinal}
-              searchResult={true}
+              searchResult={false}
               videoID={null}
             />
           </div>

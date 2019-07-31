@@ -36,7 +36,10 @@ export default class Main extends React.Component {
               continue:
             </p>
             <FileUpload />
-            <a href="https://docs.google.com/spreadsheets/d/1GBxfQqTuIwyj_ExmC_ct0wUxRqmoWjvfq8ibZsF2t60/edit?usp=sharing">
+            <a
+              target="_blank"
+              href="https://docs.google.com/spreadsheets/d/1GBxfQqTuIwyj_ExmC_ct0wUxRqmoWjvfq8ibZsF2t60/edit?usp=sharing"
+            >
               Please use this template for your dataset
             </a>
           </div>

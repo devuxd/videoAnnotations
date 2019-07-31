@@ -1,6 +1,5 @@
 import React from "react";
 import * as d3 from "d3";
-import cubism from "cubism";
 
 /**
  * d3.js scatterplot component to visualize annotations
@@ -11,37 +10,11 @@ export default class extends React.Component {
   }
 
   componentDidMount() {
-    this.drawChart();
-  }
-
-  drawChart() {
-    // set the dimensions and margins of the graph
-    var margin = { top: 10, right: 30, bottom: 30, left: 65 },
-      width = 500 - margin.left - margin.right,
-      height = 50 - margin.top - margin.bottom;
-
-    // append the svg object to the body of the page
-    var svg = d3
-      .select("#ann-visual")
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    var timeData = [];
-
-    this.props.annotations.map(x =>
-      timeData.push({
-        startHour: x.Duration.start.hours,
-        startMinute: x.Duration.start.minutes,
-        startSecond: x.Duration.start.seconds,
-        endHour: x.Duration.end.hours,
-        endMinute: x.Duration.end.minutes,
-        endSecond: x.Duration.end.seconds,
-        tag: x.Tags.join(", ")
-      })
-    );
+    /**
+     * numberFormatter: function to style single digits number with a preceding 0
+     *
+     * @param {*} num : number to style
+     */
 
     let vidLengthArray = this.props.vidLength.split(":");
     let vidLengthHour = Number(vidLengthArray[0]);
@@ -49,32 +22,33 @@ export default class extends React.Component {
     let vidLengthSecond = Number(vidLengthArray[2]);
     let randomColor = "#" + ((Math.random() * 0xffffff) << 0).toString(16);
 
-    let videoStart = new Date(2016, 1, 1, 0, 0, 0);
-    let videoLength = new Date(
-      2016,
-      1,
-      1,
-      vidLengthHour,
-      vidLengthMinute,
-      vidLengthSecond
-    );
+    let videoStart = 0;
+    let videoLength =
+      vidLengthHour * 60 * 60 + vidLengthMinute * 60 + vidLengthSecond;
 
-    // Add X axis
-    var x = d3
-      .scaleTime()
-      .domain([videoStart, videoLength])
-      .range([0, width]);
-    svg
-      .append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .style("font-size", "10px")
-      .call(
-        d3
-          .axisBottom(x)
-          .tickSize(0)
-          .ticks(10)
-          .tickFormat(d3.timeFormat("%H:%M"))
-      );
+    var numberFormatter = num => {
+      if (num < 10) {
+        return "0" + num;
+      } else {
+        return num;
+      }
+    };
+
+    let timeData = this.props.annotations.map((x, index) => ({
+      start:
+        Number(x.Duration.start.hours) * 60 * 60 +
+        Number(x.Duration.start.minutes) * 60 +
+        Number(x.Duration.start.seconds),
+      end:
+        Number(x.Duration.end.hours) * 60 * 60 +
+        Number(x.Duration.end.minutes) * 60 +
+        Number(x.Duration.end.seconds),
+      tag: x.Tags.join(", "),
+      name: x.Tags.join(", ") + index
+    }));
+    console.log(timeData);
+
+    // restructuring to an array [each annotation] with an array [with time start and time end dates as only values]
 
     // Tooltip
     var tooltip = d3
@@ -98,19 +72,19 @@ export default class extends React.Component {
       tooltip
         .html(
           "Detailed Annotation: " +
-            d.startHour +
+            numberFormatter(d.values.start.getHours()) +
             ":" +
-            d.startMinute +
+            numberFormatter(d.values.start.getMinutes()) +
             ":" +
-            d.startSecond +
+            numberFormatter(d.values.start.getSeconds()) +
             " until " +
-            d.endHour +
+            numberFormatter(d.values.end.getHours()) +
             ":" +
-            d.endMinute +
+            numberFormatter(d.values.end.getMinutes()) +
             ":" +
-            d.endSecond +
+            numberFormatter(d.values.end.getSeconds()) +
             " - " +
-            d.tag
+            d.values.tag
         )
         .style("left", "37%")
         .style("top", "75%");
@@ -120,65 +94,59 @@ export default class extends React.Component {
     var mouseleave = function(d) {
       tooltip
         .transition()
-        .duration(100)
+        .duration(1000)
         .style("opacity", 0);
     };
 
-    // Add dots
-    svg
-      .append("g")
-      .selectAll("dot")
-      .data(timeData)
-      .enter()
-      .append("circle")
-      .attr("cx", function(d) {
-        return x(
-          new Date(
-            2016,
-            1,
-            1,
-            Number(d.startHour),
-            Number(d.startMinute),
-            Number(d.startSecond)
-          )
-        );
-      })
-      .attr("r", 7)
-      .style("fill", "#228B22")
-      .style("opacity", 0.4)
-      .style("stroke", "white")
-      .on("mouseover", mouseover)
-      .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave);
+    var mouseclick = d => {
+      const totalStartSec =
+        Number(d.values.start.getHours() * 60 * 60) +
+        Number(d.values.start.getMinutes() * 60) +
+        Number(d.values.start.getSeconds());
+      this.props.passedSeek(totalStartSec);
+    };
 
-    svg
+    const w = 926,
+      h = 100;
+
+    var mini = d3
+      .select("#ann-visual")
+      .append("svg")
+      .attr("width", w)
+      .attr("height", 20)
+      .attr("style", "padding-left:10px")
+      .attr("class", "chart");
+
+    var myColor = d3
+      .scaleOrdinal()
+      .domain(timeData)
+      .range(d3.schemePaired);
+
+    let scale = d3
+      .scaleLinear()
+      .domain([0, videoLength])
+      .range([0, w]);
+
+    mini
       .append("g")
-      .selectAll("dot")
+      .selectAll("miniItems")
+
       .data(timeData)
       .enter()
-      .append("circle")
-      .attr("cx", function(d) {
-        return x(
-          new Date(
-            2016,
-            1,
-            1,
-            Number(d.endHour),
-            Number(d.endMinute),
-            Number(d.endSecond)
-          )
-        );
+      .append("rect")
+      .style("fill", function(d) {
+        return myColor(d.name);
       })
-      .attr("r", 7)
-      .style("fill", "red")
-      .style("opacity", 0.4)
-      .style("stroke", "white")
-      .on("mouseover", mouseover)
-      .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave);
+      .attr("x", function(d) {
+        return scale(d.start);
+      })
+      .attr("width", function(d) {
+        return scale(d.end - d.start);
+      })
+      .attr("height", 10);
   }
 
   render() {
-    return <div id={"#" + this.props.id} />;
+    return <div />;
   }
 }

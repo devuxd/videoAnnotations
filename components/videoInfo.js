@@ -18,6 +18,25 @@ export default class VideoInfo extends React.Component {
     }
   }
 
+  /**
+   * urlFormatter: function to style Github URLs in a list manner
+   *
+   * @param {*} arr : array of github url strings
+   */
+  urlFormatter(arr) {
+    let rows = [];
+    if (Array.isArray(arr)) {
+      arr.map(item =>
+        rows.push(
+          <li>
+            <a href={item}>{item}</a>
+          </li>
+        )
+      );
+    }
+    return rows;
+  }
+
   render() {
     return (
       <h6>
@@ -29,8 +48,14 @@ export default class VideoInfo extends React.Component {
         Programming Language: {this.props.vidElem.ProgrammingLanguage} <br />
         Programming Tools : {this.props.vidElem.ProgrammingTools} <br />
         Project URL(s):{" "}
-        {this.props.vidElem.GithubURL.split(", ").map(x => x + "\r\n")} <br />
-        Developer Github: {this.props.vidElem.DeveloperGithubURL} <br />
+        <ul style={{ listStyle: "square inside" }}>
+          {this.urlFormatter(this.props.vidElem.GithubURL.split(", "))}
+        </ul>
+        Developer Github: <span> </span>
+        <a href={this.props.vidElem.DeveloperGithubURL}>
+          {this.props.vidElem.DeveloperGithubURL}
+        </a>{" "}
+        <br />
       </h6>
     );
   }

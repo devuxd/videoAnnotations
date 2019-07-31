@@ -22,9 +22,10 @@ app.prepare().then(() => {
   //     });
   //   });
 
-  server.get("/posts/:id/*", (req, res) => {
+  server.get("/posts/:id/:tag/*", (req, res) => {
     return app.render(req, res, "/posts", {
       id: req.params.id,
+      tag: req.params.tag,
       videoElementFinal: req.params[0]
     });
   });

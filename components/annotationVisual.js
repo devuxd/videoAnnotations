@@ -15,6 +15,7 @@ export default class AnnotationVisual extends React.Component {
     var filteredAnnotations = this.props.videoElem.Annotations.filter(x =>
       x.Tags.includes(this.props.searchQuery)
     );
+    // var filteredAnnotations = this.props.videoElem.Annotations;
     var vidLength =
       this.props.videoElem.VideoLength.hours +
       ":" +
@@ -25,6 +26,7 @@ export default class AnnotationVisual extends React.Component {
     return (
       <div>
         <Chart
+          passedSeek={this.props.passedSeek}
           vidLength={vidLength}
           annotations={filteredAnnotations}
           searchQuery={this.props.searchQuery}

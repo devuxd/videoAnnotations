@@ -8,8 +8,20 @@ export default class AnnotationBox extends React.Component {
     super(props);
   }
 
+  /**
+   * numberFormatter: function to style single digits number with a preceding 0
+   *
+   * @param {*} num : number to style
+   */
+  numberFormatter(num) {
+    if (num < 10) {
+      return "0" + num;
+    } else {
+      return num;
+    }
+  }
+
   render() {
-    console.log(this.props.annElement);
     const totalStartSec =
       Number(this.props.annElement.Duration.start.hours * 60 * 60) +
       Number(this.props.annElement.Duration.start.minutes * 60) +
@@ -42,9 +54,10 @@ export default class AnnotationBox extends React.Component {
               this.props.passedSeek(totalStartSec);
             }}
           >
-            {this.props.annElement.Duration.start.hours}:
-            {this.props.annElement.Duration.start.minutes}:
-            {this.props.annElement.Duration.start.seconds}
+            {this.numberFormatter(this.props.annElement.Duration.start.hours)}:
+            {this.numberFormatter(this.props.annElement.Duration.start.minutes)}
+            :
+            {this.numberFormatter(this.props.annElement.Duration.start.seconds)}
           </button>
           <span> until </span>
           <button
@@ -54,16 +67,18 @@ export default class AnnotationBox extends React.Component {
               this.props.passedSeek(totalEndSec);
             }}
           >
-            {this.props.annElement.Duration.end.hours}:
-            {this.props.annElement.Duration.end.minutes}:
-            {this.props.annElement.Duration.end.seconds}
+            {this.numberFormatter(this.props.annElement.Duration.end.hours)}:
+            {this.numberFormatter(this.props.annElement.Duration.end.minutes)}:
+            {this.numberFormatter(this.props.annElement.Duration.end.seconds)}
           </button>
         </h7>
-        <br />
+        <div style={{ display: "inline", marginLeft: "65px" }}>
+          Tag(s): {this.props.annElement.Tags}
+        </div>
         <br />
         Description:
         <br />
-        <textarea style={{ resize: "none" }} readOnly rows="3" cols="60">
+        <textarea style={{ resize: "none" }} readOnly rows="3" cols="68">
           {this.props.annElement.Description}
         </textarea>
         <br />

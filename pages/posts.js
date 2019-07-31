@@ -3,7 +3,6 @@ import Router from "next/router";
 import Layouts from "./layouts";
 import Navigation from "../components/navigation";
 import VideoBox from "../components/videoBox";
-import collection from "../API/db";
 
 /**
  * Dynamic page for each individual video post page
@@ -25,18 +24,19 @@ export default class Posts extends React.Component {
   }
 
   componentWillMount() {
-    console.log(this.props.query);
+    // console.log(this.props.query);
     if (this.state.isLoaded === false) {
-      let LocalVideo = this.searchForVideo(this.props.query.id);
-      let localQuery = JSON.parse(this.props.query.videoElementFinal);
+      let localVideo = JSON.parse(this.props.query.videoElementFinal);
+      let localQuery = this.props.query.tag;
+      // console.log(this.props.query.tag)
       this.setState(
         {
-          video: LocalVideo,
+          video: localVideo,
           isLoaded: true,
           searchQuery: localQuery
         },
         () => {
-          console.log(this.state);
+          // console.log(this.state);
         }
       );
     }
@@ -48,28 +48,29 @@ export default class Posts extends React.Component {
    *
    * @param {*} id: video id searching for
    */
-  searchForVideo(id) {
-    if (Array.isArray(collection)) {
-      return collection.filter(
+  searchForVideo(id, dataSet) {
+    if (Array.isArray(dataSet)) {
+      return dataSet.filter(
         item => item.VideoURL.replace("https://youtu.be/", "") === id
       )[0];
     }
   }
 
-  // render() {
-  //     return (
-  //         <div style={{ fontFamily: "Lato" }}>
-  //             <Layouts>
-  //                 <Navigation />
-  //                 <VideoBox
-  //                     searchQuery={this.state.searchQuery}
-  //                     video={this.state.video}
-  //                 />
-  //             </Layouts>
-  //         </div>
-  //     );
-  // }
   render() {
-    return <div> </div>;
+    // console.log(this.state.video);
+    return (
+      <div style={{ fontFamily: "Lato" }}>
+        <Layouts>
+          <Navigation />
+          <VideoBox
+            searchQuery={this.state.searchQuery}
+            video={this.state.video}
+          />
+        </Layouts>
+      </div>
+    );
   }
+  // render() {
+  //   return <div> </div>;
+  // }
 }

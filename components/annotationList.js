@@ -16,7 +16,7 @@ function annotations(annArray) {
   }
 }
 
-function mapAnnotationsHelper(uniqueArray, videoID, searchResult) {
+function mapAnnotationsHelper(uniqueArray, videoID, searchResult, videoString) {
   if (searchResult) {
     return uniqueArray.map((item, index) => (
       <div key={index.toString()}>
@@ -26,7 +26,17 @@ function mapAnnotationsHelper(uniqueArray, videoID, searchResult) {
   } else {
     return uniqueArray.map((item, index) => (
       <div key={index.toString()}>
-        <a href={"/posts/" + videoID + "/" + item}>{item}</a>
+        <button
+          type="button"
+          class="btn btn-outline-dark"
+          onClick={() =>
+            Router.push(
+              `/posts/${videoID}/${item}/${JSON.stringify(videoString)}`
+            )
+          }
+        >
+          {item}
+        </button>
       </div>
     ));
   }
@@ -38,8 +48,11 @@ function mapAnnotationsHelper(uniqueArray, videoID, searchResult) {
  * need to fix: doesn't work properly with different cases of tags (e.g. uppercase/lowercase)
  *
  * @param {*} finalArray : array of all tags in the array
+ * @param {*} videoID: id of video passed in
+ * @param {*} searchResult: boolean of whether this annotationList is for search result page or not
+ * @param {*} videoString: string of video JSON object
  */
-function mapAnnotations(finalArray, videoID, searchResult) {
+function mapAnnotations(finalArray, videoID, searchResult, videoString) {
   let rows = [];
   let uniqueArray = Array.from(new Set(finalArray));
   if (Array.isArray(uniqueArray)) {
@@ -50,7 +63,6 @@ function mapAnnotations(finalArray, videoID, searchResult) {
     );
     rows.push(
       <div
-        key={videoID}
         className="row"
         style={{
           borderStyle: "solid",
@@ -65,11 +77,11 @@ function mapAnnotations(finalArray, videoID, searchResult) {
       >
         <div className="col-sm">
           All annotations:
-          {mapAnnotationsHelper(secondHalf, videoID, searchResult)}
+          {mapAnnotationsHelper(secondHalf, videoID, searchResult, videoString)}
         </div>
         <div className="col-sm">
           <br />
-          {mapAnnotationsHelper(firstHalf, videoID, searchResult)}
+          {mapAnnotationsHelper(firstHalf, videoID, searchResult, videoString)}
         </div>
       </div>
     );
@@ -87,7 +99,8 @@ class AnnotationList extends React.Component {
       annotationsElement: null,
       isLoaded: false,
       searchResult: null,
-      videoID: this.props.videoID
+      videoID: null,
+      videoElem: null
     };
   }
 
@@ -97,6 +110,7 @@ class AnnotationList extends React.Component {
         annotationsElement: this.props.videoElem.Annotations,
         searchResult: this.props.searchResult,
         videoID: this.props.videoID,
+        videoElem: this.props.videoElem,
         isLoaded: true
       });
     }
@@ -108,7 +122,8 @@ class AnnotationList extends React.Component {
         {mapAnnotations(
           annotations(this.props.videoElem.Annotations),
           this.state.videoID,
-          this.state.searchResult
+          this.state.searchResult,
+          this.state.videoElem
         )}
       </div>
     );

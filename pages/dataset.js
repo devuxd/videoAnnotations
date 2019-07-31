@@ -227,11 +227,8 @@ export default class dataset extends React.Component {
         <Layouts>
           <Navigation />
           <p style={{ paddingLeft: "5%" }}>
-            Viewing: {this.state.query} dataset.{" "}
-            <b>
-              Look at the console for more info. each item in the array
-              represent a video
-            </b>
+            Viewing dataset: {this.state.query} <br />
+            <b>Click an annotation to view each video further in detail.</b>
           </p>
           <br />
           <VideoList videoArray={this.state.dataSet} />
