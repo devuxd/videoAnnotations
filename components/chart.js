@@ -10,15 +10,22 @@ export default class extends React.Component {
   }
 
   componentDidMount() {
-    this.drawChart();
-  }
-
-  drawChart() {
     /**
      * numberFormatter: function to style single digits number with a preceding 0
      *
      * @param {*} num : number to style
      */
+
+    let vidLengthArray = this.props.vidLength.split(":");
+    let vidLengthHour = Number(vidLengthArray[0]);
+    let vidLengthMinute = Number(vidLengthArray[1]);
+    let vidLengthSecond = Number(vidLengthArray[2]);
+    let randomColor = "#" + ((Math.random() * 0xffffff) << 0).toString(16);
+
+    let videoStart = 0;
+    let videoLength =
+      vidLengthHour * 60 * 60 + vidLengthMinute * 60 + vidLengthSecond;
+
     var numberFormatter = num => {
       if (num < 10) {
         return "0" + num;
@@ -27,133 +34,29 @@ export default class extends React.Component {
       }
     };
 
-    // set the dimensions and margins of the graph
-    var margin = { top: 10, right: 30, bottom: 30, left: 55 },
-      width = 500 - margin.left - margin.right,
-      height = 50 - margin.top - margin.bottom;
+    let timeData = this.props.annotations.map(x => ({
+      start:
+        Number(x.Duration.start.hours) * 60 * 60 +
+        Number(x.Duration.start.minutes) * 60 +
+        Number(x.Duration.start.seconds),
+      end:
+        Number(x.Duration.end.hours) * 60 * 60 +
+        Number(x.Duration.end.minutes) * 60 +
+        Number(x.Duration.end.seconds),
+      tag: x.Tags.join(", ")
+    }));
+    console.log(timeData);
 
-    // append the svg object to the body of the page
-    var svg = d3
-      .select("#ann-visual")
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    var timeData = [];
-
-    this.props.annotations.map(x =>
-      timeData.push({
-        start: new Date(
-          2016,
-          1,
-          1,
-          Number(x.Duration.start.hours),
-          Number(x.Duration.start.minutes),
-          Number(x.Duration.start.seconds)
-        ),
-        end: new Date(
-          2016,
-          1,
-          1,
-          Number(x.Duration.end.hours),
-          Number(x.Duration.end.minutes),
-          Number(x.Duration.end.seconds)
-        ),
-        tag: x.Tags.join(", ")
-      })
-    );
+    timeData = timeData.map(x => ({
+      ...x,
+      scale: d3
+        .scaleLinear()
+        .domain([x.start, x.end])
+        .range([0, videoLength])
+    }));
+    console.log(timeData);
 
     // restructuring to an array [each annotation] with an array [with time start and time end dates as only values]
-
-    var allGroup = [];
-
-    for (var i = 0; i < timeData.length; i++) {
-      allGroup.push("value" + i);
-    }
-
-    var dataReady = allGroup.map(function(grpName) {
-      var index = grpName[grpName.length - 1];
-      return {
-        name: grpName,
-        values: timeData[index]
-      };
-    });
-
-    var myColor = d3
-      .scaleOrdinal()
-      .domain(allGroup)
-      .range(d3.schemePaired);
-
-    let vidLengthArray = this.props.vidLength.split(":");
-    let vidLengthHour = Number(vidLengthArray[0]);
-    let vidLengthMinute = Number(vidLengthArray[1]);
-    let vidLengthSecond = Number(vidLengthArray[2]);
-    let randomColor = "#" + ((Math.random() * 0xffffff) << 0).toString(16);
-
-    let videoStart = new Date(2016, 1, 1, 0, 0, 0);
-    let videoLength = new Date(
-      2016,
-      1,
-      1,
-      vidLengthHour,
-      vidLengthMinute,
-      vidLengthSecond
-    );
-
-    // Add X axis
-    var x = d3
-      .scaleTime()
-      .domain([videoStart, videoLength])
-      .range([0, width]);
-    svg
-      .append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .style("font-size", "10px")
-      .call(
-        d3
-          .axisBottom(x)
-          .tickSize(0)
-          .ticks(10)
-          .tickFormat(d3.timeFormat("%H:%M"))
-      );
-
-    // var line = d3.line()
-    //     .x(function(d) { return x(d.start) })
-    //     .x(function(d) { return x(d.end) })
-    // svg.selectAll("myLines")
-    //     .data(dataReady)
-    //     .enter()
-    //     .append("path")
-    //       .attr("d", function (d) { return line(d.values) })
-    //       .attr("stroke", function(d){ return myColor(d.name) })
-    //       .style("stroke-width", 4)
-    //       .style("fill", "none");
-
-    var line = d3
-      .line()
-      .x(function(d) {
-        return x(d.values.start);
-      })
-      .x(function(d) {
-        return x(d.values.end);
-      });
-    svg
-      .selectAll("myLines")
-      .data(dataReady)
-      .enter()
-      .append("path")
-      .attr("class", function(d) {
-        return d.name;
-      })
-      .attr("d", function(d) {
-        return line(d.values.start, d.values.end);
-      })
-      .style("fill", function(d) {
-        return myColor(d.name);
-      })
-      .style("stroke-width", 4);
 
     // Tooltip
     var tooltip = d3
@@ -203,7 +106,7 @@ export default class extends React.Component {
         .style("opacity", 0);
     };
 
-    var mouseclick = function(d) {
+    var mouseclick = d => {
       const totalStartSec =
         Number(d.values.start.getHours() * 60 * 60) +
         Number(d.values.start.getMinutes() * 60) +
@@ -211,52 +114,46 @@ export default class extends React.Component {
       this.props.passedSeek(totalStartSec);
     };
 
-    // console.log(myColor(value0));
-    // console.log(d3.schemePaired);
-    // console.log(myColor("value0"))
-    // console.log(dataReady);
-    // console.log(allGroup);
+    var m = [20, 15, 15, 120], //top right bottom left
+      w = 960 - m[1] - m[3],
+      h = 500 - m[0] - m[2],
+      miniHeight = 12 + 50,
+      mainHeight = h - miniHeight - 50;
 
-    svg
+    var chart = d3
+      .select("#ann-visual")
+      .append("svg")
+      .attr("width", w + m[1] + m[3])
+      .attr("height", h + m[0] + m[2])
+      .attr("class", "chart");
+
+    var mini = chart
+      .append("g")
+      .attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]) + ")")
+      .attr("width", w)
+      .attr("height", miniHeight)
+      .attr("class", "mini");
+
+    //mini item rects
+    mini
       .append("g")
       .selectAll("dot")
-      .data(dataReady)
+
+      .data(timeData)
       .enter()
       .append("rect")
-      .attr("cx", function(d) {
-        return x(d.values.start);
+      .attr("class", function(d) {
+        console.log(d);
+        return "miniItem" + d.tag;
       })
-      .attr("width", 30)
-      .attr("height", 10)
-      .style("fill", function(d) {
-        return myColor(d.name);
+      .attr("x", function(d) {
+        return d.scale(d.start);
       })
-      .style("opacity", 0.65)
-      .style("stroke", "white")
-      .on("mouseover", mouseover)
-      .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave);
-    // .on("click", mouseclick);
-
-    // svg
-    //   .append("g")
-    //   .selectAll("dot")
-    //   .data(dataReady)
-    //   .enter()
-    //   .append("circle")
-    //   .attr("cx", function(d) {
-    //     return x(d.values.end);
-    //   })
-    //   .attr("r", 20)
-    //   .style("fill", function(d) {
-    //     return myColor(d.name);
-    //   })
-    //   .style("opacity", 0.65)
-    //   .style("stroke", "white")
-    //   .on("mouseover", mouseover)
-    //   .on("mousemove", mousemove)
-    //   .on("mouseleave", mouseleave);
-    // .on("click", mouseclick);
+      .attr("width", function(d) {
+        console.log(d);
+        return d.scale(d.end - d.start);
+      })
+      .attr("height", 10);
   }
 
   render() {
