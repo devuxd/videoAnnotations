@@ -44,9 +44,9 @@ export default class extends React.Component {
         Number(x.Duration.end.minutes) * 60 +
         Number(x.Duration.end.seconds),
       tag: x.Tags.join(", "),
-      name: x.Tags.join(", ") + index
+      name: x.Tags.join(", ") + index,
+      annotation: x.Description
     }));
-    console.log(timeData);
 
     // restructuring to an array [each annotation] with an array [with time start and time end dates as only values]
 
@@ -55,39 +55,16 @@ export default class extends React.Component {
       .select("#ann-tooltip")
       .append("div")
       .style("opacity", 0)
-      .attr("class", "tooltip")
-      .style("background-color", "white")
       .style("border", "solid")
       .style("border-width", "1px")
       .style("border-radius", "5px")
-      .style("padding", "10px");
+      .style("padding", "10px")
+      .style("width", "450px");
 
     // A function that change this tooltip when the user hover a point.
     // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)
     var mouseover = function(d) {
       tooltip.style("opacity", 1);
-    };
-
-    var mousemove = function(d) {
-      tooltip
-        .html(
-          "Detailed Annotation: " +
-            numberFormatter(d.values.start.getHours()) +
-            ":" +
-            numberFormatter(d.values.start.getMinutes()) +
-            ":" +
-            numberFormatter(d.values.start.getSeconds()) +
-            " until " +
-            numberFormatter(d.values.end.getHours()) +
-            ":" +
-            numberFormatter(d.values.end.getMinutes()) +
-            ":" +
-            numberFormatter(d.values.end.getSeconds()) +
-            " - " +
-            d.values.tag
-        )
-        .style("left", "37%")
-        .style("top", "75%");
     };
 
     // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
@@ -144,10 +121,18 @@ export default class extends React.Component {
         console.log(d);
         d3.select(this).style("opacity", 1);
         d3.select(this).style("cursor", "pointer");
+        tooltip
+          .html(`<b>${d.tag}:</b> ${d.annotation}`)
+          .style("left", d3.event.pageX + "px")
+          .style("top", d3.event.pageY + "px")
+          .transition()
+          .style("opacity", 1)
+          .style("background", myColor(d.name));
       })
       .on("mouseleave", function(d) {
         d3.select(this).style("opacity", 0.8);
         d3.select(this).style("cursor", "default");
+        tooltip.transition().style("opacity", 0);
       })
       .style("opacity", 0.8)
       .on("click", mouseclick);

@@ -78,7 +78,13 @@ export default class AnnotationBox extends React.Component {
         <br />
         Description:
         <br />
-        <textarea style={{ resize: "none" }} readOnly rows="3" cols="68">
+        <textarea
+          style={{ resize: "none" }}
+          readOnly
+          rows="3"
+          cols="68"
+          disabled
+        >
           {this.props.annElement.Description}
         </textarea>
         <br />
