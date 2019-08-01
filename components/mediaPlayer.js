@@ -63,7 +63,16 @@ export default class MediaPlayer extends Component {
             frameborder="0"
           ></iframe>
         </div>
-
+        <div
+          id="ann-tooltip"
+          style={{
+            display: "inline",
+            position: "absolute",
+            bottom: "60%",
+            left: "45%",
+            width: "600px"
+          }}
+        />
         <div
           style={{
             borderStyle: "solid",
@@ -86,16 +95,6 @@ export default class MediaPlayer extends Component {
         </div>
         <div style={{ padding: "2%" }}>
           Showing annotations for tag: {this.props.searchQuery}
-          <div
-            id="ann-tooltip"
-            style={{
-              display: "inline",
-              position: "absolute",
-              bottom: "65%",
-              right: "215px",
-              width: "600px"
-            }}
-          />
         </div>
 
         <div style={{ padding: "2%" }}>Current annotation(s) viewing:</div>
