@@ -52,59 +52,52 @@ export default class MediaPlayer extends Component {
   render() {
     console.log(this.state.ready);
     return (
-      <div>
+      <div style={{}}>
         <div className="player-wrapper">
           <iframe
             id="player"
             type="text/html"
-            width="950"
-            height="550"
+            width="750"
+            height="450"
             src={this.props.vidURL + "?enablejsapi=1"}
             frameborder="0"
-          ></iframe>
+          />
         </div>
         <div
           id="ann-tooltip"
           style={{
             display: "inline",
             position: "absolute",
-            bottom: "60%",
-            left: "45%",
-            width: "600px"
+            // bottom: "45%",
+            // left: "35%",
+            // width: "600px"
+            paddingLeft: "5%"
           }}
         />
+
         <div
-          style={{
-            borderStyle: "solid",
-            borderColor: "#DCDCDC",
-            backgroundColor: "#DCDCDC",
-            borderRadius: "2px",
-            height: "10px"
-          }}
+          id="ann-visual"
+          style={{ bottom: "70px", display: "inline", position: "relative" }}
         >
-          <div
-            id="ann-visual"
-            style={{ bottom: "70px", display: "inline", position: "relative" }}
-          >
-            <AnnotationVisual
-              passedSeek={this.passedSeek}
-              searchQuery={this.props.searchQuery}
-              videoElem={this.props.vidElem}
-            />
-          </div>
+          <AnnotationVisual
+            passedSeek={this.passedSeek}
+            searchQuery={this.props.searchQuery}
+            videoElem={this.props.vidElem}
+          />
         </div>
-        <div style={{ padding: "2%" }}>
+
+        <div style={{ paddingLeft: "2%" }}>
           Showing annotations for tag: {this.props.searchQuery}
         </div>
 
-        <div style={{ padding: "2%" }}>Current annotation(s) viewing:</div>
+        {/* <div style={{ padding: "2%" }}>Current annotation(s) viewing:</div>
 
         <AnnotationPop
           passedSeek={this.passedSeek}
           videoElem={this.props.vidElem}
         />
-        <br />
-        <div>
+        <br /> */}
+        <div style={{}}>
           <Tabs>
             <div label="General Information">
               <div
@@ -128,7 +121,7 @@ export default class MediaPlayer extends Component {
                 />
               </div>
             </div>
-            <div label="All Detailed Annotations">
+            <div label="Detailed Annotations">
               <div>
                 {this.props.vidElem.Annotations.map(item => (
                   <div>

@@ -41,6 +41,6 @@ export default class VideoAuthor extends React.Component {
     if (isLoading) {
       return <p>Loading...</p>;
     }
-    return <div>{this.state.videoAuthor}</div>;
+    return <div style={{}}>{this.state.videoAuthor}</div>;
   }
 }

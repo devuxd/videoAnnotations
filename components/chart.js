@@ -10,12 +10,6 @@ export default class extends React.Component {
   }
 
   componentDidMount() {
-    /**
-     * numberFormatter: function to style single digits number with a preceding 0
-     *
-     * @param {*} num : number to style
-     */
-
     let vidLengthArray = this.props.vidLength.split(":");
     let vidLengthHour = Number(vidLengthArray[0]);
     let vidLengthMinute = Number(vidLengthArray[1]);
@@ -26,6 +20,11 @@ export default class extends React.Component {
     let videoLength =
       vidLengthHour * 60 * 60 + vidLengthMinute * 60 + vidLengthSecond;
 
+    /**
+     * numberFormatter: function to style single digits number with a preceding 0
+     *
+     * @param {*} num : number to style
+     */
     var numberFormatter = num => {
       if (num < 10) {
         return "0" + num;
@@ -79,7 +78,7 @@ export default class extends React.Component {
       this.props.passedSeek(d.start);
     };
 
-    const w = 926,
+    const w = 726,
       h = 100;
 
     var mini = d3
@@ -93,7 +92,7 @@ export default class extends React.Component {
     var myColor = d3
       .scaleOrdinal()
       .domain(timeData)
-      .range(d3.schemePaired);
+      .range(d3.schemePastel1);
 
     let scale = d3
       .scaleLinear()
