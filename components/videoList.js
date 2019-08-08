@@ -86,7 +86,16 @@ class VideoList extends React.Component {
 
   render() {
     if (Array.isArray(this.props.videoArray)) {
-      return <div>{this.VideoListMapper(this.props.videoArray)}</div>;
+      return (
+        <div style={{ width: "90%", paddingLeft: "10%" }}>
+          {this.props.videoArray.map(x => (
+            <VideoListing
+              searchQuery={this.props.searchQuery}
+              videoElement={x}
+            />
+          ))}
+        </div>
+      );
     } else {
       return (
         <div style={{ paddingLeft: "5%" }}>Oops something went wrong!</div>

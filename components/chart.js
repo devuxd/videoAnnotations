@@ -58,7 +58,9 @@ export default class extends React.Component {
       .style("border-width", "1px")
       .style("border-radius", "5px")
       .style("padding", "10px")
-      .style("width", "450px");
+      .style("font-size", "14px")
+      .style("width", "700px")
+      .style("height", "80px");
 
     // A function that change this tooltip when the user hover a point.
     // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)

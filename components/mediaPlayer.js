@@ -53,6 +53,10 @@ export default class MediaPlayer extends Component {
     console.log(this.state.ready);
     return (
       <div style={{}}>
+        <div style={{ paddingLeft: "0%" }}>
+          Showing annotations for tag: <b>{this.props.searchQuery}</b>
+        </div>{" "}
+        <br />
         <div className="player-wrapper">
           <iframe
             id="player"
@@ -71,13 +75,13 @@ export default class MediaPlayer extends Component {
             // bottom: "45%",
             // left: "35%",
             // width: "600px"
-            paddingLeft: "5%"
+            paddingTop: "1%",
+            paddingLeft: "2%"
           }}
         />
-
         <div
           id="ann-visual"
-          style={{ bottom: "70px", display: "inline", position: "relative" }}
+          style={{ bottom: "10px", display: "inline", position: "relative" }}
         >
           <AnnotationVisual
             passedSeek={this.passedSeek}
@@ -85,11 +89,6 @@ export default class MediaPlayer extends Component {
             videoElem={this.props.vidElem}
           />
         </div>
-
-        <div style={{ paddingLeft: "2%" }}>
-          Showing annotations for tag: {this.props.searchQuery}
-        </div>
-
         {/* <div style={{ padding: "2%" }}>Current annotation(s) viewing:</div>
 
         <AnnotationPop
@@ -97,6 +96,10 @@ export default class MediaPlayer extends Component {
           videoElem={this.props.vidElem}
         />
         <br /> */}
+        <br />
+        <br />
+        <br />
+        <br />
         <div style={{}}>
           <Tabs>
             <div label="General Information">
