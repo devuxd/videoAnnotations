@@ -16,9 +16,8 @@ class VideoListing extends React.Component {
   render() {
     var videoElementFinal = this.props.videoElement;
     const videoId = videoElementFinal.VideoURL.replace("https://youtu.be/", "");
-    const url =
-      "https://noembed.com/embed?url=https://www.youtube.com/watch?v=" +
-      videoId;
+    console.log(videoId);
+    const url = "https://noembed.com/embed?url=" + videoElementFinal.VideoURL;
 
     return (
       <div>

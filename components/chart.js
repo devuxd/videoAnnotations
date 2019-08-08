@@ -10,12 +10,6 @@ export default class extends React.Component {
   }
 
   componentDidMount() {
-    /**
-     * numberFormatter: function to style single digits number with a preceding 0
-     *
-     * @param {*} num : number to style
-     */
-
     let vidLengthArray = this.props.vidLength.split(":");
     let vidLengthHour = Number(vidLengthArray[0]);
     let vidLengthMinute = Number(vidLengthArray[1]);
@@ -26,6 +20,11 @@ export default class extends React.Component {
     let videoLength =
       vidLengthHour * 60 * 60 + vidLengthMinute * 60 + vidLengthSecond;
 
+    /**
+     * numberFormatter: function to style single digits number with a preceding 0
+     *
+     * @param {*} num : number to style
+     */
     var numberFormatter = num => {
       if (num < 10) {
         return "0" + num;
@@ -59,7 +58,9 @@ export default class extends React.Component {
       .style("border-width", "1px")
       .style("border-radius", "5px")
       .style("padding", "10px")
-      .style("width", "450px");
+      .style("font-size", "14px")
+      .style("width", "700px")
+      .style("height", "80px");
 
     // A function that change this tooltip when the user hover a point.
     // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)
@@ -79,21 +80,21 @@ export default class extends React.Component {
       this.props.passedSeek(d.start);
     };
 
-    const w = 926,
+    const w = 726,
       h = 100;
 
     var mini = d3
       .select("#ann-visual")
       .append("svg")
       .attr("width", w)
-      .attr("height", 20)
+      .attr("height", 22)
       .attr("style", "padding-left:10px")
       .attr("class", "chart");
 
     var myColor = d3
       .scaleOrdinal()
       .domain(timeData)
-      .range(d3.schemePaired);
+      .range(d3.schemeSet2);
 
     let scale = d3
       .scaleLinear()

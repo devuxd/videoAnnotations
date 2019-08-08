@@ -12,7 +12,7 @@ export default class dataset extends React.Component {
 
   constructor() {
     super();
-    this.state = { dataSet: [], query: null };
+    this.state = { dataSet: [], query: null, isLoaded: false };
   }
 
   // This function fetch the data from google sheet
@@ -206,7 +206,11 @@ export default class dataset extends React.Component {
         localDataSet.push(videoJSON);
       });
 
-      this.setState({ dataSet: localDataSet, query: this.props.query.sheetId });
+      this.setState({
+        dataSet: localDataSet,
+        query: this.props.query.sheetId,
+        isLoaded: true
+      });
     } catch (e) {
       console.error(e);
     }
@@ -221,7 +225,19 @@ export default class dataset extends React.Component {
   }
 
   render() {
-    console.log(this.state.dataSet);
+    if (!this.state.isLoaded) {
+      return (
+        <div>
+          <Layouts>
+            <Navigation />
+            <p style={{ paddingLeft: "5%" }}>
+              Loading dataset... <br />
+              <b>Please wait up to 10 seconds before refreshing</b>
+            </p>
+          </Layouts>
+        </div>
+      );
+    }
     return (
       <div style={{ fontFamily: "Lato" }}>
         <Layouts>

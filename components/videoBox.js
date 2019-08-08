@@ -32,8 +32,6 @@ export default class VideoBox extends React.Component {
   }
 
   render() {
-    let videoID = this.state.videoId;
-
     return (
       <div className="row">
         <div className="col-sm" />
@@ -58,11 +56,14 @@ export default class VideoBox extends React.Component {
             </h3>
           </div>
 
+          {console.log(this.state.videoId)}
+          {console.log("https://www.youtube.com/embed/" + this.state.videoId)}
+
           <MediaPlayer
             searchQuery={this.state.searchQuery}
             vidElem={this.state.videoElement}
-            videoID={videoID}
-            vidURL={"https://www.youtube.com/embed/" + videoID}
+            videoID={this.state.videoId}
+            vidURL={"https://www.youtube.com/embed/" + this.state.videoId}
           />
 
           <br />
