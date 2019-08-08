@@ -68,26 +68,41 @@ export default class MediaPlayer extends Component {
           />
         </div>
         <div
-          id="ann-tooltip"
           style={{
-            display: "inline",
-            position: "absolute",
-            // bottom: "45%",
-            // left: "35%",
-            // width: "600px"
-            paddingTop: "1%",
-            paddingLeft: "2%"
+            // borderStyle: "solid",
+            // borderColor: "#DCDCDC",
+            // backgroundColor: "#DCDCDC",
+            // borderRadius: "8px",
+            height: "110px"
           }}
-        />
-        <div
-          id="ann-visual"
-          style={{ bottom: "10px", display: "inline", position: "relative" }}
         >
-          <AnnotationVisual
-            passedSeek={this.passedSeek}
-            searchQuery={this.props.searchQuery}
-            videoElem={this.props.vidElem}
+          <div
+            id="ann-tooltip"
+            style={{
+              display: "inline",
+              position: "absolute",
+              // bottom: "45%",
+              // left: "35%",
+              // width: "600px"
+              paddingTop: "1%",
+              paddingLeft: "1.5%"
+            }}
           />
+          <div
+            id="ann-visual"
+            style={{ bottom: "10px", display: "inline", position: "relative" }}
+          >
+            <AnnotationVisual
+              passedSeek={this.passedSeek}
+              searchQuery={this.props.searchQuery}
+              videoElem={this.props.vidElem}
+            />
+          </div>
+          <p style={{ paddingLeft: "15%" }}>
+            {" "}
+            Hover over one the bars to view more information about that
+            annotation!{" "}
+          </p>
         </div>
         {/* <div style={{ padding: "2%" }}>Current annotation(s) viewing:</div>
 
@@ -96,10 +111,6 @@ export default class MediaPlayer extends Component {
           videoElem={this.props.vidElem}
         />
         <br /> */}
-        <br />
-        <br />
-        <br />
-        <br />
         <div style={{}}>
           <Tabs>
             <div label="General Information">

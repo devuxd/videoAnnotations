@@ -87,14 +87,14 @@ export default class extends React.Component {
       .select("#ann-visual")
       .append("svg")
       .attr("width", w)
-      .attr("height", 20)
+      .attr("height", 22)
       .attr("style", "padding-left:10px")
       .attr("class", "chart");
 
     var myColor = d3
       .scaleOrdinal()
       .domain(timeData)
-      .range(d3.schemePastel1);
+      .range(d3.schemeSet2);
 
     let scale = d3
       .scaleLinear()
