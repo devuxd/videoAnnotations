@@ -22,7 +22,7 @@ const getvideData = (videoId, sheetId) =>
         return res(findVideo(dataset, videoId));
       } else {
         return res(
-          getDataset(sheetId).then(data => findVideo(dataset, videoId))
+          getDataset(sheetId).then(dataset => findVideo(dataset, videoId))
         );
       }
     } catch (e) {
