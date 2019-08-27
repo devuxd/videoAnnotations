@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import Router from "next/router";
 import { render } from "react-dom";
+import Link from "next/link";
 
 export default class FileUpload extends React.Component {
   constructor(props) {
@@ -11,14 +12,9 @@ export default class FileUpload extends React.Component {
       sheetId: "1IZgX6i_yiuq9U3oksIl5aCaLq2RZuu-aU0p4kzAhaNY"
     };
     this.updateSheetId = this.updateSheetId.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
   updateSheetId(event) {
     this.setState({ sheetId: event.target.value });
-  }
-
-  handleSubmit(event) {
-    Router.push(`/dataset/${this.state.sheetId}`);
   }
 
   render() {
@@ -34,14 +30,18 @@ export default class FileUpload extends React.Component {
           onChange={this.updateSheetId}
           value={this.state.sheetId}
         />
-        <div className="input-group-append">
+        <Link href="/dataset/[sheetId]" as={`/dataset/${this.state.sheetId}`}>
           <button
+            style={{ width: "48px", "padding-top": "0px" }}
             className="btn btn-outline-secondary"
             onClick={this.handleSubmit}
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Browse The Dataset"
           >
-            <FontAwesomeIcon icon={faUpload} /> &nbsp; upload
+            <FontAwesomeIcon icon={faUpload} />
           </button>
-        </div>
+        </Link>
       </div>
     );
   }

@@ -1,340 +1,106 @@
 const fetch = require("node-fetch");
 const { key } = require("./config"); // create file in API folder and call it config.js
-let collection = [
-  {
-    VideoURL: "https://youtu.be/L2DJhwANoUQ",
-    VideoLength: {
-      hours: "2",
-      minutes: "57",
-      seconds: "35"
-    },
-    NumberAnnotations: "3",
-    Annotator: {
-      Name: "Abdulaziz",
-      email: "aalaboud@gmu.edu"
-    },
-    Annotations: [
-      {
-        Duration: {
-          start: { hours: "0", minutes: "10", seconds: "20" },
-          end: { hours: "0", minutes: "11", seconds: "26" }
-        },
-        Tags: [
-          "Compiler Error",
-          "Debugging",
-          "python",
-          "scala",
-          "functional programming",
-          "object oriented design"
-        ],
-        Description:
-          "The developer fixes compiler errors. Notice how the error message tells exactly what the problem is"
-      },
-      {
-        Duration: {
-          start: { hours: "1", minutes: "45", seconds: "14" },
-          end: { hours: "2", minutes: "17", seconds: "12" }
-        },
-        Tags: [
-          "Code navigation",
-          "Debugging",
-          "vim",
-          "slow debugging",
-          "python"
-        ],
-        Description:
-          "The debugging process was slow because each time the application restart, it hast to load an index big files. The developers utilized this time by reading on API documentation that he want to do and actually implementing it. the fixes are easy but the time to restart the application is every expensive. he suggested that to make debugging easier is to create smaller application with less indexes"
-      },
-      {
-        Duration: {
-          start: { hours: "2", minutes: "23", seconds: "00" },
-          end: { hours: "2", minutes: "42", seconds: "34" }
-        },
-        Tags: [
-          "Wrong output",
-          "Debugging",
-          "Code navigation",
-          "logging",
-          "API",
-          "python",
-          "react components",
-          "react state"
-        ],
-        Description:
-          "developer used new API and he is trying to make it work. He is not sure how to properly use an API to implement a feature."
-      }
-    ]
-  },
-  {
-    VideoURL: "https://youtu.be/L2DJhwANoUQ",
-    VideoLength: {
-      hours: "2",
-      minutes: "57",
-      seconds: "35"
-    },
-    NumberAnnotations: "3",
-    Annotator: {
-      Name: "Abdulaziz",
-      email: "aalaboud@gmu.edu"
-    },
-    Annotations: [
-      {
-        Duration: {
-          start: { hours: "0", minutes: "10", seconds: "20" },
-          end: { hours: "0", minutes: "11", seconds: "26" }
-        },
-        Tags: [
-          "Compiler Error",
-          "Debugging",
-          "python",
-          "scala",
-          "functional programming",
-          "object oriented design"
-        ],
-        Description:
-          "The developer fixes compiler errors. Notice how the error message tells exactly what the problem is"
-      },
-      {
-        Duration: {
-          start: { hours: "1", minutes: "45", seconds: "`14`" },
-          end: { hours: "2", minutes: "17", seconds: "12" }
-        },
-        Tags: [
-          "Code navigation",
-          "Debugging",
-          "vim",
-          "slow debugging",
-          "python"
-        ],
-        Description:
-          "The debugging process was slow because each time the application restart, it hast to load an index big files. The developers utilized this time by reading on API documentation that he want to do and actually implementing it. the fixes are easy but the time to restart the application is every expensive. he suggested that to make debugging easier is to create smaller application with less indexes:2:16:00"
-      },
-      {
-        Duration: {
-          start: { hours: "2", minutes: "23", seconds: "0" },
-          end: { hours: "2", minutes: "42", seconds: "34" }
-        },
-        Tags: [
-          "Wrong output",
-          "Debugging",
-          "Code navigation",
-          "logging",
-          "API",
-          "python",
-          "react components",
-          "react state"
-        ],
-        Description:
-          "developer used new API and he is trying to make it work. He is not sure how to properly use an API to implement a feature."
-      }
-    ]
-  },
-  {
-    VideoURL: "https://youtu.be/xxmNU-Myokc",
-    VideoLength: {
-      hours: "1",
-      minutes: "25",
-      seconds: "28"
-    },
-    NumberAnnotations: "3",
-    Annotator: {
-      Name: "Abdulaziz",
-      email: "aalaboud@gmu.edu"
-    },
-    Annotations: [
-      {
-        Duration: {
-          start: { hours: "0", minutes: "31", seconds: "51" },
-          end: { hours: "0", minutes: "52", seconds: "5" }
-        },
-        Tags: ["Compiler Error", "Debugging", "C++", "Hypothesis"],
-        Description:
-          "The developer wrote code for half an hour and now trying to make it compile. Some one from the chat help him in debugging."
-      },
-      {
-        Duration: {
-          start: { hours: "0", minutes: "52", seconds: "5" },
-          end: { hours: "0", minutes: "59", seconds: "39" }
-        },
-        Tags: ["Code navigation", "Debugging", "vim", "C++", "Hardware", "API"],
-        Description:
-          "The developer is trying to use another camera to record his face. The main camera is currently busy recording the live-stream."
-      },
-      {
-        Duration: {
-          start: { hours: "0", minutes: "59", seconds: "39" },
-          end: { hours: "1", minutes: "3", seconds: "59" }
-        },
-        Tags: ["Compiler Error", "Debugging", "C++", "slip"],
-        Description:
-          "The developer is stuck not knowing what to do ``Dear bug where are you?'' he rewrites the command line and it fixed, he forgot to add -o the first time"
-      }
-    ]
-  },
-  {
-    VideoURL: "https://youtu.be/L2DJhwANoUQ",
-    VideoLength: {
-      hours: "2",
-      minutes: "57",
-      seconds: "35"
-    },
-    NumberAnnotations: "3",
-    Annotator: {
-      Name: "Abdulaziz",
-      email: "aalaboud@gmu.edu"
-    },
-    Annotations: [
-      {
-        Duration: {
-          start: { hours: "0", minutes: "10", seconds: "20" },
-          end: { hours: "0", minutes: "11", seconds: "26" }
-        },
-        Tags: ["Compiler Error", "Debugging", "python"],
-        Description:
-          "The developer fixes compiler errors. Notice how the error message tells exactly what the problem is"
-      },
-      {
-        Duration: {
-          start: { hours: "1", minutes: "45", seconds: "`14`" },
-          end: { hours: "2", minutes: "17", seconds: "12" }
-        },
-        Tags: [
-          "Code navigation",
-          "Debugging",
-          "vim",
-          "slow debugging",
-          "python",
-          "api requests",
-          "fetch"
-        ],
-        Description:
-          "The debugging process was slow because each time the application restart, it hast to load an index big files. The developers utilized this time by reading on API documentation that he want to do and actually implementing it. the fixes are easy but the time to restart the application is every expensive. he suggested that to make debugging easier is to create smaller application with less indexes:2:16:00"
-      },
-      {
-        Duration: {
-          start: { hours: "2", minutes: "23", seconds: "0" },
-          end: { hours: "2", minutes: "42", seconds: "34" }
-        },
-        Tags: [
-          "Wrong output",
-          "Debugging",
-          "Code navigation",
-          "logging",
-          "API",
-          "python"
-        ],
-        Description:
-          "developer used new API and he is trying to make it work. He is not sure how to properly use an API to implement a feature."
-      }
-    ]
-  },
-  {
-    VideoURL: "https://youtu.be/xxmNU-Myokc",
-    VideoLength: {
-      hours: "1",
-      minutes: "25",
-      seconds: "28"
-    },
-    NumberAnnotations: "3",
-    Annotator: {
-      Name: "Abdulaziz",
-      email: "aalaboud@gmu.edu"
-    },
-    Annotations: [
-      {
-        Duration: {
-          start: { hours: "0", minutes: "31", seconds: "51" },
-          end: { hours: "0", minutes: "52", seconds: "5" }
-        },
-        Tags: ["Compiler Error", "Debugging", "C++", "Hypothesis"],
-        Description:
-          "The developer wrote code for half an hour and now trying to make it compile. Some one from the chat help him in debugging."
-      },
-      {
-        Duration: {
-          start: { hours: "0", minutes: "52", seconds: "5" },
-          end: { hours: "0", minutes: "59", seconds: "39" }
-        },
-        Tags: ["Code navigation", "Debugging", "vim", "C++", "Hardware", "API"],
-        Description:
-          "The developer is trying to use another camera to record his face. The main camera is currently busy recording the live-stream."
-      },
-      {
-        Duration: {
-          start: { hours: "0", minutes: "59", seconds: "39" },
-          end: { hours: "1", minutes: "3", seconds: "59" }
-        },
-        Tags: ["Compiler Error", "Debugging", "C++", "slip"],
-        Description:
-          "The developer is stuck not knowing what to do ``Dear bug where are you?'' he rewrites the command line and it fixed, he forgot to add -o the first time"
-      }
-    ]
-  },
-  {
-    VideoURL: "https://youtu.be/L2DJhwANoUQ",
-    VideoLength: {
-      hours: "2",
-      minutes: "57",
-      seconds: "35"
-    },
-    NumberAnnotations: "3",
-    Annotator: {
-      Name: "Abdulaziz",
-      email: "aalaboud@gmu.edu"
-    },
-    Annotations: [
-      {
-        Duration: {
-          start: { hours: "0", minutes: "10", seconds: "20" },
-          end: { hours: "0", minutes: "11", seconds: "26" }
-        },
-        Tags: ["Compiler Error", "Debugging", "python"],
-        Description:
-          "The developer fixes compiler errors. Notice how the error message tells exactly what the problem is"
-      },
-      {
-        Duration: {
-          start: { hours: "1", minutes: "45", seconds: "`14`" },
-          end: { hours: "2", minutes: "17", seconds: "12" }
-        },
-        Tags: [
-          "Code navigation",
-          "Debugging",
-          "vim",
-          "slow debugging",
-          "python"
-        ],
-        Description:
-          "The debugging process was slow because each time the application restart, it hast to load an index big files. The developers utilized this time by reading on API documentation that he want to do and actually implementing it. the fixes are easy but the time to restart the application is every expensive. he suggested that to make debugging easier is to create smaller application with less indexes:2:16:00"
-      },
-      {
-        Duration: {
-          start: { hours: "2", minutes: "23", seconds: "0" },
-          end: { hours: "2", minutes: "42", seconds: "34" }
-        },
-        Tags: [
-          "Wrong output",
-          "Debugging",
-          "Code navigation",
-          "logging",
-          "API",
-          "python"
-        ],
-        Description:
-          "developer used new API and he is trying to make it work. He is not sure how to properly use an API to implement a feature."
-      }
-    ]
-  }
-];
 
 const getDataset = id =>
   new Promise((res, rej) =>
     fetch(
       `https://content-sheets.googleapis.com/v4/spreadsheets/${id}?includeGridData=true&fields=sheets(data(rowData(values(hyperlink%2Cnote%2CuserEnteredValue))))&key=${key}`
     )
-      .then(e => e.json())
-      .then(e => res(e))
+      .then(response => response.json())
+      .then(rowDataset => parse(rowDataset))
+      .then(dataset => {
+        cachData(dataset, id);
+        res(dataset);
+      })
       .catch(e => rej(e))
   );
+const getvideData = (videoId, sheetId) =>
+  new Promise((res, rej) => {
+    try {
+      const dataset = JSON.parse(localStorage.getItem(sheetId));
+      if (dataset) {
+        return res(findVideo(dataset, videoId));
+      } else {
+        return res(
+          getDataset(sheetId).then(data => findVideo(dataset, videoId))
+        );
+      }
+    } catch (e) {
+      rej(e);
+    }
+  });
+const findVideo = (dataset, videoId) =>
+  dataset.find(
+    video => video.VideoURL.replace("https://youtu.be/", "") == videoId
+  );
+const cachData = (dataset, id) =>
+  localStorage.setItem(id, JSON.stringify(dataset));
 
-module.exports = { collection, getDataset };
+const parse = rowDataset => {
+  try {
+    let dataset = rowDataset.sheets.map(({ data }) => {
+      let videoJSON = {};
+      let video = data[0].rowData[2];
+
+      videoJSON.VideoTitle = video.values[0].userEnteredValue.stringValue;
+      videoJSON.VideoURL = video.values[1].userEnteredValue.stringValue;
+      videoJSON.VideoLength = { hours: "", minutes: "", seconds: "" };
+      videoJSON.VideoLength.hours =
+        video.values[2].userEnteredValue.numberValue;
+      videoJSON.VideoLength.minutes =
+        video.values[3].userEnteredValue.numberValue;
+      videoJSON.VideoLength.seconds =
+        video.values[4].userEnteredValue.numberValue;
+
+      videoJSON.ProgrammingLanguage = video.values[5].userEnteredValue
+        ? video.values[5].userEnteredValue.stringValue
+        : "";
+      videoJSON.ProgrammingTools = video.values[6].userEnteredValue
+        ? video.values[6].userEnteredValue.stringValue
+        : "";
+      videoJSON.GithubURL = video.values[7].userEnteredValue
+        ? video.values[7].userEnteredValue.stringValue
+        : "";
+
+      videoJSON.ProjectSize = video.values[8].userEnteredValue
+        ? video.values[8].userEnteredValue.numberValue
+        : "";
+
+      videoJSON.DeveloperGithubURL = video.values[9].userEnteredValue
+        ? video.values[9].userEnteredValue.stringValue
+        : "";
+
+      let annotationsData = data[0].rowData.splice(10, data[0].rowData.length);
+      videoJSON.Annotations = [];
+
+      videoJSON.Annotations = annotationsData.map(annotation => {
+        let annotationJSON = {};
+        annotationJSON.Duration = { start: {}, end: {} };
+        annotationJSON.Duration.start.hours =
+          annotation.values[0].userEnteredValue.numberValue;
+        annotationJSON.Duration.start.minutes =
+          annotation.values[1].userEnteredValue.numberValue;
+        annotationJSON.Duration.start.seconds =
+          annotation.values[2].userEnteredValue.numberValue;
+        annotationJSON.Duration.end.hours =
+          annotation.values[3].userEnteredValue.numberValue;
+        annotationJSON.Duration.end.minutes =
+          annotation.values[4].userEnteredValue.numberValue;
+        annotationJSON.Duration.end.seconds =
+          annotation.values[5].userEnteredValue.numberValue;
+        annotationJSON.Tags = annotation.values[6].userEnteredValue.stringValue;
+        annotationJSON.Description =
+          annotation.values[7].userEnteredValue.stringValue;
+
+        return annotationJSON;
+      });
+
+      return videoJSON;
+    });
+    return dataset;
+  } catch (e) {
+    return new Error("The template you used cannot be parsed : " + e);
+  }
+};
+
+module.exports = { cachData, getDataset, getvideData };

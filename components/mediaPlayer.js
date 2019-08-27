@@ -1,24 +1,12 @@
 import React, { Component } from "react";
 import { findDOMNode } from "react-dom";
-import ReactPlayer from "react-player";
-import screenfull from "screenfull";
 import Tabs from "./tabs";
 import AnnotationBox from "./annotationBox";
 import VideoAuthor from "./videoAuthor";
 import VideoInfo from "./videoInfo";
 import AnnotationList from "./annotationList";
-import VideoTitle from "./videoTitle";
-import AnnotationPop from "./annotationPop";
 import AnnotationVisual from "./annotationVisual";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPlay,
-  faPause,
-  faExpand,
-  faVolumeMute,
-  faVolumeUp,
-  faAlignCenter
-} from "@fortawesome/free-solid-svg-icons";
+import VideoTitle from "./videoTitle";
 /**
  * MediaPlayer: component for embedding video and parent for all video function components
  */
@@ -27,7 +15,6 @@ export default class MediaPlayer extends Component {
     super(props);
     this.player;
     this.passedSeek.bind(this);
-    this.state = { ready: false };
   }
 
   componentDidMount() {
@@ -39,18 +26,69 @@ export default class MediaPlayer extends Component {
 
     window.onload = () => {
       this.player = new YT.Player("player");
-      this.setState(state => {
-        return { ready: true };
-      });
     };
   }
 
   passedSeek = startTime => {
-    this.player.seekTo(startTime, true);
+    try {
+      this.player.seekTo(startTime, true);
+    } catch (e) {
+      location.reload(); // hack to avoid the undefined bug.
+    }
   };
 
   render() {
-    console.log(this.state.ready);
+    if (typeof this.player === undefined) {
+      return (
+        <div>
+          <div className="container">
+            <div className="loader"></div>
+          </div>
+          <div className="container">
+            Loading video...
+            <br />
+          </div>
+          <style jsx>
+            {`
+              .container {
+                height: 10em;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+              .loader {
+                border: 16px solid #f3f3f3;
+                border-radius: 50%;
+                border-top: 16px solid gray;
+                width: 120px;
+                height: 120px;
+                -webkit-animation: spin 2s linear infinite; /* Safari */
+                animation: spin 2s linear infinite;
+              }
+
+              /* Safari */
+              @-webkit-keyframes spin {
+                0% {
+                  -webkit-transform: rotate(0deg);
+                }
+                100% {
+                  -webkit-transform: rotate(360deg);
+                }
+              }
+
+              @keyframes spin {
+                0% {
+                  transform: rotate(0deg);
+                }
+                100% {
+                  transform: rotate(360deg);
+                }
+              }
+            `}
+          </style>
+        </div>
+      );
+    }
     return (
       <div style={{}}>
         <div style={{ paddingLeft: "0%" }}>
@@ -148,7 +186,7 @@ export default class MediaPlayer extends Component {
                 ))}
               </div>
             </div>
-            <div label="All Annotation Tags">
+            <div label>
               <AnnotationList
                 videoElem={this.props.vidElem}
                 searchResult={false}
