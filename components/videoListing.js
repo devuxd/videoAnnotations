@@ -2,9 +2,8 @@ import React from "react";
 import Router from "next/router";
 import AnnotationList from "./annotationList";
 import { render } from "react-dom";
-import VideoTitle from "./videoTitle";
 import VideoInfo from "./videoInfo";
-
+import VideoTitle from "./videoTitle";
 /**
  * VideoListing: component for each video for search result page
  */
@@ -14,10 +13,8 @@ class VideoListing extends React.Component {
   }
 
   render() {
-    var videoElementFinal = this.props.videoElement;
-    const videoId = videoElementFinal.VideoURL.replace("https://youtu.be/", "");
-    console.log(videoId);
-    const url = "https://noembed.com/embed?url=" + videoElementFinal.VideoURL;
+    let video = this.props.video;
+    const videoId = video.VideoURL.replace("https://youtu.be/", "");
 
     return (
       <div>
@@ -33,14 +30,7 @@ class VideoListing extends React.Component {
           }}
         >
           <div className="media">
-            <div
-            // onClick={() =>
-            //   // Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
-            // Router.push(
-            //   `/posts/ ${videoId}/${JSON.stringify(videoElementFinal)}`
-            // )
-            // }
-            >
+            <div>
               <img
                 className="mr-3"
                 style={{ width: "170px" }}
@@ -51,33 +41,23 @@ class VideoListing extends React.Component {
               />
             </div>
             <div className="media-body">
-              <div
-              // onClick={() =>
-              //   // Router.push(`/posts/${videoId}/${this.props.searchQuery}`)
-              //   Router.push(
-              //     `/posts/ ${videoId}/${JSON.stringify(videoElementFinal)}`
-              //   )
-              // }
-              >
+              <div>
                 <h6 className="mt-0" style={{}}>
-                  <VideoTitle videoElem={videoElementFinal} />
+                  <VideoTitle videoElem={video} />
                 </h6>
               </div>
 
               {/* number of instances would be something like annotations(video.Annotations).filter(x === query).length */}
 
-              <VideoInfo
-                searchQuery={this.props.searchQuery}
-                vidElem={videoElementFinal}
-              />
+              <VideoInfo vidElem={video} />
             </div>
           </div>
           <div>
             <br />
             <AnnotationList
-              videoElem={videoElementFinal}
-              searchResult={false}
-              videoID={null}
+              video={video}
+              videoId={videoId}
+              sheetId={this.props.sheetId}
             />
           </div>
         </div>

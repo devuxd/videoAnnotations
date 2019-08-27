@@ -42,8 +42,8 @@ export default class extends React.Component {
         Number(x.Duration.end.hours) * 60 * 60 +
         Number(x.Duration.end.minutes) * 60 +
         Number(x.Duration.end.seconds),
-      tag: x.Tags.join(", "),
-      name: x.Tags.join(", ") + index,
+      tag: x.Tags,
+      name: x.Tags + index,
       annotation: x.Description
     }));
 
