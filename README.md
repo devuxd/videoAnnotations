@@ -1,1 +1,1 @@
-# observe.dev https://observedev.alobodi11.now.sh/ 
+# observe.dev https://observedev.devuxd.now.sh/
