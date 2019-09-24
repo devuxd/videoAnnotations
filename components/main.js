@@ -40,7 +40,7 @@ export default class Main extends React.Component {
               target="_blank"
               href="https://docs.google.com/spreadsheets/d/1GBxfQqTuIwyj_ExmC_ct0wUxRqmoWjvfq8ibZsF2t60/edit?usp=sharing"
             >
-              Please use this template for your dataset
+              Want to create your own dataset? Use the following template to build a Google Sheet, share it publicly, and then insert the spreadsheet ID above.
             </a>
           </div>
         </div>
