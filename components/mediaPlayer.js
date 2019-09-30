@@ -15,26 +15,18 @@ export default class MediaPlayer extends Component {
     super(props);
     this.player;
     this.passedSeek.bind(this);
-  }
 
-  componentDidMount() {
     const tag = document.createElement("script");
-
     tag.src = "https://www.youtube.com/iframe_api";
     const firstScriptTag = document.getElementsByTagName("script")[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    window.onload = () => {
+    setTimeout(() => {
       this.player = new YT.Player("player");
-    };
+    }, 1000); // wait for the youtube script to download :(
   }
 
   passedSeek = startTime => {
-    try {
-      this.player.seekTo(startTime, true);
-    } catch (e) {
-      location.reload(); // hack to avoid the undefined bug.
-    }
+    this.player.seekTo(startTime, true);
   };
 
   render() {
