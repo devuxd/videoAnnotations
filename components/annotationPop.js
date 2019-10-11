@@ -19,28 +19,29 @@ export default class AnnotationPop extends React.Component {
   secondConverter(h, m, s) {
     return Number(h * 60 * 60) + Number(m * 60) + Number(s);
   }
-
+  durationSeconds() {
+    return {
+      start: this.secondConverter(
+        x.Duration.start.hours,
+        x.Duration.start.minutes,
+        x.Duration.start.seconds
+      ),
+      end: this.secondConverter(
+        x.Duration.end.hours,
+        x.Duration.end.minutes,
+        x.Duration.end.seconds
+      )
+    };
+  }
   render() {
-    let currentTime = this.props.time;
-    let timeFilter = this.props.videoElem.Annotations.filter(
-      x =>
-        currentTime >
-          this.secondConverter(
-            x.Duration.start.hours,
-            x.Duration.start.minutes,
-            x.Duration.start.seconds
-          ) &&
-        currentTime <
-          this.secondConverter(
-            x.Duration.end.hours,
-            x.Duration.end.minutes,
-            x.Duration.end.seconds
-          )
-    );
     return (
       <div>
-        {timeFilter.map(x => (
-          <AnnotationBox passedSeek={this.props.passedSeek} annElement={x} />
+        {this.props.videoElem.Annotations.map(x => (
+          <AnnotationBox
+            passedSeek={this.props.passedSeek}
+            annElement={x}
+            durationSeconds={this.durationSeconds()}
+          />
         ))}
       </div>
     );

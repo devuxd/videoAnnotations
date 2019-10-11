@@ -26,7 +26,6 @@ export default class MediaPlayer extends Component {
   }
 
   passedSeek = startTime => {
-    debugger;
     this.player.seekTo(startTime, true);
   };
 
