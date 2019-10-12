@@ -44,9 +44,24 @@ export default class extends React.Component {
         Number(x.Duration.end.seconds),
       tag: x.Tags,
       name: x.Tags + index,
-      annotation: x.Description
+      annotation: x.Description,
+      duration: `${x.Duration.start.hours}:${x.Duration.start.minutes}:${x.Duration.start.seconds} - ${x.Duration.end.hours}:${x.Duration.end.minutes}:${x.Duration.end.seconds}`,
+      totalTime() {
+        return (
+          `${x.Duration.end.hours - x.Duration.start.hours}:` +
+          `${
+            x.Duration.end.minutes - x.Duration.start.minutes < 0
+              ? x.Duration.start.minutes - x.Duration.end.minutes
+              : x.Duration.end.minutes - x.Duration.start.minutes
+          }:` +
+          `${
+            x.Duration.end.seconds - x.Duration.start.seconds < 0
+              ? x.Duration.start.seconds - x.Duration.end.seconds
+              : x.Duration.end.seconds - x.Duration.start.seconds
+          }`
+        );
+      }
     }));
-
     // restructuring to an array [each annotation] with an array [with time start and time end dates as only values]
 
     // Tooltip
@@ -64,20 +79,24 @@ export default class extends React.Component {
 
     // A function that change this tooltip when the user hover a point.
     // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)
-    var mouseover = function(d) {
+    const mouseover = function(d) {
       tooltip.style("opacity", 1);
     };
 
     // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
-    var mouseleave = function(d) {
+    const mouseleave = function(d) {
       tooltip
         .transition()
         .duration(1000)
         .style("opacity", 0);
     };
 
-    var mouseclick = d => {
+    const mouseclick = d => {
       this.props.passedSeek(d.start);
+    };
+    const currentAnnotation = d => {
+      const duration = this.props.getCurrentDuration();
+      return d.start <= duration && duration <= d.end;
     };
 
     const w = 726,
@@ -117,26 +136,56 @@ export default class extends React.Component {
       .attr("width", function(d) {
         return scale(d.end - d.start);
       })
-      .attr("height", 10)
+      .attr("height", 15)
       .on("mouseover", function(d) {
-        console.log(d);
         d3.select(this).style("opacity", 1);
         d3.select(this).style("cursor", "pointer");
         tooltip
-          .html(`<b>${d.tag}:</b> ${d.annotation}`)
+          .html(
+            `${d.annotation}
+                          <br>
+                          <b>Duration:</b> ${
+                            d.duration
+                          }. <b>Total Time:</b> ${d.totalTime()}.<b> Annotation:</b> ${
+              d.tag
+            }.`
+          )
           .style("left", d3.event.pageX + "px")
           .style("top", d3.event.pageY + "px")
+          .style("height", "auto")
+
           .transition()
           .style("opacity", 1)
           .style("background", myColor(d.name));
       })
       .on("mouseleave", function(d) {
-        d3.select(this).style("opacity", 0.8);
-        d3.select(this).style("cursor", "default");
-        tooltip.transition().style("opacity", 0);
+        if (!currentAnnotation(d)) {
+          d3.select(this).style("opacity", 0.8);
+          d3.select(this).style("cursor", "default");
+          tooltip.transition().style("opacity", 0);
+        }
       })
-      .style("opacity", 0.8)
-      .on("click", mouseclick);
+      .on("click", function(d) {
+        d3.select(this).style("opacity", 1);
+        d3.select(this).style("cursor", "pointer");
+        tooltip
+          .html(
+            `${d.annotation}
+                          <br>
+                          <b>Duration:</b> ${
+                            d.duration
+                          }. <b>Total Time:</b> ${d.totalTime()}.<b> Annotation:</b> ${
+              d.tag
+            }.`
+          )
+          .style("left", d3.event.pageX + "px")
+          .style("top", d3.event.pageY + "px")
+          .transition()
+          .style("opacity", 1)
+          .style("background", myColor(d.name));
+        mouseclick(d);
+      })
+      .style("opacity", 0.8);
   }
 
   render() {
