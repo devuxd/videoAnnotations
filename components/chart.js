@@ -1,5 +1,6 @@
 import React from "react";
 import * as d3 from "d3";
+import * as moment from "moment";
 
 /**
  * d3.js scatterplot component to visualize annotations
@@ -47,19 +48,11 @@ export default class extends React.Component {
       annotation: x.Description,
       duration: `${x.Duration.start.hours}:${x.Duration.start.minutes}:${x.Duration.start.seconds} - ${x.Duration.end.hours}:${x.Duration.end.minutes}:${x.Duration.end.seconds}`,
       totalTime() {
-        return (
-          `${x.Duration.end.hours - x.Duration.start.hours}:` +
-          `${
-            x.Duration.end.minutes - x.Duration.start.minutes < 0
-              ? x.Duration.start.minutes - x.Duration.end.minutes
-              : x.Duration.end.minutes - x.Duration.start.minutes
-          }:` +
-          `${
-            x.Duration.end.seconds - x.Duration.start.seconds < 0
-              ? x.Duration.start.seconds - x.Duration.end.seconds
-              : x.Duration.end.seconds - x.Duration.start.seconds
-          }`
-        );
+        const start = new moment(this.start * 1000);
+        const end = new moment(this.end * 1000);
+        const diff = moment.duration(end.diff(start));
+        console.log(diff);
+        return `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
       }
     }));
     // restructuring to an array [each annotation] with an array [with time start and time end dates as only values]
