@@ -1,5 +1,4 @@
 import React from "react";
-import { render } from "react-dom";
 import Link from "next/link";
 
 class AnnotationList extends React.Component {

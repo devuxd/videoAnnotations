@@ -1,8 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
-import Router from "next/router";
-import { render } from "react-dom";
 import Link from "next/link";
 
 export default class FileUpload extends React.Component {

@@ -1,9 +1,6 @@
 import React from "react";
-import Router from "next/router";
 import AnnotationList from "./annotationList";
-import { render } from "react-dom";
 import VideoInfo from "./videoInfo";
-import VideoTitle from "./videoTitle";
 /**
  * VideoListing: component for each video for search result page
  */
@@ -14,6 +11,7 @@ class VideoListing extends React.Component {
 
   render() {
     let video = this.props.video;
+    console.log(video);
     const videoId = video.VideoURL.replace("https://youtu.be/", "");
 
     return (
@@ -42,9 +40,9 @@ class VideoListing extends React.Component {
             </div>
             <div className="media-body">
               <div>
-                <h6 className="mt-0" style={{}}>
-                  <VideoTitle videoElem={video} />
-                </h6>
+                <h3 className="mt-0" style={{}}>
+                  {video.VideoTitle}
+                </h3>
               </div>
 
               {/* number of instances would be something like annotations(video.Annotations).filter(x === query).length */}

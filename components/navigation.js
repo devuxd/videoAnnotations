@@ -1,10 +1,5 @@
 import React from "react";
-import Router from "next/router";
-// import SearchBar from "./searchBar";
 
-/**
- * Navigation: component for navigation bar
- */
 class Navigation extends React.Component {
   constructor(props) {
     super(props);

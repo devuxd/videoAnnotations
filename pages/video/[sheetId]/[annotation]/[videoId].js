@@ -45,20 +45,6 @@ export default class Posts extends React.Component {
     }
   }
 
-  /**
-   * searchForVideo: function that returns video element of same id
-   *                 assumes that each element in array has its own video id
-   *
-   * @param {*} id: video id searching for
-   */
-  searchForVideo(id, dataSet) {
-    if (Array.isArray(dataSet)) {
-      return dataSet.filter(
-        item => item.VideoURL.replace("https://youtu.be/", "") === id
-      )[0];
-    }
-  }
-
   render() {
     if (!this.state.isLoaded) {
       return (

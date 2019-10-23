@@ -1,6 +1,4 @@
 import React from "react";
-import Router from "next/router";
-import VideoTitle from "./videoTitle";
 import MediaPlayer from "./mediaPlayer";
 
 /**
@@ -46,18 +44,9 @@ export default class VideoBox extends React.Component {
           }}
         >
           <br />
-          <div
-          // onClick={() =>
-          //   Router.push(`/posts/${videoID}/${this.state.searchQuery}`)
-          // }
-          >
-            <h3 class="mt-0" style={{}}>
-              <VideoTitle videoElem={this.state.videoElement} />
-            </h3>
+          <div>
+            <h3 class="mt-0" style={{}}></h3>
           </div>
-
-          {console.log(this.state.videoId)}
-          {console.log("https://www.youtube.com/embed/" + this.state.videoId)}
 
           <MediaPlayer
             searchQuery={this.state.searchQuery}
