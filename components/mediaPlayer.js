@@ -26,6 +26,9 @@ export default class MediaPlayer extends Component {
   passedSeek = startTime => {
     this.player.seekTo(startTime, true);
   };
+  getCurrentDuration = () => {
+    return this.player.getCurrentTime();
+  };
 
   render() {
     if (typeof this.player === undefined) {
@@ -124,6 +127,7 @@ export default class MediaPlayer extends Component {
               passedSeek={this.passedSeek}
               searchQuery={this.props.searchQuery}
               videoElem={this.props.vidElem}
+              getCurrentDuration={this.getCurrentDuration}
             />
           </div>
           <p style={{ paddingLeft: "15%" }}>
