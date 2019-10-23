@@ -15,22 +15,34 @@ class AnnotationList extends React.Component {
         {uniqueAnnotation.map(annotation => {
           return (
             <>
-              <Link
+              <div
                 href="/video/[sheetId]/[annotation]/[videoId]"
                 as={`/video/${this.props.sheetId}/${annotation}/${this.props.videoId}`}
               >
                 <button
-                  type="button"
                   class="btn btn-outline-dark"
                   style={{ padding: "5px", margin: "5px" }}
+                  disabled
                 >
                   {annotation}
                 </button>
-              </Link>
+              </div>
               <br />
             </>
           );
         })}
+        <Link
+          href="/video/[sheetId]/[videoId]"
+          as={`/video/${this.props.sheetId}/${this.props.videoId}`}
+        >
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            style={{ padding: "5px", margin: "5px" }}
+          >
+            Watch the video
+          </button>
+        </Link>
         <br />
       </div>
     );

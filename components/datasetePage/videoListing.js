@@ -1,6 +1,6 @@
 import React from "react";
 import AnnotationList from "./annotationList";
-import VideoInfo from "./videoInfo";
+import VideoInfo from "../shared/videoInfo";
 /**
  * VideoListing: component for each video for search result page
  */
@@ -11,7 +11,6 @@ class VideoListing extends React.Component {
 
   render() {
     let video = this.props.video;
-    console.log(video);
     const videoId = video.VideoURL.replace("https://youtu.be/", "");
 
     return (
@@ -44,9 +43,6 @@ class VideoListing extends React.Component {
                   {video.VideoTitle}
                 </h3>
               </div>
-
-              {/* number of instances would be something like annotations(video.Annotations).filter(x === query).length */}
-
               <VideoInfo vidElem={video} />
             </div>
           </div>

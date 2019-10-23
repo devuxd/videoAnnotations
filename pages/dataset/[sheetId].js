@@ -1,9 +1,8 @@
 import React from "react";
 import { useRouter } from "next/router";
-import Layouts from "../../components/layouts";
-import Navigation from "../../components/navigation";
+import Layouts from "../../components/shared/layouts";
 import { cachData, getDataset } from "../../API/db";
-import VideoListing from "../../components/videoListing";
+import VideoListing from "../../components/datasetePage/videoListing";
 
 export default class dataset extends React.Component {
   static async getInitialProps({ query }) {
@@ -35,7 +34,23 @@ export default class dataset extends React.Component {
       return (
         <div>
           <Layouts>
-            <Navigation />
+            <div>
+              <nav className="navbar navbar-expand-lg navbar-light bg-white">
+                <a className="navbar-brand" style={{ width: "20%" }} href="/">
+                  <img
+                    style={{
+                      width: "100%",
+                      display: "block",
+                      marginLeft: "1%",
+                      marginRight: "0px",
+                      marginBottom: "7%"
+                    }}
+                    src="https://i.ibb.co/JmfYfBD/observedev.png"
+                  />
+                </a>
+              </nav>
+              <br />
+            </div>{" "}
             <div className="container">
               <div className="loader"></div>
             </div>
@@ -88,7 +103,23 @@ export default class dataset extends React.Component {
     return (
       <div style={{ fontFamily: "Lato" }}>
         <Layouts>
-          <Navigation />
+          <div>
+            <nav className="navbar navbar-expand-lg navbar-light bg-white">
+              <a className="navbar-brand" style={{ width: "20%" }} href="/">
+                <img
+                  style={{
+                    width: "100%",
+                    display: "block",
+                    marginLeft: "1%",
+                    marginRight: "0px",
+                    marginBottom: "7%"
+                  }}
+                  src="https://i.ibb.co/JmfYfBD/observedev.png"
+                />
+              </a>
+            </nav>
+            <br />
+          </div>
           <p style={{ paddingLeft: "5%" }}>
             Viewing dataset: {this.state.sheetId} <br />
             <b>Click an annotation to view each video further in detail.</b>

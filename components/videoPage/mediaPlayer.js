@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import { findDOMNode } from "react-dom";
 import Tabs from "./tabs";
 import AnnotationBox from "./annotationBox";
-import VideoInfo from "./videoInfo";
-import AnnotationList from "./annotationList";
+import VideoInfo from "../shared/videoInfo";
 import AnnotationVisual from "./annotationVisual";
 /**
  * MediaPlayer: component for embedding video and parent for all video function components
@@ -112,9 +111,6 @@ export default class MediaPlayer extends Component {
             style={{
               display: "inline",
               position: "absolute",
-              // bottom: "45%",
-              // left: "35%",
-              // width: "600px"
               paddingTop: "1%",
               paddingLeft: "1.5%"
             }}
@@ -164,6 +160,7 @@ export default class MediaPlayer extends Component {
               <div>
                 {this.props.vidElem.Annotations.map(item => (
                   <div>
+                    {" "}
                     <AnnotationBox
                       passedSeek={this.passedSeek}
                       annElement={item}
@@ -172,13 +169,6 @@ export default class MediaPlayer extends Component {
                   </div>
                 ))}
               </div>
-            </div>
-            <div label>
-              <AnnotationList
-                videoElem={this.props.vidElem}
-                searchResult={false}
-                videoID={this.props.videoID}
-              />
             </div>
           </Tabs>
         </div>

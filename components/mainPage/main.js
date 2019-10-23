@@ -1,6 +1,5 @@
 import React from "react";
 import Router from "next/router";
-import SearchBar from "./searchBar";
 import FileUpload from "./fileUpload";
 
 export default class Main extends React.Component {
@@ -26,8 +25,6 @@ export default class Main extends React.Component {
               />
             </a>
             <br />
-            {/* <p>Search for videos with specific annotations</p>
-            <SearchBar annotation={this.annotation} /> */}
             <br />
             <br />
             <br />
@@ -40,7 +37,9 @@ export default class Main extends React.Component {
               target="_blank"
               href="https://docs.google.com/spreadsheets/d/1GBxfQqTuIwyj_ExmC_ct0wUxRqmoWjvfq8ibZsF2t60/edit?usp=sharing"
             >
-              Want to create your own dataset? Use the following template to build a Google Sheet, share it publicly, and then insert the spreadsheet ID above.
+              Want to create your own dataset? Use the following template to
+              build a Google Sheet, share it publicly, and then insert the
+              spreadsheet ID above.
             </a>
           </div>
         </div>

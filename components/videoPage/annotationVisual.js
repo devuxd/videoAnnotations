@@ -12,10 +12,8 @@ export default class AnnotationVisual extends React.Component {
   }
 
   render() {
-    var filteredAnnotations = this.props.videoElem.Annotations.filter(x =>
-      x.Tags.includes(this.props.searchQuery)
-    );
-    var vidLength =
+    const filteredAnnotations = this.props.videoElem.Annotations;
+    const vidLength =
       this.props.videoElem.VideoLength.hours +
       ":" +
       this.props.videoElem.VideoLength.minutes +

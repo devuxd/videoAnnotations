@@ -1,9 +1,8 @@
 import React from "react";
 import Router from "next/router";
-import Layouts from "../../../../components/layouts";
-import Navigation from "../../../../components/navigation";
-import VideoBox from "../../../../components/videoBox";
-import { getvideData } from "../../../../API/db";
+import Layouts from "../../../components/shared/layouts";
+import VideoBox from "../../../components/videoPage/videoBox";
+import { getvideData } from "../../../API/db";
 
 /**
  * Dynamic page for each individual video post page
@@ -26,7 +25,6 @@ export default class Posts extends React.Component {
 
   async componentDidMount() {
     const videoId = this.props.query.videoId;
-    const annotation = this.props.query.annotation;
     const sheetId = this.props.query.sheetId;
     let video;
     try {
@@ -35,7 +33,6 @@ export default class Posts extends React.Component {
         {
           video: video,
           isLoaded: true,
-          searchQuery: annotation,
           videoId: videoId
         },
         () => {}
@@ -50,7 +47,23 @@ export default class Posts extends React.Component {
       return (
         <div>
           <Layouts>
-            <Navigation />
+            <div>
+              <nav className="navbar navbar-expand-lg navbar-light bg-white">
+                <a className="navbar-brand" style={{ width: "20%" }} href="/">
+                  <img
+                    style={{
+                      width: "100%",
+                      display: "block",
+                      marginLeft: "1%",
+                      marginRight: "0px",
+                      marginBottom: "7%"
+                    }}
+                    src="https://i.ibb.co/JmfYfBD/observedev.png"
+                  />
+                </a>
+              </nav>
+              <br />
+            </div>{" "}
             <div className="container">
               <div className="loader"></div>
             </div>
@@ -103,12 +116,24 @@ export default class Posts extends React.Component {
     return (
       <div style={{ fontFamily: "Lato" }}>
         <Layouts>
-          <Navigation />
-          <VideoBox
-            searchQuery={this.state.searchQuery}
-            video={this.state.video}
-            videoId={this.state.videoId}
-          />
+          <div>
+            <nav className="navbar navbar-expand-lg navbar-light bg-white">
+              <a className="navbar-brand" style={{ width: "20%" }} href="/">
+                <img
+                  style={{
+                    width: "100%",
+                    display: "block",
+                    marginLeft: "1%",
+                    marginRight: "0px",
+                    marginBottom: "7%"
+                  }}
+                  src="https://i.ibb.co/JmfYfBD/observedev.png"
+                />
+              </a>
+            </nav>
+            <br />
+          </div>
+          <VideoBox video={this.state.video} videoId={this.state.videoId} />
         </Layouts>
       </div>
     );
