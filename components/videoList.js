@@ -1,7 +1,5 @@
 import React from "react";
-import Router from "next/router";
 import VideoListing from "./videoListing";
-import { render } from "react-dom";
 
 /**
  * VideoList: component for the list of videos

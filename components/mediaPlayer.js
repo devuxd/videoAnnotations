@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import { findDOMNode } from "react-dom";
 import Tabs from "./tabs";
 import AnnotationBox from "./annotationBox";
-import VideoAuthor from "./videoAuthor";
 import VideoInfo from "./videoInfo";
 import AnnotationList from "./annotationList";
 import AnnotationVisual from "./annotationVisual";
-import VideoTitle from "./videoTitle";
 /**
  * MediaPlayer: component for embedding video and parent for all video function components
  */
@@ -134,13 +132,6 @@ export default class MediaPlayer extends Component {
             annotation!{" "}
           </p>
         </div>
-        {/* <div style={{ padding: "2%" }}>Current annotation(s) viewing:</div>
-
-        <AnnotationPop
-          passedSeek={this.passedSeek}
-          videoElem={this.props.vidElem}
-        />
-        <br /> */}
         <div style={{}}>
           <Tabs>
             <div label="General Information">
@@ -156,8 +147,8 @@ export default class MediaPlayer extends Component {
                   paddingRight: "5%"
                 }}
               >
-                <VideoTitle videoElem={this.props.vidElem} />
-                <VideoAuthor videoElem={this.props.vidElem} />
+                {this.props.vidElem.VideoTitle}
+                {this.props.vidElem.VideoAuthor}
                 <br />
                 <VideoInfo
                   searchQuery={this.props.seaeorchQuery}
