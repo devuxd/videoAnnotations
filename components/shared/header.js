@@ -13,6 +13,11 @@ const Header = () => (
         rel="stylesheet"
         type="text/css"
       />
+      <link
+        href="https://unpkg.com/react-tabs/style/react-tabs.css"
+        rel="stylesheet"
+        type="text/css"
+      />
     </Head>
   </div>
 );

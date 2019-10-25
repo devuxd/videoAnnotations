@@ -11,29 +11,7 @@ export default class extends React.Component {
   }
 
   componentDidMount() {
-    let vidLengthArray = this.props.vidLength.split(":");
-    let vidLengthHour = Number(vidLengthArray[0]);
-    let vidLengthMinute = Number(vidLengthArray[1]);
-    let vidLengthSecond = Number(vidLengthArray[2]);
-    let randomColor = "#" + ((Math.random() * 0xffffff) << 0).toString(16);
-
-    let videoStart = 0;
-    let videoLength =
-      vidLengthHour * 60 * 60 + vidLengthMinute * 60 + vidLengthSecond;
-
-    /**
-     * numberFormatter: function to style single digits number with a preceding 0
-     *
-     * @param {*} num : number to style
-     */
-    var numberFormatter = num => {
-      if (num < 10) {
-        return "0" + num;
-      } else {
-        return num;
-      }
-    };
-
+    let videoLength = this.props.videoLength;
     let timeData = this.props.annotations.map((x, index) => ({
       start:
         Number(x.Duration.start.hours) * 60 * 60 +
@@ -51,7 +29,6 @@ export default class extends React.Component {
         const start = new moment(this.start * 1000);
         const end = new moment(this.end * 1000);
         const diff = moment.duration(end.diff(start));
-        console.log(diff);
         return `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
       }
     }));
@@ -85,14 +62,14 @@ export default class extends React.Component {
     };
 
     const mouseclick = d => {
-      this.props.passedSeek(d.start);
+      this.props.seekTo(d.start);
     };
     const currentAnnotation = d => {
-      const duration = this.props.getCurrentDuration();
-      return d.start <= duration && duration <= d.end;
+      //   const duration = this.props.player.getCurrentTime();
+      //   return d.start <= duration && duration <= d.end;
     };
 
-    const w = 726,
+    const w = 1200,
       h = 100;
 
     var mini = d3
@@ -107,7 +84,6 @@ export default class extends React.Component {
       .scaleOrdinal()
       .domain(timeData)
       .range(d3.schemeSet2);
-
     let scale = d3
       .scaleLinear()
       .domain([0, videoLength])
