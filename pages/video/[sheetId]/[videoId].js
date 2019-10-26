@@ -1,9 +1,7 @@
 import React from "react";
 import Router from "next/router";
 import Layouts from "../../../components/shared/layouts";
-import VideoBox from "../../../components/videoPage/videoBox";
 import MediaPlayer from "../../../components/videoPage/mediaPlayer";
-
 import { getvideData } from "../../../API/db";
 
 /**

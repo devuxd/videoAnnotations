@@ -43,9 +43,7 @@ export default class extends React.Component {
       .style("border-width", "1px")
       .style("border-radius", "5px")
       .style("padding", "10px")
-      .style("font-size", "14px")
-      .style("width", "700px")
-      .style("height", "80px");
+      .style("font-size", "14px");
 
     // A function that change this tooltip when the user hover a point.
     // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)
@@ -65,11 +63,12 @@ export default class extends React.Component {
       this.props.seekTo(d.start);
     };
     const currentAnnotation = d => {
-      //   const duration = this.props.player.getCurrentTime();
-      //   return d.start <= duration && duration <= d.end;
+      const duration = this.props.currentTime();
+      console.log(duration);
+      return d.start <= duration && duration <= d.end;
     };
 
-    const w = 1200,
+    const w = 1250,
       h = 100;
 
     var mini = d3
@@ -77,7 +76,6 @@ export default class extends React.Component {
       .append("svg")
       .attr("width", w)
       .attr("height", 22)
-      .attr("style", "padding-left:10px")
       .attr("class", "chart");
 
     var myColor = d3
@@ -109,7 +107,9 @@ export default class extends React.Component {
       .on("mouseover", function(d) {
         d3.select(this).style("opacity", 1);
         d3.select(this).style("cursor", "pointer");
+
         tooltip
+          .style("z-index", 2)
           .html(
             `${d.annotation}
                           <br>
@@ -131,7 +131,10 @@ export default class extends React.Component {
         if (!currentAnnotation(d)) {
           d3.select(this).style("opacity", 0.8);
           d3.select(this).style("cursor", "default");
-          tooltip.transition().style("opacity", 0);
+          tooltip
+            .transition()
+            .style("opacity", 0)
+            .style("z-index", 0);
         }
       })
       .on("click", function(d) {
@@ -158,6 +161,11 @@ export default class extends React.Component {
   }
 
   render() {
-    return <div />;
+    return (
+      <>
+        <div id="ann-visual" style={{ bottom: "8px" }}></div>
+        <div id="ann-tooltip" />
+      </>
+    );
   }
 }
