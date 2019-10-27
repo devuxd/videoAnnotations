@@ -4,13 +4,14 @@ import AnnotationBox from "./annotationBox";
 import VideoInfo from "../shared/videoInfo";
 import MainAnnotations from "./mainAnnotations";
 import ReactPlayer from "react-player";
+import SubAnnotations from "./subAnnotations";
 /**
  * MediaPlayer: component for embedding video and parent for all video function components
  */
 
 function MediaPlayer(props) {
-  let YTplayer = undefined;
-  const [selectedTab, activiateTab] = useState(1);
+  let YTplayer;
+  const [selectedTab, activiateTab] = useState(2);
   const ref = player => {
     YTplayer = player;
   };
@@ -43,7 +44,10 @@ function MediaPlayer(props) {
         }
       />
 
-      <Tabs>
+      <Tabs
+        selectedIndex={selectedTab}
+        onSelect={tabIndex => activiateTab(tabIndex)}
+      >
         <TabList>
           <Tab>General Information</Tab>
           <Tab>All Annotations</Tab>
@@ -83,7 +87,9 @@ function MediaPlayer(props) {
             ))}
           </div>
         </TabPanel>
-        <TabPanel></TabPanel>
+        <TabPanel>
+          <SubAnnotations />
+        </TabPanel>
       </Tabs>
     </div>
   );
