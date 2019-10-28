@@ -35,37 +35,23 @@ export default class extends React.Component {
     // restructuring to an array [each annotation] with an array [with time start and time end dates as only values]
 
     // Tooltip
-    var tooltip = d3
-      .select("#ann-tooltip")
-      .append("div")
-      .style("opacity", 0)
-      .style("border", "solid")
-      .style("border-width", "1px")
-      .style("border-radius", "5px")
-      .style("padding", "10px")
-      .style("font-size", "14px");
-
-    // A function that change this tooltip when the user hover a point.
-    // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)
-    const mouseover = function(d) {
-      tooltip.style("opacity", 1);
-    };
-
-    // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
-    const mouseleave = function(d) {
-      tooltip
-        .transition()
-        .duration(1000)
-        .style("opacity", 0);
+    const initTooltip = () => {
+      d3.select("#ann-tooltip")
+        .selectAll("div")
+        .remove();
+      return d3
+        .select("#ann-tooltip")
+        .append("div")
+        .style("opacity", 0)
+        .style("border", "solid")
+        .style("border-width", "1px")
+        .style("border-radius", "5px")
+        .style("padding", "10px")
+        .style("font-size", "14px");
     };
 
     const mouseclick = d => {
-      this.props.seekTo(d.start);
-    };
-    const currentAnnotation = d => {
-      const duration = this.props.currentTime();
-      console.log(duration);
-      return d.start <= duration && duration <= d.end;
+      this.props.seekTo(d);
     };
 
     const w = 1250,
@@ -105,42 +91,14 @@ export default class extends React.Component {
       })
       .attr("height", 15)
       .on("mouseover", function(d) {
-        d3.select(this).style("opacity", 1);
         d3.select(this).style("cursor", "pointer");
-
-        tooltip
-          .style("z-index", 2)
-          .html(
-            `${d.annotation}
-                          <br>
-                          <b>Duration:</b> ${
-                            d.duration
-                          }. <b>Total Time:</b> ${d.totalTime()}.<b> Annotation:</b> ${
-              d.tag
-            }.`
-          )
-          .style("left", d3.event.pageX + "px")
-          .style("top", d3.event.pageY + "px")
-          .style("height", "auto")
-
-          .transition()
-          .style("opacity", 1)
-          .style("background", myColor(d.name));
       })
       .on("mouseleave", function(d) {
-        if (!currentAnnotation(d)) {
-          d3.select(this).style("opacity", 0.8);
-          d3.select(this).style("cursor", "default");
-          tooltip
-            .transition()
-            .style("opacity", 0)
-            .style("z-index", 0);
-        }
+        d3.select(this).style("cursor", "default");
       })
       .on("click", function(d) {
         d3.select(this).style("opacity", 1);
-        d3.select(this).style("cursor", "pointer");
-        tooltip
+        initTooltip()
           .html(
             `${d.annotation}
                           <br>
@@ -164,7 +122,6 @@ export default class extends React.Component {
     return (
       <>
         <div id="ann-visual" style={{ bottom: "8px" }}></div>
-        <div id="ann-tooltip" />
       </>
     );
   }

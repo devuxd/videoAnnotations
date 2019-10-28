@@ -9,13 +9,19 @@ import SubAnnotations from "./subAnnotations";
  * MediaPlayer: component for embedding video and parent for all video function components
  */
 
-function MediaPlayer(props) {
-  let YTplayer;
+function VideoPage(props) {
+  let YTplayer,
+    selectedAnnotation,
+    videoId = props.video.Id;
   const [selectedTab, activiateTab] = useState(2);
   const ref = player => {
     YTplayer = player;
   };
-  const seekTo = seconds => YTplayer.seekTo(seconds);
+  const seekTo = annotation => {
+    YTplayer.seekTo(annotation.start);
+    selectedAnnotation = annotation;
+    console.log(selectedAnnotation);
+  };
   const currentTime = () => YTplayer.getCurrentTime();
   return (
     <div
@@ -88,10 +94,10 @@ function MediaPlayer(props) {
           </div>
         </TabPanel>
         <TabPanel>
-          <SubAnnotations />
+          <SubAnnotations currentTime={currentTime} />
         </TabPanel>
       </Tabs>
     </div>
   );
 }
-export default MediaPlayer;
+export default VideoPage;

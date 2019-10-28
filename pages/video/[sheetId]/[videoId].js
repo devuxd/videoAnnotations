@@ -1,7 +1,7 @@
 import React from "react";
 import Router from "next/router";
 import Layouts from "../../../components/shared/layouts";
-import MediaPlayer from "../../../components/videoPage/mediaPlayer";
+import VideoPage from "../../../components/videoPage/videoPage";
 import { getvideData } from "../../../API/db";
 
 /**
@@ -134,7 +134,7 @@ export default class Posts extends React.Component {
             <br />
           </div>
           {/* <VideoBox video={this.state.video} videoId={this.state.videoId} /> */}
-          <MediaPlayer
+          <VideoPage
             video={this.state.video}
             videoID={this.state.videoId}
             vidURL={"https://www.youtube.com/embed/" + this.state.videoId}

@@ -38,10 +38,10 @@ const cachData = (dataset, id) =>
 
 const parse = rowDataset => {
   try {
-    let dataset = rowDataset.sheets.map(({ data }) => {
+    let dataset = rowDataset.sheets.map(({ data }, sheetIndex) => {
       let videoJSON = {};
       let video = data[0].rowData[2];
-
+      videoJSON.Id = sheetIndex;
       videoJSON.VideoTitle = video.values[0].userEnteredValue.stringValue;
       videoJSON.VideoURL = video.values[1].userEnteredValue.stringValue;
       videoJSON.VideoLength = { hours: "", minutes: "", seconds: "" };
@@ -72,7 +72,7 @@ const parse = rowDataset => {
 
       let annotationsData = data[0].rowData.splice(10, data[0].rowData.length);
       videoJSON.Annotations = [];
-
+      let annotationIndex = 11;
       videoJSON.Annotations = annotationsData.map(annotation => {
         let annotationJSON = {};
         annotationJSON.Duration = { start: {}, end: {} };
@@ -91,7 +91,8 @@ const parse = rowDataset => {
         annotationJSON.Tags = annotation.values[6].userEnteredValue.stringValue;
         annotationJSON.Description =
           annotation.values[7].userEnteredValue.stringValue;
-
+        annotationJSON.Id = annotationIndex;
+        annotationIndex++;
         return annotationJSON;
       });
 
