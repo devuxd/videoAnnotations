@@ -53,65 +53,88 @@ function SetVisulations() {
 }
 
 function AddAnnotation(currentTime) {
-  const startTime = useRef(null);
-  const endTime = useRef(null);
-
-  const handleSubmit = () => {};
+  let refStartTime = React.createRef();
+  let refEndTime = React.createRef();
   const getCurrentTime = e => {
     const time = moment("2015-01-01")
       .startOf("day")
       .seconds(currentTime())
       .format("H:mm:ss");
     if (e.currentTarget.id === "start") {
-      startTime.current.value = time;
+      refStartTime.current.value = time;
     } else if (e.currentTarget.id === "end") {
-      endTime.current.value = time;
+      refEndTime.current.value = time;
     }
   };
+  const handleSubmit = () => {};
   return (
-    <div class="input-group input-group-sm mb-3" onSubmit={handleSubmit}>
-      <input
-        type="text"
+    <>
+      <div class="input-group input-group-sm mb-3" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Start time  "
+          aria-label="Start time"
+          aria-describedby="button-addon2"
+          ref={refStartTime}
+        />
+        <div class="input-group-append">
+          <button
+            onClick={getCurrentTime}
+            class="btn btn-outline-secondary"
+            type="button"
+            id="start"
+            style={{ width: "42px", "padding-top": "1px" }}
+            data-placement="bottom"
+            title="Get current time"
+          >
+            <FontAwesomeIcon icon={faClock} />
+          </button>
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="End time  "
+          aria-label="Start time"
+          aria-describedby="button-addon2"
+          style={{ "margin-left": "10px" }}
+          ref={refEndTime}
+        />
+        <div class="input-group-append">
+          <button
+            onClick={getCurrentTime}
+            class="btn btn-outline-secondary"
+            type="button"
+            id="end"
+            style={{ width: "42px", "padding-top": "1px" }}
+            data-placement="bottom"
+            title="Get current time"
+          >
+            <FontAwesomeIcon icon={faClock} />
+          </button>
+        </div>
+      </div>
+      <input class="form-control" type="text" placeholder="Annotation title" />
+      <br />
+      <textarea
         class="form-control"
-        placeholder="Start time  "
-        aria-label="Start time"
-        aria-describedby="button-addon2"
-      />
-      <div class="input-group-append">
-        <button
-          onClick={getCurrentTime}
-          class="btn btn-outline-secondary"
-          type="button"
-          id="start"
-          style={{ width: "42px", "padding-top": "1px" }}
-          data-placement="bottom"
-          title="Get current time"
-        >
-          <FontAwesomeIcon icon={faClock} />
+        id="exampleFormControlTextarea1"
+        placeholder="Annotation description"
+        rows="3"
+      ></textarea>
+      <div
+        style={{
+          display: "flex",
+          "flex-direction": "row-reverse",
+          paddingTop: "10px"
+        }}
+      >
+        <button type="button" class="btn btn-success">
+          Save
         </button>
       </div>
-      <input
-        type="text"
-        class="form-control"
-        placeholder="End time  "
-        aria-label="Start time"
-        aria-describedby="button-addon2"
-        style={{ "margin-left": "10px" }}
-      />
-      <div class="input-group-append">
-        <button
-          onClick={getCurrentTime}
-          class="btn btn-outline-secondary"
-          type="button"
-          id="end"
-          style={{ width: "42px", "padding-top": "1px" }}
-          data-placement="bottom"
-          title="Get current time"
-        >
-          <FontAwesomeIcon icon={faClock} />
-        </button>
-      </div>
-    </div>
+      <br />
+    </>
   );
 }
 
