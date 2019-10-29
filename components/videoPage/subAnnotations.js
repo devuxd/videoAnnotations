@@ -6,24 +6,44 @@ import { faClock } from "@fortawesome/free-solid-svg-icons";
 import * as moment from "moment";
 
 function SubAnnotation(props) {
-  const [subannotations, addSubannotation] = useState([
-    { title: 1, annotation: [] }
-  ]);
+  const [subannotations, addSubAnnotation] = useState([]);
+  const [activeTab, activiateTab] = useState(0);
   const newTitle = useRef(null);
   const handleSubmit = e => {
     e.preventDefault();
     const newSubAnnotations = [
       ...subannotations,
-      { title: newTitle.current.value, annotation: [] }
+      {
+        title: newTitle.current.value,
+        annotations: [
+          {
+            startTime: "",
+            endTime: "",
+            title: "",
+            description: ""
+          }
+        ]
+      }
     ];
-    addSubannotation(newSubAnnotations);
+    addSubAnnotation(newSubAnnotations);
     newTitle.current.value = "";
+  };
+  const addNewSubAnnotation = (newSubAnnotation, newAnnotationIndex) => {
+    addSubAnnotation([
+      ...subannotations.slice(0, newAnnotationIndex),
+      newSubAnnotation,
+      ...subannotations.slice(newAnnotationIndex + 1, subannotations.length)
+    ]);
+    console.log(subannotations);
   };
   return (
     <>
       <div id="ann-tooltip" />
       <SetVisulations />
-      <Tabs>
+      <Tabs
+        selectedIndex={activeTab}
+        onSelect={tabIndex => activiateTab(tabIndex)}
+      >
         <TabList>
           {subannotations.map(annotation => (
             <Tab>{annotation.title}</Tab>
@@ -41,7 +61,9 @@ function SubAnnotation(props) {
           </Tab>
         </TabList>
         {subannotations.map((annotation, index) => (
-          <TabPanel key={index}>{AddAnnotation(props.currentTime)}</TabPanel>
+          <TabPanel key={index}>
+            {AddAnnotation(props.currentTime, index, addNewSubAnnotation)}
+          </TabPanel>
         ))}
       </Tabs>
     </>
@@ -52,9 +74,12 @@ function SetVisulations() {
   return <>Visualization Here</>;
 }
 
-function AddAnnotation(currentTime) {
-  let refStartTime = React.createRef();
-  let refEndTime = React.createRef();
+function AddAnnotation(currentTime, index, addNewSubAnnotation) {
+  const refStartTime = React.createRef();
+  const refEndTime = React.createRef();
+  const refTitle = React.createRef();
+  const refDescription = React.createRef();
+
   const getCurrentTime = e => {
     const time = moment("2015-01-01")
       .startOf("day")
@@ -66,10 +91,19 @@ function AddAnnotation(currentTime) {
       refEndTime.current.value = time;
     }
   };
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    const localNewAnnotation = {
+      startTime: refStartTime.current.value,
+      endTime: refEndTime.current.value,
+      title: refTitle.current.value,
+      description: refDescription.current.value
+    };
+    addNewSubAnnotation(localNewAnnotation, index);
+  };
+
   return (
     <>
-      <div class="input-group input-group-sm mb-3" onSubmit={handleSubmit}>
+      <div class="input-group input-group-sm mb-3">
         <input
           type="text"
           class="form-control"
@@ -114,13 +148,19 @@ function AddAnnotation(currentTime) {
           </button>
         </div>
       </div>
-      <input class="form-control" type="text" placeholder="Annotation title" />
+      <input
+        class="form-control"
+        type="text"
+        placeholder="Annotation title"
+        ref={refTitle}
+      />
       <br />
       <textarea
         class="form-control"
         id="exampleFormControlTextarea1"
         placeholder="Annotation description"
         rows="3"
+        ref={refDescription}
       ></textarea>
       <div
         style={{
@@ -129,7 +169,7 @@ function AddAnnotation(currentTime) {
           paddingTop: "10px"
         }}
       >
-        <button type="button" class="btn btn-success">
+        <button type="button" class="btn btn-success" onClick={handleSubmit}>
           Save
         </button>
       </div>

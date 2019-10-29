@@ -48,7 +48,9 @@ function VideoPage(props) {
           props.video.VideoLength.minutes * 60 +
           props.video.VideoLength.seconds
         }
-      />
+      >
+        <div id="ann-visual" style={{ bottom: "8px" }}></div>
+      </MainAnnotations>
 
       <Tabs
         selectedIndex={selectedTab}

@@ -119,10 +119,6 @@ export default class extends React.Component {
   }
 
   render() {
-    return (
-      <>
-        <div id="ann-visual" style={{ bottom: "8px" }}></div>
-      </>
-    );
+    return <>{this.props.children}</>;
   }
 }
