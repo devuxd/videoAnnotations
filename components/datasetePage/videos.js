@@ -1,12 +1,11 @@
 import React from "react";
-import AnnotationList from "./annotationList";
 import VideoInfo from "../shared/videoInfo";
 import Link from "next/link";
 
 /**
- * VideoListing: component for each video for search result page
+ * Videos: component for each video for search result page
  */
-class VideoListing extends React.Component {
+class Videos extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -14,7 +13,9 @@ class VideoListing extends React.Component {
   render() {
     const video = this.props.video;
     const videoId = video.VideoURL.replace("https://youtu.be/", "");
-
+    let uniqueAnnotation = Array.from(
+      new Set(video.Annotations.map(annotation => annotation.Tags))
+    );
     return (
       <div class="card">
         <img
@@ -42,7 +43,9 @@ class VideoListing extends React.Component {
             <VideoInfo vidElem={video} />
           </p>
           <p class="card-text">
-            <small class="text-muted">Last updated 3 mins ago</small>
+            {uniqueAnnotation.map(annotation => (
+              <span class="badge badge-pill badge-primary">{annotation}</span>
+            ))}
           </p>
         </div>
       </div>
@@ -50,4 +53,4 @@ class VideoListing extends React.Component {
   }
 }
 
-export default VideoListing;
+export default Videos;

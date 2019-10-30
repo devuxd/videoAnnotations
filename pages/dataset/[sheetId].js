@@ -1,8 +1,7 @@
 import React from "react";
-import { useRouter } from "next/router";
 import Layouts from "../../components/shared/layouts";
-import { cachData, getDataset } from "../../API/db";
-import VideoListing from "../../components/datasetePage/videoListing";
+import { getDataset } from "../../API/db";
+import Videos from "../../components/datasetePage/videos";
 
 export default class dataset extends React.Component {
   static async getInitialProps({ query }) {
@@ -133,10 +132,7 @@ export default class dataset extends React.Component {
                     return (
                       <>
                         <div class="col">
-                          <VideoListing
-                            video={video}
-                            sheetId={this.state.sheetId}
-                          />
+                          <Videos video={video} sheetId={this.state.sheetId} />
                         </div>
                         <div class="w-100"></div>
                         <br />
@@ -144,10 +140,7 @@ export default class dataset extends React.Component {
                     );
                   return (
                     <div class="col">
-                      <VideoListing
-                        video={video}
-                        sheetId={this.state.sheetId}
-                      />
+                      <Videos video={video} sheetId={this.state.sheetId} />
                     </div>
                   );
                 })}
