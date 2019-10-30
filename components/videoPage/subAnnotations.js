@@ -15,23 +15,18 @@ function SubAnnotation(props) {
       ...subannotations,
       {
         title: newTitle.current.value,
-        annotations: [
-          {
-            startTime: "",
-            endTime: "",
-            description: ""
-          }
-        ]
+        annotations: []
       }
     ];
     addSubAnnotation(newSubAnnotations);
     newTitle.current.value = "";
   };
-  const addNewSubAnnotation = (newSubAnnotation, newAnnotationIndex) => {
+  const addNewSubAnnotation = newSubAnnotation => {
+    console.log(activeTab);
     addSubAnnotation([
-      ...subannotations.slice(0, activiateTab),
+      ...subannotations.slice(0, activeTab),
       newSubAnnotation,
-      ...subannotations.slice(activiateTab + 1, subannotations.length)
+      ...subannotations.slice(activeTab + 1, subannotations.length)
     ]);
     console.log(subannotations);
   };
@@ -64,7 +59,6 @@ function SubAnnotation(props) {
           <TabPanel key={index}>
             {AddAnnotation(
               props.currentTime,
-              index,
               subannotations[index],
               addNewSubAnnotation
             )}
@@ -90,7 +84,7 @@ function SetVisulations() {
   );
 }
 
-function AddAnnotation(currentTime, index, addNewSubAnnotation) {
+function AddAnnotation(currentTime, subannotations, addNewSubAnnotation) {
   const refStartTime = React.createRef();
   const refEndTime = React.createRef();
   const refDescription = React.createRef();
@@ -112,7 +106,9 @@ function AddAnnotation(currentTime, index, addNewSubAnnotation) {
       endTime: refEndTime.current.value,
       description: refDescription.current.value
     };
-    addNewSubAnnotation(localNewAnnotation, index);
+    subannotations.annotations.push(localNewAnnotation);
+    console.log(subannotations);
+    addNewSubAnnotation(subannotations);
   };
 
   return (

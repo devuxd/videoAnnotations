@@ -14,13 +14,14 @@ function VideoPage(props) {
     selectedAnnotation,
     videoId = props.video.Id;
   const [selectedTab, activiateTab] = useState(2);
+  const [YTplayering, YTpaus] = useState(false);
   const ref = player => {
     YTplayer = player;
   };
   const seekTo = annotation => {
     YTplayer.seekTo(annotation.start);
     selectedAnnotation = annotation;
-    console.log(selectedAnnotation);
+    YTpaus(true);
   };
   const currentTime = () => YTplayer.getCurrentTime();
   return (
@@ -37,6 +38,7 @@ function VideoPage(props) {
         controls={true}
         width="100%"
         height="100%"
+        playing={YTplayering}
       />
 
       <MainAnnotations
