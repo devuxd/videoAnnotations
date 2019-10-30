@@ -1,6 +1,8 @@
 import React from "react";
 import AnnotationList from "./annotationList";
 import VideoInfo from "../shared/videoInfo";
+import Link from "next/link";
+
 /**
  * VideoListing: component for each video for search result page
  */
@@ -10,54 +12,39 @@ class VideoListing extends React.Component {
   }
 
   render() {
-    let video = this.props.video;
+    const video = this.props.video;
     const videoId = video.VideoURL.replace("https://youtu.be/", "");
 
     return (
-      <div>
-        <div
-          style={{
-            paddingTop: "2%",
-            paddingBottom: "1.3%",
-            paddingLeft: "5%",
-            paddingRight: "5%",
-            borderStyle: "solid",
-            borderColor: "lightgray",
-            borderRadius: "8px"
-          }}
-        >
-          <div className="media">
-            <div>
-              <img
-                className="mr-3"
-                style={{ width: "170px" }}
-                src={
-                  "https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"
-                }
-                alt="YouTube Thumbnail Goes Here"
-              />
-            </div>
-            <div className="media-body">
-              <div>
-                <h3 className="mt-0" style={{}}>
-                  {video.VideoTitle}
-                </h3>
-              </div>
-              <VideoInfo vidElem={video} />
-            </div>
-          </div>
-          <div>
-            <br />
-            <AnnotationList
-              video={video}
-              videoId={videoId}
-              sheetId={this.props.sheetId}
-            />
-          </div>
+      <div class="card">
+        <img
+          src={"https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"}
+          class="card-img-top"
+          alt="..."
+        />
+        <div class="card-img-overlay">
+          <Link
+            href="/video/[sheetId]/[videoId]"
+            as={`/video/${this.props.sheetId}/${videoId}`}
+          >
+            <button
+              type="button"
+              class="btn btn-danger"
+              style={{ margin: "25% 40%" }}
+            >
+              Play
+            </button>
+          </Link>
         </div>
-        <br />
-        <br />
-        <br />
+        <div class="card-body bg-light text-dark">
+          <h5 class="card-title">{video.VideoTitle}</h5>
+          <p class="card-text">
+            <VideoInfo vidElem={video} />
+          </p>
+          <p class="card-text">
+            <small class="text-muted">Last updated 3 mins ago</small>
+          </p>
+        </div>
       </div>
     );
   }

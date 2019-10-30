@@ -125,10 +125,34 @@ export default class dataset extends React.Component {
             <b>Click an annotation to view each video further in detail.</b>
           </p>
           <br />
-          <div style={{ width: "90%", paddingLeft: "10%" }}>
-            {this.state.dataSet.map(video => (
-              <VideoListing video={video} sheetId={this.state.sheetId} />
-            ))}
+          <div class="card-deck">
+            <div class="container">
+              <div class="row">
+                {this.state.dataSet.map((video, index) => {
+                  if ((index + 1) % 2 === 0)
+                    return (
+                      <>
+                        <div class="col">
+                          <VideoListing
+                            video={video}
+                            sheetId={this.state.sheetId}
+                          />
+                        </div>
+                        <div class="w-100"></div>
+                        <br />
+                      </>
+                    );
+                  return (
+                    <div class="col">
+                      <VideoListing
+                        video={video}
+                        sheetId={this.state.sheetId}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </Layouts>
       </div>

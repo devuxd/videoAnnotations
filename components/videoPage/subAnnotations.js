@@ -19,7 +19,6 @@ function SubAnnotation(props) {
           {
             startTime: "",
             endTime: "",
-            title: "",
             description: ""
           }
         ]
@@ -30,15 +29,16 @@ function SubAnnotation(props) {
   };
   const addNewSubAnnotation = (newSubAnnotation, newAnnotationIndex) => {
     addSubAnnotation([
-      ...subannotations.slice(0, newAnnotationIndex),
+      ...subannotations.slice(0, activiateTab),
       newSubAnnotation,
-      ...subannotations.slice(newAnnotationIndex + 1, subannotations.length)
+      ...subannotations.slice(activiateTab + 1, subannotations.length)
     ]);
     console.log(subannotations);
   };
   return (
     <>
       <div id="ann-tooltip" />
+      <br />
       <SetVisulations />
       <Tabs
         selectedIndex={activeTab}
@@ -62,7 +62,13 @@ function SubAnnotation(props) {
         </TabList>
         {subannotations.map((annotation, index) => (
           <TabPanel key={index}>
-            {AddAnnotation(props.currentTime, index, addNewSubAnnotation)}
+            {AddAnnotation(
+              props.currentTime,
+              index,
+              subannotations[index],
+              addNewSubAnnotation
+            )}
+            {}
           </TabPanel>
         ))}
       </Tabs>
@@ -71,13 +77,22 @@ function SubAnnotation(props) {
 }
 
 function SetVisulations() {
-  return <>Visualization Here</>;
+  return (
+    <>
+      <div
+        style={{
+          height: "20px",
+          "border-color": "black",
+          "border-style": "dashed"
+        }}
+      ></div>
+    </>
+  );
 }
 
 function AddAnnotation(currentTime, index, addNewSubAnnotation) {
   const refStartTime = React.createRef();
   const refEndTime = React.createRef();
-  const refTitle = React.createRef();
   const refDescription = React.createRef();
 
   const getCurrentTime = e => {
@@ -95,7 +110,6 @@ function AddAnnotation(currentTime, index, addNewSubAnnotation) {
     const localNewAnnotation = {
       startTime: refStartTime.current.value,
       endTime: refEndTime.current.value,
-      title: refTitle.current.value,
       description: refDescription.current.value
     };
     addNewSubAnnotation(localNewAnnotation, index);
@@ -148,13 +162,6 @@ function AddAnnotation(currentTime, index, addNewSubAnnotation) {
           </button>
         </div>
       </div>
-      <input
-        class="form-control"
-        type="text"
-        placeholder="Annotation title"
-        ref={refTitle}
-      />
-      <br />
       <textarea
         class="form-control"
         id="exampleFormControlTextarea1"
@@ -177,5 +184,6 @@ function AddAnnotation(currentTime, index, addNewSubAnnotation) {
     </>
   );
 }
+const displayAnnotations = () => {};
 
 export default SubAnnotation;
