@@ -10,17 +10,22 @@ import SubAnnotations from "./subAnnotations";
  */
 
 function VideoPage(props) {
-  let YTplayer,
-    selectedAnnotation,
-    videoId = props.video.Id;
+  let YTplayer;
   const [selectedTab, activiateTab] = useState(2);
   const [YTplayering, YTpaus] = useState(false);
+  const [selectedAnnotation, changeSelectedAnnotaion] = useState({
+    start: 0,
+    end: 0,
+    Tags: "",
+    Description: "",
+    annotationIndex: ""
+  });
   const ref = player => {
     YTplayer = player;
   };
   const seekTo = annotation => {
     YTplayer.seekTo(annotation.start);
-    selectedAnnotation = annotation;
+    changeSelectedAnnotaion(annotation);
     YTpaus(true);
   };
   const currentTime = () => YTplayer.getCurrentTime();
@@ -45,13 +50,15 @@ function VideoPage(props) {
         annotations={props.video.Annotations}
         seekTo={seekTo}
         currentTime={currentTime}
-        videoLength={
+        annotationLength={
           props.video.VideoLength.hours * 3600 +
           props.video.VideoLength.minutes * 60 +
           props.video.VideoLength.seconds
         }
+        divId={"#video-annotations"}
+        tooltipId={"#ann-tooltip"}
       >
-        <div id="ann-visual" style={{ bottom: "8px" }}></div>
+        <div id="video-annotations" style={{ bottom: "8px" }}></div>
       </MainAnnotations>
 
       <Tabs
@@ -98,7 +105,12 @@ function VideoPage(props) {
           </div>
         </TabPanel>
         <TabPanel>
-          <SubAnnotations currentTime={currentTime} />
+          <SubAnnotations
+            seekTo={seekTo}
+            currentTime={currentTime}
+            selectedAnnotation={selectedAnnotation}
+            annotationLength={selectedAnnotation.end - selectedAnnotation.start}
+          />
         </TabPanel>
       </Tabs>
     </div>

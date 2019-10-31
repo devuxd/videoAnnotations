@@ -4,6 +4,8 @@ import * as d3 from "d3";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import * as moment from "moment";
+import MainAnnotations from "./mainAnnotations";
+import { debug } from "webpack";
 
 function SubAnnotation(props) {
   const [subannotations, addSubAnnotation] = useState([]);
@@ -22,7 +24,6 @@ function SubAnnotation(props) {
     newTitle.current.value = "";
   };
   const addNewSubAnnotation = newSubAnnotation => {
-    console.log(activeTab);
     addSubAnnotation([
       ...subannotations.slice(0, activeTab),
       newSubAnnotation,
@@ -34,7 +35,27 @@ function SubAnnotation(props) {
     <>
       <div id="ann-tooltip" />
       <br />
-      <SetVisulations />
+      <div
+        style={{
+          height: "20px",
+          "border-color": "black",
+          "border-style": "dashed"
+        }}
+      >
+        {subannotations.length > 0 && (
+          <MainAnnotations
+            annotations={subannotations[activeTab].annotations}
+            seekTo={props.seekTo}
+            currentTime={props.currentTime}
+            annotationLength={props.annotationLength}
+            divId={"#sub-annotations"}
+            tooltipId={"#subAnn-tooltip"}
+          >
+            <div id="sub-annotations" style={{ bottom: "8px" }}></div>
+            <div id="subAnn-tooltip"></div>
+          </MainAnnotations>
+        )}
+      </div>
       <Tabs
         selectedIndex={activeTab}
         onSelect={tabIndex => activiateTab(tabIndex)}
@@ -62,7 +83,6 @@ function SubAnnotation(props) {
               subannotations[index],
               addNewSubAnnotation
             )}
-            {}
           </TabPanel>
         ))}
       </Tabs>
@@ -79,7 +99,22 @@ function SetVisulations() {
           "border-color": "black",
           "border-style": "dashed"
         }}
-      ></div>
+      >
+        <MainAnnotations
+          annotations={props.video.Annotations}
+          seekTo={seekTo}
+          currentTime={currentTime}
+          annotationLength={
+            props.video.VideoLength.hours * 3600 +
+            props.video.VideoLength.minutes * 60 +
+            props.video.VideoLength.seconds
+          }
+          divId={"#sub-annotations"}
+          tooltipId={"#subAnn-tooltip"}
+        >
+          <div id="sub-annotations" style={{ bottom: "8px" }}></div>
+        </MainAnnotations>
+      </div>
     </>
   );
 }
@@ -107,7 +142,6 @@ function AddAnnotation(currentTime, subannotations, addNewSubAnnotation) {
       description: refDescription.current.value
     };
     subannotations.annotations.push(localNewAnnotation);
-    console.log(subannotations);
     addNewSubAnnotation(subannotations);
   };
 

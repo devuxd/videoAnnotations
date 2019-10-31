@@ -11,7 +11,8 @@ export default class extends React.Component {
   }
 
   componentDidMount() {
-    let videoLength = this.props.videoLength;
+    let annotationLength = this.props.annotationLength;
+    debugger;
     let timeData = this.props.annotations.map((x, index) => ({
       start:
         Number(x.Duration.start.hours) * 60 * 60 +
@@ -36,11 +37,11 @@ export default class extends React.Component {
 
     // Tooltip
     const initTooltip = () => {
-      d3.select("#ann-tooltip")
+      d3.select(this.props.tooltipId)
         .selectAll("div")
         .remove();
       return d3
-        .select("#ann-tooltip")
+        .select(this.props.tooltipId)
         .append("div")
         .style("opacity", 0)
         .style("border", "solid")
@@ -58,7 +59,7 @@ export default class extends React.Component {
       h = 100;
 
     var mini = d3
-      .select("#ann-visual")
+      .select(this.props.divId)
       .append("svg")
       .attr("width", w)
       .attr("height", 22)
@@ -70,7 +71,7 @@ export default class extends React.Component {
       .range(d3.schemeSet2);
     let scale = d3
       .scaleLinear()
-      .domain([0, videoLength])
+      .domain([0, annotationLength])
       .range([0, w]);
 
     mini

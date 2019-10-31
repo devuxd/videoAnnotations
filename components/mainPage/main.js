@@ -1,5 +1,4 @@
 import React from "react";
-import Router from "next/router";
 import FileUpload from "./fileUpload";
 
 export default class Main extends React.Component {
