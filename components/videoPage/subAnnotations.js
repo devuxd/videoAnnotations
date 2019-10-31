@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import * as moment from "moment";
 import MainAnnotations from "./mainAnnotations";
-import { debug } from "webpack";
 
 function SubAnnotation(props) {
   const [subannotations, addSubAnnotation] = useState([]);
