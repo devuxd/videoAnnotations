@@ -12,7 +12,6 @@ export default class extends React.Component {
 
   componentDidMount() {
     let annotationLength = this.props.annotationLength;
-    debugger;
     let timeData = this.props.annotations.map((x, index) => ({
       start:
         Number(x.Duration.start.hours) * 60 * 60 +
