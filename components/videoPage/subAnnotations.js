@@ -34,28 +34,21 @@ function SubAnnotation(props) {
     <>
       <div id="ann-tooltip" />
       <br />
-      <div
-        style={{
-          height: "20px",
-          "border-color": "black",
-          "border-style": "dashed"
-        }}
+
+      <div id="subAnn-tooltip" style={{ bottom: "8px" }}></div>
+      <MainAnnotations
+        annotationData={subannotations
+          .map(element => element.annotations)
+          .flat(1)}
+        seekTo={props.seekTo}
+        currentTime={props.currentTime}
+        annotationLength={props.annotationLength}
+        divId={"#sub-annotations"}
+        tooltipId={"#subAnn-tooltip"}
+        key={activSubAnnotation.length}
       >
-        <div id="subAnn-tooltip" style={{ bottom: "8px" }}></div>
-        <MainAnnotations
-          annotationData={subannotations
-            .map(element => element.annotations)
-            .flat(1)}
-          seekTo={props.seekTo}
-          currentTime={props.currentTime}
-          annotationLength={props.annotationLength}
-          divId={"#sub-annotations"}
-          tooltipId={"#subAnn-tooltip"}
-          key={activSubAnnotation.length}
-        >
-          <div id="sub-annotations" style={{ bottom: "8px" }}></div>
-        </MainAnnotations>
-      </div>
+        <div id="sub-annotations" style={{ bottom: "8px" }}></div>
+      </MainAnnotations>
       <Tabs
         selectedIndex={activeTab}
         onSelect={tabIndex => {
@@ -91,6 +84,7 @@ function SubAnnotation(props) {
           </TabPanel>
         ))}
       </Tabs>
+      <br />
     </>
   );
 }
@@ -126,9 +120,10 @@ function AddAnnotation(
       end:
         moment.duration(refEndTime.current.value).asSeconds() -
         selectedAnnotation.start,
-      description: refDescription.current.value,
+      annotation: refDescription.current.value,
       tag: subannotations.title,
       name: subannotations.title,
+      duration: refStartTime.current.value + " - " + refEndTime.current.value,
       totalTime() {
         const start = new moment(this.start * 1000);
         const end = new moment(this.end * 1000);
