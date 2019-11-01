@@ -5,13 +5,15 @@ import VideoInfo from "../shared/videoInfo";
 import MainAnnotations from "./mainAnnotations";
 import ReactPlayer from "react-player";
 import SubAnnotations from "./subAnnotations";
+import moment from "moment";
+
 /**
  * MediaPlayer: component for embedding video and parent for all video function components
  */
 
 function VideoPage(props) {
   let YTplayer;
-  const [selectedTab, activiateTab] = useState(2);
+  const [selectedTab, activiateTab] = useState(0);
   const [YTplayering, YTpaus] = useState(false);
   const [selectedAnnotation, changeSelectedAnnotaion] = useState({
     start: 0,
@@ -28,6 +30,27 @@ function VideoPage(props) {
     changeSelectedAnnotaion(annotation);
     YTpaus(true);
   };
+  const getAnnotationData = annotations =>
+    annotations.map((x, index) => ({
+      start:
+        Number(x.Duration.start.hours) * 60 * 60 +
+        Number(x.Duration.start.minutes) * 60 +
+        Number(x.Duration.start.seconds),
+      end:
+        Number(x.Duration.end.hours) * 60 * 60 +
+        Number(x.Duration.end.minutes) * 60 +
+        Number(x.Duration.end.seconds),
+      tag: x.Tags,
+      name: x.Tags + index,
+      annotation: x.Description,
+      duration: `${x.Duration.start.hours}:${x.Duration.start.minutes}:${x.Duration.start.seconds} - ${x.Duration.end.hours}:${x.Duration.end.minutes}:${x.Duration.end.seconds}`,
+      totalTime() {
+        const start = new moment(this.start * 1000);
+        const end = new moment(this.end * 1000);
+        const diff = moment.duration(end.diff(start));
+        return `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
+      }
+    }));
   const currentTime = () => YTplayer.getCurrentTime();
   return (
     <div
@@ -47,7 +70,7 @@ function VideoPage(props) {
       />
 
       <MainAnnotations
-        annotations={props.video.Annotations}
+        annotationData={getAnnotationData(props.video.Annotations)}
         seekTo={seekTo}
         currentTime={currentTime}
         annotationLength={

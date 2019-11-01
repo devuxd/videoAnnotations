@@ -1,6 +1,5 @@
 import React from "react";
 import * as d3 from "d3";
-import * as moment from "moment";
 
 /**
  * d3.js scatterplot component to visualize annotations
@@ -12,28 +11,7 @@ export default class extends React.Component {
 
   componentDidMount() {
     let annotationLength = this.props.annotationLength;
-    let timeData = this.props.annotations.map((x, index) => ({
-      start:
-        Number(x.Duration.start.hours) * 60 * 60 +
-        Number(x.Duration.start.minutes) * 60 +
-        Number(x.Duration.start.seconds),
-      end:
-        Number(x.Duration.end.hours) * 60 * 60 +
-        Number(x.Duration.end.minutes) * 60 +
-        Number(x.Duration.end.seconds),
-      tag: x.Tags,
-      name: x.Tags + index,
-      annotation: x.Description,
-      duration: `${x.Duration.start.hours}:${x.Duration.start.minutes}:${x.Duration.start.seconds} - ${x.Duration.end.hours}:${x.Duration.end.minutes}:${x.Duration.end.seconds}`,
-      totalTime() {
-        const start = new moment(this.start * 1000);
-        const end = new moment(this.end * 1000);
-        const diff = moment.duration(end.diff(start));
-        return `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
-      }
-    }));
-    // restructuring to an array [each annotation] with an array [with time start and time end dates as only values]
-
+    let annotationData = this.props.annotationData;
     // Tooltip
     const initTooltip = () => {
       d3.select(this.props.tooltipId)
@@ -66,7 +44,7 @@ export default class extends React.Component {
 
     var myColor = d3
       .scaleOrdinal()
-      .domain(timeData)
+      .domain(annotationData)
       .range(d3.schemeSet2);
     let scale = d3
       .scaleLinear()
@@ -77,7 +55,7 @@ export default class extends React.Component {
       .append("g")
       .selectAll("miniItems")
 
-      .data(timeData)
+      .data(annotationData)
       .enter()
       .append("rect")
       .style("fill", function(d) {

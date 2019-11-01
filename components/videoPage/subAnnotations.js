@@ -1,14 +1,14 @@
 import React, { useState, useRef } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import * as d3 from "d3";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
-import * as moment from "moment";
+import moment from "moment";
 import MainAnnotations from "./mainAnnotations";
 
 function SubAnnotation(props) {
   const [subannotations, addSubAnnotation] = useState([]);
   const [activeTab, activiateTab] = useState(0);
+  const [activSubAnnotation, changeActiveSubAnnotation] = useState([]);
   const newTitle = useRef(null);
   const handleSubmit = e => {
     e.preventDefault();
@@ -28,7 +28,7 @@ function SubAnnotation(props) {
       newSubAnnotation,
       ...subannotations.slice(activeTab + 1, subannotations.length)
     ]);
-    console.log(subannotations);
+    changeActiveSubAnnotation(newSubAnnotation.annotations);
   };
   return (
     <>
@@ -41,27 +41,31 @@ function SubAnnotation(props) {
           "border-style": "dashed"
         }}
       >
-        {subannotations.length > 0 && (
-          <MainAnnotations
-            annotations={subannotations[activeTab].annotations}
-            seekTo={props.seekTo}
-            currentTime={props.currentTime}
-            annotationLength={props.annotationLength}
-            divId={"#sub-annotations"}
-            tooltipId={"#subAnn-tooltip"}
-          >
-            <div id="sub-annotations" style={{ bottom: "8px" }}></div>
-            <div id="subAnn-tooltip"></div>
-          </MainAnnotations>
-        )}
+        <div id="subAnn-tooltip" style={{ bottom: "8px" }}></div>
+        <MainAnnotations
+          annotationData={subannotations
+            .map(element => element.annotations)
+            .flat(1)}
+          seekTo={props.seekTo}
+          currentTime={props.currentTime}
+          annotationLength={props.annotationLength}
+          divId={"#sub-annotations"}
+          tooltipId={"#subAnn-tooltip"}
+          key={activSubAnnotation.length}
+        >
+          <div id="sub-annotations" style={{ bottom: "8px" }}></div>
+        </MainAnnotations>
       </div>
       <Tabs
         selectedIndex={activeTab}
-        onSelect={tabIndex => activiateTab(tabIndex)}
+        onSelect={tabIndex => {
+          if (tabIndex === subannotations.length) return;
+          activiateTab(tabIndex);
+        }}
       >
         <TabList>
-          {subannotations.map(annotation => (
-            <Tab>{annotation.title}</Tab>
+          {subannotations.map((annotation, index) => (
+            <Tab key={index}>{annotation.title}</Tab>
           ))}
           <Tab>
             <form class="form-inline" onSubmit={handleSubmit}>
@@ -71,6 +75,7 @@ function SubAnnotation(props) {
                 id="formGroupExampleInput2"
                 placeholder="Add Sub-annotation"
                 ref={newTitle}
+                key={"newTab"}
               />
             </form>
           </Tab>
@@ -80,7 +85,8 @@ function SubAnnotation(props) {
             {AddAnnotation(
               props.currentTime,
               subannotations[index],
-              addNewSubAnnotation
+              addNewSubAnnotation,
+              props.selectedAnnotation
             )}
           </TabPanel>
         ))}
@@ -89,36 +95,12 @@ function SubAnnotation(props) {
   );
 }
 
-function SetVisulations() {
-  return (
-    <>
-      <div
-        style={{
-          height: "20px",
-          "border-color": "black",
-          "border-style": "dashed"
-        }}
-      >
-        <MainAnnotations
-          annotations={props.video.Annotations}
-          seekTo={seekTo}
-          currentTime={currentTime}
-          annotationLength={
-            props.video.VideoLength.hours * 3600 +
-            props.video.VideoLength.minutes * 60 +
-            props.video.VideoLength.seconds
-          }
-          divId={"#sub-annotations"}
-          tooltipId={"#subAnn-tooltip"}
-        >
-          <div id="sub-annotations" style={{ bottom: "8px" }}></div>
-        </MainAnnotations>
-      </div>
-    </>
-  );
-}
-
-function AddAnnotation(currentTime, subannotations, addNewSubAnnotation) {
+function AddAnnotation(
+  currentTime,
+  subannotations,
+  addNewSubAnnotation,
+  selectedAnnotation
+) {
   const refStartTime = React.createRef();
   const refEndTime = React.createRef();
   const refDescription = React.createRef();
@@ -138,9 +120,26 @@ function AddAnnotation(currentTime, subannotations, addNewSubAnnotation) {
     const localNewAnnotation = {
       startTime: refStartTime.current.value,
       endTime: refEndTime.current.value,
-      description: refDescription.current.value
+      start:
+        moment.duration(refStartTime.current.value).asSeconds() -
+        selectedAnnotation.start,
+      end:
+        moment.duration(refEndTime.current.value).asSeconds() -
+        selectedAnnotation.start,
+      description: refDescription.current.value,
+      tag: subannotations.title,
+      name: subannotations.title,
+      totalTime() {
+        const start = new moment(this.start * 1000);
+        const end = new moment(this.end * 1000);
+        const diff = moment.duration(end.diff(start));
+        return `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
+      }
     };
-    subannotations.annotations.push(localNewAnnotation);
+    subannotations.annotations = [
+      ...subannotations.annotations,
+      localNewAnnotation
+    ];
     addNewSubAnnotation(subannotations);
   };
 
@@ -150,7 +149,7 @@ function AddAnnotation(currentTime, subannotations, addNewSubAnnotation) {
         <input
           type="text"
           class="form-control"
-          placeholder="Start time  "
+          placeholder="Start time"
           aria-label="Start time"
           aria-describedby="button-addon2"
           ref={refStartTime}
