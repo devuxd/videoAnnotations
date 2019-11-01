@@ -6,6 +6,7 @@ import Link from "next/link";
  * Videos: component for each video for search result page
  */
 class Videos extends React.Component {
+  hover = {};
   constructor(props) {
     super(props);
   }
@@ -18,27 +19,41 @@ class Videos extends React.Component {
     );
     return (
       <div class="card">
-        <img
-          src={"https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"}
-          class="card-img-top"
-          alt="..."
-        />
-        <div class="card-img-overlay">
+        <Link
+          href="/video/[sheetId]/[videoId]"
+          as={`/video/${this.props.sheetId}/${videoId}`}
+        >
+          <img
+            src={"https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"}
+            class="card-img-top "
+            onMouseEnter={e => {
+              e.target.style.cursor = "pointer";
+              e.target.style.opacity = 0.7;
+            }}
+            onMouseLeave={e => {
+              e.target.style.opacity = 1;
+            }}
+            alt="..."
+          />
+        </Link>
+        <div class="card-body bg-light text-dark">
           <Link
             href="/video/[sheetId]/[videoId]"
             as={`/video/${this.props.sheetId}/${videoId}`}
           >
-            <button
-              type="button"
-              class="btn btn-danger"
-              style={{ margin: "25% 40%" }}
+            <h5
+              class="card-title"
+              onMouseEnter={e => {
+                e.target.style.cursor = "pointer";
+                e.target.style.textDecoration = "underline";
+              }}
+              onMouseLeave={e => {
+                e.target.style.textDecoration = "none";
+              }}
             >
-              Play
-            </button>
+              {video.VideoTitle}
+            </h5>
           </Link>
-        </div>
-        <div class="card-body bg-light text-dark">
-          <h5 class="card-title">{video.VideoTitle}</h5>
           <p class="card-text">
             <VideoInfo vidElem={video} />
           </p>
