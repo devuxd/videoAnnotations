@@ -41,7 +41,7 @@ function VideoPage(props) {
         Number(x.Duration.end.minutes) * 60 +
         Number(x.Duration.end.seconds),
       tag: x.Tags,
-      name: x.Tags + index,
+      name: x.Tags,
       annotation: x.Description,
       duration: `${x.Duration.start.hours}:${x.Duration.start.minutes}:${x.Duration.start.seconds} - ${x.Duration.end.hours}:${x.Duration.end.minutes}:${x.Duration.end.seconds}`,
       totalTime() {

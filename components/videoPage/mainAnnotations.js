@@ -7,8 +7,18 @@ import * as d3 from "d3";
 export default class extends React.Component {
   constructor(props) {
     super(props);
+    this.selectedElement;
   }
 
+  mouseclick = (d, e) => {
+    this.props.seekTo(d);
+    if (this.selectedElement) {
+      this.selectedElement.style.opacity = 0.3;
+      this.selectedElement.style.stroke = "none";
+      this.selectedElement.style.stroke = "none";
+    }
+    this.selectedElement = e;
+  };
   componentDidMount() {
     let annotationLength = this.props.annotationLength;
     let annotationData = this.props.annotationData;
@@ -28,10 +38,7 @@ export default class extends React.Component {
         .style("font-size", "14px");
     };
 
-    const mouseclick = d => {
-      this.props.seekTo(d);
-    };
-
+    const mouseclick = this.mouseclick;
     const w = 1250,
       h = 100;
 
@@ -68,6 +75,7 @@ export default class extends React.Component {
         return scale(d.end - d.start);
       })
       .attr("height", 15)
+      .style("opacity", 0.3)
       .on("mouseover", function(d) {
         d3.select(this).style("cursor", "pointer");
       })
@@ -75,7 +83,10 @@ export default class extends React.Component {
         d3.select(this).style("cursor", "default");
       })
       .on("click", function(d) {
-        d3.select(this).style("opacity", 1);
+        d3.select(this)
+          .style("opacity", 1)
+          .style("stroke", "black")
+          .style("stroke-width", 1);
         initTooltip()
           .html(
             `${d.annotation}
@@ -90,10 +101,10 @@ export default class extends React.Component {
           .style("top", d3.event.pageY + "px")
           .transition()
           .style("opacity", 1)
+          .style("opacity", 1)
           .style("background", myColor(d.name));
-        mouseclick(d);
-      })
-      .style("opacity", 0.8);
+        mouseclick(d, this);
+      });
   }
 
   render() {
