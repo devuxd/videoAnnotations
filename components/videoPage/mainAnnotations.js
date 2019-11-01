@@ -12,7 +12,7 @@ export default class extends React.Component {
 
   mouseclick = (d, e) => {
     this.props.seekTo(d);
-    if (this.selectedElement) {
+    if (this.selectedElement && this.selectedElement !== e) {
       this.selectedElement.style.opacity = 0.3;
       this.selectedElement.style.stroke = "none";
       this.selectedElement.style.stroke = "none";
@@ -83,6 +83,7 @@ export default class extends React.Component {
         d3.select(this).style("cursor", "default");
       })
       .on("click", function(d) {
+        mouseclick(d, this);
         d3.select(this)
           .style("opacity", 1)
           .style("stroke", "black")
@@ -103,7 +104,6 @@ export default class extends React.Component {
           .style("opacity", 1)
           .style("opacity", 1)
           .style("background", myColor(d.name));
-        mouseclick(d, this);
       });
   }
 

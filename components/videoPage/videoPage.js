@@ -28,6 +28,7 @@ function VideoPage(props) {
   const seekTo = annotation => {
     YTplayer.seekTo(annotation.start);
     changeSelectedAnnotaion(annotation);
+    activiateTab(2);
     YTpaus(true);
   };
   const getAnnotationData = annotations =>
