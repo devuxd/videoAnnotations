@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import AnnotationBox from "./annotationBox";
+import AnnotationBox from "./AllAnnotations/annotationBox";
 import VideoInfo from "../shared/videoInfo";
-import MainAnnotations from "./mainAnnotations";
+import MainAnnotationsVis from "./mainAnnotationsVis";
 import ReactPlayer from "react-player";
-import SubAnnotations from "./subAnnotations";
+import SubAnnotationsTab from "./SubAnnotations/subAnnotationsTab";
 import moment from "moment";
 
 /**
@@ -13,9 +13,9 @@ import moment from "moment";
 
 function VideoPage(props) {
   let YTplayer;
-  const [selectedTab, activiateTab] = useState(0);
-  const [YTplayering, YTpaus] = useState(false);
-  const [selectedAnnotation, changeSelectedAnnotaion] = useState({
+  const [selectedTab, activateTab] = useState(0);
+  const [YTplaying, YTpause] = useState(false);
+  const [selectedAnnotation, changeSelectedAnnotation] = useState({
     start: 0,
     end: 0,
     Tags: "",
@@ -25,11 +25,13 @@ function VideoPage(props) {
   const ref = player => {
     YTplayer = player;
   };
-  const seekTo = annotation => {
-    YTplayer.seekTo(annotation.start);
-    changeSelectedAnnotaion(annotation);
-    activiateTab(2);
-    YTpaus(true);
+  const seekTo = seconds => {
+    YTplayer.seekTo(seconds);
+    YTpause(true);
+  };
+  const setSelectedAnnotation = (annotationObject, annotationVisElement) => {
+    changeSelectedAnnotation({ ...annotationObject, annotationVisElement });
+    activateTab(2);
   };
   const getAnnotationData = annotations =>
     annotations.map((x, index) => ({
@@ -72,10 +74,10 @@ function VideoPage(props) {
         controls={true}
         width="100%"
         height="100%"
-        playing={YTplayering}
+        playing={YTplaying}
       />
 
-      <MainAnnotations
+      <MainAnnotationsVis
         annotationData={getAnnotationData(props.video.Annotations)}
         seekTo={seekTo}
         currentTime={currentTime}
@@ -84,6 +86,7 @@ function VideoPage(props) {
           props.video.VideoLength.minutes * 60 +
           props.video.VideoLength.seconds
         }
+        setSelectedAnnotation={setSelectedAnnotation}
         divId={"#video-annotations"}
         tooltipId={"#ann-tooltip"}
       >
@@ -99,7 +102,7 @@ function VideoPage(props) {
             </span>
           ))}
         </p>
-      </MainAnnotations>
+      </MainAnnotationsVis>
 
       <Tabs
         selectedIndex={selectedTab}
@@ -145,11 +148,12 @@ function VideoPage(props) {
           </div>
         </TabPanel>
         <TabPanel>
-          <SubAnnotations
+          <SubAnnotationsTab
             seekTo={seekTo}
             currentTime={currentTime}
             selectedAnnotation={selectedAnnotation}
             annotationLength={selectedAnnotation.end - selectedAnnotation.start}
+            key={selectedAnnotation.start}
           />
         </TabPanel>
       </Tabs>

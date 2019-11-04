@@ -11,16 +11,19 @@ export default class extends React.Component {
     this.selectCategory;
   }
 
-  mouseclick = (d, e) => {
-    this.props.seekTo(d);
-    if (this.selectedElement && this.selectedElement !== e) {
+  mouseclick = (annotationObject, annotationVisElement) => {
+    this.props.seekTo(annotationObject.start);
+    this.props.setSelectedAnnotation(annotationObject, annotationVisElement);
+    if (this.selectedElement && this.selectedElement !== annotationVisElement) {
       this.selectedElement.style.opacity = 0.75;
       this.selectedElement.style.stroke = "none";
       this.selectCategory.style.opacity = 0.75;
       this.selectCategory.style.borderStyle = "none";
     }
-    this.selectCategory = document.getElementById(`${d.tag}-badge`);
-    this.selectedElement = e;
+    this.selectCategory = document.getElementById(
+      `${annotationObject.tag}-badge`
+    );
+    this.selectedElement = annotationVisElement;
     this.selectCategory.style.borderStyle = "solid";
     this.selectCategory.style.opacity = 1;
   };
@@ -70,10 +73,10 @@ export default class extends React.Component {
       .data(annotationData)
       .enter()
       .append("rect")
-      .style("fill", function(d) {
+      .style("fill", d => {
         return myColor(d.name);
       })
-      .attr("x", function(d) {
+      .attr("x", d => {
         return scale(d.start);
       })
       .attr("id", function(d) {
