@@ -8,7 +8,7 @@ import SubAnnotationsVis from "./subAnnotationsVis";
 function SubAnnotationsTab(props) {
   const [subannotations, addSubAnnotation] = useState([]);
   const [activeTab, activiateTab] = useState(0);
-  const [activSubAnnotation, changeActiveSubAnnotation] = useState([]);
+  const [activSubAnnotation, changeActiveSubAnnotation] = useState(0);
   const newTitle = useRef(null);
   const handleSubmit = e => {
     e.preventDefault();
@@ -23,12 +23,16 @@ function SubAnnotationsTab(props) {
     newTitle.current.value = "";
   };
   const addNewSubAnnotation = newSubAnnotation => {
-    addSubAnnotation([
-      ...subannotations.slice(0, activeTab),
-      newSubAnnotation,
-      ...subannotations.slice(activeTab + 1, subannotations.length)
-    ]);
-    changeActiveSubAnnotation(newSubAnnotation.annotations);
+    console.log("new", newSubAnnotation);
+    addSubAnnotation(
+      subannotations.map(annotation =>
+        annotation.title === newSubAnnotation.title
+          ? newSubAnnotation
+          : annotation
+      )
+    );
+    console.log("after", subannotations);
+    changeActiveSubAnnotation(activSubAnnotation + 1);
   };
   return (
     <>
@@ -45,7 +49,7 @@ function SubAnnotationsTab(props) {
         annotationLength={props.annotationLength}
         divId={"#sub-annotations"}
         tooltipId={"#subAnn-tooltip"}
-        key={activSubAnnotation.length}
+        key={activSubAnnotation}
         selectedAnnotation={props.selectedAnnotation}
       >
         <div id="sub-annotations" style={{ bottom: "8px" }}></div>
@@ -58,9 +62,11 @@ function SubAnnotationsTab(props) {
         }}
       >
         <TabList>
-          {subannotations.map((annotation, index) => (
-            <Tab key={index}>{annotation.title}</Tab>
-          ))}
+          {subannotations.map((annotation, index) => {
+            console.log("TabList", subannotations);
+
+            return <Tab key={annotation.title}>{annotation.title}</Tab>;
+          })}
           <Tab>
             <form class="form-inline" onSubmit={handleSubmit}>
               <input
@@ -208,6 +214,5 @@ function AddAnnotation(
     </>
   );
 }
-const displayAnnotations = () => {};
 
 export default SubAnnotationsTab;
