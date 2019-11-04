@@ -53,6 +53,11 @@ function VideoPage(props) {
       }
     }));
   const currentTime = () => YTplayer.getCurrentTime();
+
+  //this is a duplicate of the same function inside datasetPage/videos.js
+  let uniqueAnnotation = Array.from(
+    new Set(props.video.Annotations.map(annotation => annotation.Tags))
+  );
   return (
     <div
       style={{
@@ -83,6 +88,17 @@ function VideoPage(props) {
         tooltipId={"#ann-tooltip"}
       >
         <div id="video-annotations" style={{ bottom: "8px" }}></div>
+        <p
+          class="card-text"
+          id={`annotations-badges`}
+          style={{ margin: "30px auto", maxWidth: "400px" }}
+        >
+          {uniqueAnnotation.map(annotation => (
+            <span class="badge badge-pill" id={`${annotation}-badge`}>
+              {annotation}
+            </span>
+          ))}
+        </p>
       </MainAnnotations>
 
       <Tabs

@@ -8,16 +8,21 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
     this.selectedElement;
+    this.selectCategory;
   }
 
   mouseclick = (d, e) => {
     this.props.seekTo(d);
     if (this.selectedElement && this.selectedElement !== e) {
-      this.selectedElement.style.opacity = 0.3;
+      this.selectedElement.style.opacity = 0.75;
       this.selectedElement.style.stroke = "none";
-      this.selectedElement.style.stroke = "none";
+      this.selectCategory.style.opacity = 0.75;
+      this.selectCategory.style.borderStyle = "none";
     }
+    this.selectCategory = document.getElementById(`${d.tag}-badge`);
     this.selectedElement = e;
+    this.selectCategory.style.borderStyle = "solid";
+    this.selectCategory.style.opacity = 1;
   };
   componentDidMount() {
     let annotationLength = this.props.annotationLength;
@@ -71,11 +76,14 @@ export default class extends React.Component {
       .attr("x", function(d) {
         return scale(d.start);
       })
+      .attr("id", function(d) {
+        return d.tag;
+      })
       .attr("width", function(d) {
         return scale(d.end - d.start);
       })
       .attr("height", 15)
-      .style("opacity", 0.3)
+      .style("opacity", 0.75)
       .on("mouseover", function(d) {
         d3.select(this).style("cursor", "pointer");
       })
@@ -105,6 +113,14 @@ export default class extends React.Component {
           .style("opacity", 1)
           .style("background", myColor(d.name));
       });
+    [...document.getElementById("annotations-badges").children].forEach(
+      element => {
+        element.style.backgroundColor = document.getElementById(
+          element.innerText
+        ).style.fill;
+        element.style.opacity = 0.75;
+      }
+    );
   }
 
   render() {
