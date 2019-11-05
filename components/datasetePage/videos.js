@@ -57,9 +57,10 @@ class Videos extends React.Component {
           <p class="card-text">
             <VideoInfo vidElem={video} />
           </p>
+          <b>Annotations:</b>
           <p class="card-text">
             {uniqueAnnotation.map(annotation => (
-              <span class="badge badge-pill badge-primary">{annotation}</span>
+              <span class="badge badge-light">{annotation}</span>
             ))}
           </p>
         </div>

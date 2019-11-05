@@ -1,6 +1,6 @@
 import React from "react";
 import * as d3 from "d3";
-
+import color from "color";
 /**
  * d3.js scatterplot component to visualize annotations
  */
@@ -74,6 +74,18 @@ export default class extends React.Component {
       .style("fill", d => {
         return this.props.selectedAnnotation.annotationVisElement.style.fill;
       })
+      .style("stroke", d => {
+        const strokeColor = color(myColor(d.name));
+        const currentColor = color(
+          this.props.selectedAnnotation.annotationVisElement.style.fill
+        );
+        console.log(strokeColor, currentColor);
+        if (strokeColor.hex() == currentColor.hex())
+          return color(myColor(d.name + Math.random())).darken(0.5);
+        return strokeColor.darken(0.5);
+      })
+      .style("stroke-width", 2.5)
+      .style("stroke-linecap", "butt")
       .attr("x", d => {
         return scale(d.start);
       })

@@ -95,6 +95,7 @@ function VideoPage(props) {
           class="card-text"
           id={`annotations-badges`}
           style={{ margin: "30px auto", maxWidth: "400px" }}
+          disabled
         >
           {uniqueAnnotation.map(annotation => (
             <span class="badge badge-pill" id={`${annotation}-badge`}>
