@@ -29,37 +29,46 @@ function VideoPage(props) {
     YTplayer.seekTo(seconds);
     YTpause(true);
   };
+  const seekTo_subAnnotations = seconds => {
+    YTplayer.seekTo(moment.duration(seconds).asSeconds());
+    YTpause(true);
+  };
   const setSelectedAnnotation = (annotationObject, annotationVisElement) => {
     changeSelectedAnnotation({ ...annotationObject, annotationVisElement });
     activateTab(2);
   };
   const getAnnotationData = annotations =>
-    annotations.map((x, index) => ({
-      start:
-        Number(x.Duration.start.hours) * 60 * 60 +
-        Number(x.Duration.start.minutes) * 60 +
-        Number(x.Duration.start.seconds),
-      end:
-        Number(x.Duration.end.hours) * 60 * 60 +
-        Number(x.Duration.end.minutes) * 60 +
-        Number(x.Duration.end.seconds),
-      tag: x.Tags,
-      name: x.Tags,
-      annotation: x.Description,
-      duration: `${x.Duration.start.hours}:${x.Duration.start.minutes}:${x.Duration.start.seconds} - ${x.Duration.end.hours}:${x.Duration.end.minutes}:${x.Duration.end.seconds}`,
-      totalTime() {
-        const start = new moment(this.start * 1000);
-        const end = new moment(this.end * 1000);
-        const diff = moment.duration(end.diff(start));
-        return `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
-      }
-    }));
+    annotations.map((x, index) => {
+      const obj = {
+        start:
+          Number(x.Duration.start.hours) * 60 * 60 +
+          Number(x.Duration.start.minutes) * 60 +
+          Number(x.Duration.start.seconds),
+        end:
+          Number(x.Duration.end.hours) * 60 * 60 +
+          Number(x.Duration.end.minutes) * 60 +
+          Number(x.Duration.end.seconds),
+        tag: x.Tags,
+        name: x.Tags,
+        annotation: x.Description,
+        duration: `${x.Duration.start.hours}:${x.Duration.start.minutes}:${x.Duration.start.seconds} - ${x.Duration.end.hours}:${x.Duration.end.minutes}:${x.Duration.end.seconds}`
+      };
+      const start = new moment(obj.start * 1000);
+      const end = new moment(obj.end * 1000);
+      const diff = moment.duration(end.diff(start));
+      obj.totalTime = `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
+      return obj;
+    });
   const currentTime = () => YTplayer.getCurrentTime();
 
   //this is a duplicate of the same function inside datasetPage/videos.js
   let uniqueAnnotation = Array.from(
     new Set(props.video.Annotations.map(annotation => annotation.Tags))
   );
+  const updateAnnotations = annotation => {
+    changeSelectedAnnotation(annotation);
+    console.log(selectedAnnotation);
+  };
   return (
     <div
       style={{
@@ -107,7 +116,7 @@ function VideoPage(props) {
 
       <Tabs
         selectedIndex={selectedTab}
-        onSelect={tabIndex => activiateTab(tabIndex)}
+        onSelect={tabIndex => activateTab(tabIndex)}
       >
         <TabList>
           <Tab>General Information</Tab>
@@ -131,10 +140,7 @@ function VideoPage(props) {
             {props.video.VideoTitle}
             {props.video.VideoAuthor}
             <br />
-            <VideoInfo
-              searchQuery={props.seaeorchQuery}
-              vidElem={props.video}
-            />
+            <VideoInfo searchQuery={props.searchQuery} vidElem={props.video} />
           </div>
         </TabPanel>
         <TabPanel>
@@ -150,11 +156,12 @@ function VideoPage(props) {
         </TabPanel>
         <TabPanel>
           <SubAnnotationsTab
-            seekTo={seekTo}
+            seekTo={seekTo_subAnnotations}
             currentTime={currentTime}
             selectedAnnotation={selectedAnnotation}
             annotationLength={selectedAnnotation.end - selectedAnnotation.start}
             key={selectedAnnotation.start}
+            updateAnnotations={updateAnnotations}
           />
         </TabPanel>
       </Tabs>

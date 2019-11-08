@@ -103,11 +103,7 @@ export default class extends React.Component {
           .html(
             `${d.annotation}
                           <br>
-                          <b>Duration:</b> ${
-                            d.duration
-                          }. <b>Total Time:</b> ${d.totalTime()}.<b> Annotation:</b> ${
-              d.tag
-            }.`
+                          <b>Duration:</b> ${d.duration}. <b>Total Time:</b> ${d.totalTime}.<b> Annotation:</b> ${d.tag}.`
           )
           .style("left", d3.event.pageX + "px")
           .style("top", d3.event.pageY + "px")

@@ -12,18 +12,18 @@ export default class extends React.Component {
   }
 
   mouseclick = (d, e) => {
-    this.props.seekTo(d);
-
-    if (this.selectedElement && this.selectedElement !== e) {
-      this.selectedElement.style.opacity = 0.75;
-      this.selectedElement.style.stroke = "none";
-      this.selectCategory.style.opacity = 0.75;
-      this.selectCategory.style.borderStyle = "none";
-    }
-    this.selectCategory = document.getElementById(`${d.tag}-badge`);
-    this.selectedElement = e;
-    this.selectCategory.style.borderStyle = "solid";
-    this.selectCategory.style.opacity = 1;
+    this.props.seekTo(d.startTime);
+    this.props.editAnnotation(d);
+    // if (this.selectedElement && this.selectedElement !== e) {
+    //   this.selectedElement.style.opacity = 0.75;
+    //   this.selectedElement.style.stroke = "none";
+    //   this.selectCategory.style.opacity = 0.75;
+    //   this.selectCategory.style.borderStyle = "none";
+    // }
+    // this.selectCategory = document.getElementById(`${d.tag}-badge`);
+    // this.selectedElement = e;
+    // this.selectCategory.style.borderStyle = "solid";
+    // this.selectCategory.style.opacity = 1;
   };
   componentDidMount() {
     let annotationLength = this.props.annotationLength;
@@ -79,7 +79,6 @@ export default class extends React.Component {
         const currentColor = color(
           this.props.selectedAnnotation.annotationVisElement.style.fill
         );
-        console.log(strokeColor, currentColor);
         if (strokeColor.hex() == currentColor.hex())
           return color(myColor(d.name + Math.random())).darken(0.5);
         return strokeColor.darken(0.5);
@@ -113,11 +112,7 @@ export default class extends React.Component {
           .html(
             `${d.annotation}
                           <br>
-                          <b>Duration:</b> ${
-                            d.duration
-                          }. <b>Total Time:</b> ${d.totalTime()}.<b> Annotation:</b> ${
-              d.tag
-            }.`
+                          <b>Duration:</b> ${d.duration}. <b>Total Time:</b> ${d.totalTime}.<b> Annotation:</b> ${d.tag}.`
           )
           .style("left", d3.event.pageX + "px")
           .style("top", d3.event.pageY + "px")

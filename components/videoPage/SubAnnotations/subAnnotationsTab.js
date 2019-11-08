@@ -7,8 +7,8 @@ import SubAnnotationsVis from "./subAnnotationsVis";
 
 function SubAnnotationsTab(props) {
   const [subannotations, addSubAnnotation] = useState([]);
-  const [activeTab, activiateTab] = useState(0);
-  const [activSubAnnotation, changeActiveSubAnnotation] = useState(0);
+  const [activeTab, activateTab] = useState(0);
+  const [activeSubAnnotation, changeActiveSubAnnotation] = useState(0);
   const newTitle = useRef(null);
   const handleSubmit = e => {
     e.preventDefault();
@@ -23,7 +23,6 @@ function SubAnnotationsTab(props) {
     newTitle.current.value = "";
   };
   const addNewSubAnnotation = newSubAnnotation => {
-    console.log("new", newSubAnnotation);
     addSubAnnotation(
       subannotations.map(annotation =>
         annotation.title === newSubAnnotation.title
@@ -31,8 +30,16 @@ function SubAnnotationsTab(props) {
           : annotation
       )
     );
-    console.log("after", subannotations);
-    changeActiveSubAnnotation(activSubAnnotation + 1);
+    props.updateAnnotations({ ...props.selectedAnnotation, subannotations });
+    changeActiveSubAnnotation(activeSubAnnotation + 1);
+  };
+  const editAnnotation = annotation => {
+    changeActiveSubAnnotation(annotation);
+    activateTab(
+      subannotations.findIndex(
+        subannotation => subannotation.title === annotation.tag
+      )
+    );
   };
   return (
     <>
@@ -49,8 +56,9 @@ function SubAnnotationsTab(props) {
         annotationLength={props.annotationLength}
         divId={"#sub-annotations"}
         tooltipId={"#subAnn-tooltip"}
-        key={activSubAnnotation}
+        key={activeSubAnnotation}
         selectedAnnotation={props.selectedAnnotation}
+        editAnnotation={editAnnotation}
       >
         <div id="sub-annotations" style={{ bottom: "8px" }}></div>
       </SubAnnotationsVis>
@@ -58,13 +66,12 @@ function SubAnnotationsTab(props) {
         selectedIndex={activeTab}
         onSelect={tabIndex => {
           if (tabIndex === subannotations.length) return;
-          activiateTab(tabIndex);
+          activateTab(tabIndex);
+          changeActiveSubAnnotation({});
         }}
       >
         <TabList>
           {subannotations.map((annotation, index) => {
-            console.log("TabList", subannotations);
-
             return <Tab key={annotation.title}>{annotation.title}</Tab>;
           })}
           <Tab>
@@ -86,7 +93,8 @@ function SubAnnotationsTab(props) {
               props.currentTime,
               subannotations[index],
               addNewSubAnnotation,
-              props.selectedAnnotation
+              props.selectedAnnotation,
+              activeSubAnnotation
             )}
           </TabPanel>
         ))}
@@ -100,7 +108,8 @@ function AddAnnotation(
   currentTime,
   subannotations,
   addNewSubAnnotation,
-  selectedAnnotation
+  selectedAnnotation,
+  activeSubAnnotation
 ) {
   const refStartTime = React.createRef();
   const refEndTime = React.createRef();
@@ -131,13 +140,13 @@ function AddAnnotation(
       tag: subannotations.title,
       name: subannotations.title,
       duration: refStartTime.current.value + " - " + refEndTime.current.value,
-      totalTime() {
-        const start = new moment(this.start * 1000);
-        const end = new moment(this.end * 1000);
-        const diff = moment.duration(end.diff(start));
-        return `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
-      }
+      index: subannotations.annotations.length
     };
+    const start = new moment(localNewAnnotation.start * 1000);
+    const end = new moment(localNewAnnotation.end * 1000);
+    const diff = moment.duration(end.diff(start));
+    localNewAnnotation.totalTime = `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
+
     subannotations.annotations = [
       ...subannotations.annotations,
       localNewAnnotation
@@ -155,6 +164,7 @@ function AddAnnotation(
           aria-label="Start time"
           aria-describedby="button-addon2"
           ref={refStartTime}
+          value={activeSubAnnotation.startTime}
         />
         <div class="input-group-append">
           <button
@@ -177,6 +187,7 @@ function AddAnnotation(
           aria-describedby="button-addon2"
           style={{ "margin-left": "10px" }}
           ref={refEndTime}
+          value={activeSubAnnotation.endTime}
         />
         <div class="input-group-append">
           <button
@@ -198,6 +209,7 @@ function AddAnnotation(
         placeholder="Annotation description"
         rows="3"
         ref={refDescription}
+        value={activeSubAnnotation.annotation}
       ></textarea>
       <div
         style={{
