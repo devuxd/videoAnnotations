@@ -15,13 +15,7 @@ function VideoPage(props) {
   let YTplayer;
   const [selectedTab, activateTab] = useState(0);
   const [YTplaying, YTpause] = useState(false);
-  const [selectedAnnotation, changeSelectedAnnotation] = useState({
-    start: 0,
-    end: 0,
-    Tags: "",
-    Description: "",
-    annotationIndex: ""
-  });
+  const [selectedAnnotation, changeSelectedAnnotation] = useState(null);
   const ref = player => {
     YTplayer = player;
   };
@@ -48,8 +42,8 @@ function VideoPage(props) {
           Number(x.Duration.end.hours) * 60 * 60 +
           Number(x.Duration.end.minutes) * 60 +
           Number(x.Duration.end.seconds),
+        id: x.Id,
         tag: x.Tags,
-        name: x.Tags,
         annotation: x.Description,
         duration: `${x.Duration.start.hours}:${x.Duration.start.minutes}:${x.Duration.start.seconds} - ${x.Duration.end.hours}:${x.Duration.end.minutes}:${x.Duration.end.seconds}`
       };
@@ -61,13 +55,30 @@ function VideoPage(props) {
     });
   const currentTime = () => YTplayer.getCurrentTime();
 
+  const updateAnnotations = annotation => {
+    console.log(annotation);
+  };
   //this is a duplicate of the same function inside datasetPage/videos.js
-  let uniqueAnnotation = Array.from(
+  const uniqueAnnotation = Array.from(
     new Set(props.video.Annotations.map(annotation => annotation.Tags))
   );
-  const updateAnnotations = annotation => {
-    changeSelectedAnnotation(annotation);
-    console.log(selectedAnnotation);
+  const subAnnotationTab = () => {
+    if (selectedAnnotation == null)
+      return (
+        <>
+          <h4>Please select annotation first.</h4>
+        </>
+      );
+    return (
+      <SubAnnotationsTab
+        seekTo={seekTo_subAnnotations}
+        currentTime={currentTime}
+        selectedAnnotation={selectedAnnotation}
+        annotationLength={selectedAnnotation.end - selectedAnnotation.start}
+        key={selectedAnnotation.start}
+        updateAnnotations={updateAnnotations}
+      />
+    );
   };
   return (
     <div
@@ -154,16 +165,7 @@ function VideoPage(props) {
             ))}
           </div>
         </TabPanel>
-        <TabPanel>
-          <SubAnnotationsTab
-            seekTo={seekTo_subAnnotations}
-            currentTime={currentTime}
-            selectedAnnotation={selectedAnnotation}
-            annotationLength={selectedAnnotation.end - selectedAnnotation.start}
-            key={selectedAnnotation.start}
-            updateAnnotations={updateAnnotations}
-          />
-        </TabPanel>
+        <TabPanel>{subAnnotationTab()}</TabPanel>
       </Tabs>
     </div>
   );

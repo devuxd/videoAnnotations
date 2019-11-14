@@ -74,7 +74,7 @@ export default class extends React.Component {
       .enter()
       .append("rect")
       .style("fill", d => {
-        return myColor(d.name);
+        return myColor(d.tag);
       })
       .attr("x", d => {
         return scale(d.start);
@@ -110,7 +110,7 @@ export default class extends React.Component {
           .transition()
           .style("opacity", 1)
           .style("opacity", 1)
-          .style("background", myColor(d.name));
+          .style("background", myColor(d.tag));
       });
     [...document.getElementById("annotations-badges").children].forEach(
       element => {

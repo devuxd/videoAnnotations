@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
@@ -8,8 +8,15 @@ import SubAnnotationsVis from "./subAnnotationsVis";
 function SubAnnotationsTab(props) {
   const [subannotations, addSubAnnotation] = useState([]);
   const [activeTab, activateTab] = useState(0);
-  const [activeSubAnnotation, changeActiveSubAnnotation] = useState(0);
+  const [activeSubAnnotationIndex, changeActiveSubAnnotationIndex] = useState(
+    9
+  );
+  const [activeSubAnnotation, changeActiveSubAnnotation] = useState({});
   const newTitle = useRef(null);
+
+  useEffect(() => {
+    props.updateAnnotations({ ...props.selectedAnnotation, subannotations });
+  }, [activeSubAnnotationIndex]);
   const handleSubmit = e => {
     e.preventDefault();
     const newSubAnnotations = [
@@ -30,8 +37,7 @@ function SubAnnotationsTab(props) {
           : annotation
       )
     );
-    props.updateAnnotations({ ...props.selectedAnnotation, subannotations });
-    changeActiveSubAnnotation(activeSubAnnotation + 1);
+    changeActiveSubAnnotationIndex(activeSubAnnotationIndex + 1);
   };
   const editAnnotation = annotation => {
     changeActiveSubAnnotation(annotation);
@@ -56,7 +62,7 @@ function SubAnnotationsTab(props) {
         annotationLength={props.annotationLength}
         divId={"#sub-annotations"}
         tooltipId={"#subAnn-tooltip"}
-        key={activeSubAnnotation}
+        key={activeSubAnnotationIndex}
         selectedAnnotation={props.selectedAnnotation}
         editAnnotation={editAnnotation}
       >
@@ -137,10 +143,9 @@ function AddAnnotation(
         moment.duration(refEndTime.current.value).asSeconds() -
         selectedAnnotation.start,
       annotation: refDescription.current.value,
+      id: subannotations.annotations.length,
       tag: subannotations.title,
-      name: subannotations.title,
-      duration: refStartTime.current.value + " - " + refEndTime.current.value,
-      index: subannotations.annotations.length
+      duration: refStartTime.current.value + " - " + refEndTime.current.value
     };
     const start = new moment(localNewAnnotation.start * 1000);
     const end = new moment(localNewAnnotation.end * 1000);

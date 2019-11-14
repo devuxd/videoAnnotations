@@ -14,16 +14,10 @@ export default class extends React.Component {
   mouseclick = (d, e) => {
     this.props.seekTo(d.startTime);
     this.props.editAnnotation(d);
-    // if (this.selectedElement && this.selectedElement !== e) {
-    //   this.selectedElement.style.opacity = 0.75;
-    //   this.selectedElement.style.stroke = "none";
-    //   this.selectCategory.style.opacity = 0.75;
-    //   this.selectCategory.style.borderStyle = "none";
-    // }
-    // this.selectCategory = document.getElementById(`${d.tag}-badge`);
-    // this.selectedElement = e;
-    // this.selectCategory.style.borderStyle = "solid";
-    // this.selectCategory.style.opacity = 1;
+    if (this.selectedElement && this.selectedElement !== e) {
+      this.selectedElement.style.opacity = 0.5;
+    }
+    this.selectedElement = e;
   };
   componentDidMount() {
     let annotationLength = this.props.annotationLength;
@@ -75,12 +69,12 @@ export default class extends React.Component {
         return this.props.selectedAnnotation.annotationVisElement.style.fill;
       })
       .style("stroke", d => {
-        const strokeColor = color(myColor(d.name));
+        const strokeColor = color(myColor(d.tag));
         const currentColor = color(
           this.props.selectedAnnotation.annotationVisElement.style.fill
         );
         if (strokeColor.hex() == currentColor.hex())
-          return color(myColor(d.name + Math.random())).darken(0.5);
+          return color(myColor(d.tag + Math.random())).darken(0.5);
         return strokeColor.darken(0.5);
       })
       .style("stroke-width", 2.5)
@@ -95,7 +89,7 @@ export default class extends React.Component {
         return scale(d.end - d.start);
       })
       .attr("height", 15)
-      .style("opacity", 0.75)
+      .style("opacity", 0.5)
       .on("mouseover", function(d) {
         d3.select(this).style("cursor", "pointer");
       })
@@ -104,10 +98,8 @@ export default class extends React.Component {
       })
       .on("click", function(d) {
         mouseclick(d, this);
-        d3.select(this)
-          .style("opacity", 1)
-          .style("stroke", "black")
-          .style("stroke-width", 1);
+        d3.select(this).style("opacity", 1);
+
         initTooltip()
           .html(
             `${d.annotation}
@@ -118,8 +110,7 @@ export default class extends React.Component {
           .style("top", d3.event.pageY + "px")
           .transition()
           .style("opacity", 1)
-          .style("opacity", 1)
-          .style("background", myColor(d.name));
+          .style("background", myColor(d.tag));
       });
   }
 
