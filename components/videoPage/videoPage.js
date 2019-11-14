@@ -35,17 +35,17 @@ function VideoPage(props) {
     annotations.map((x, index) => {
       const obj = {
         start:
-          Number(x.Duration.start.hours) * 60 * 60 +
-          Number(x.Duration.start.minutes) * 60 +
-          Number(x.Duration.start.seconds),
+          Number(x.duration.start.hours) * 60 * 60 +
+          Number(x.duration.start.minutes) * 60 +
+          Number(x.duration.start.seconds),
         end:
-          Number(x.Duration.end.hours) * 60 * 60 +
-          Number(x.Duration.end.minutes) * 60 +
-          Number(x.Duration.end.seconds),
-        id: x.Id,
-        tag: x.Tags,
-        annotation: x.Description,
-        duration: `${x.Duration.start.hours}:${x.Duration.start.minutes}:${x.Duration.start.seconds} - ${x.Duration.end.hours}:${x.Duration.end.minutes}:${x.Duration.end.seconds}`
+          Number(x.duration.end.hours) * 60 * 60 +
+          Number(x.duration.end.minutes) * 60 +
+          Number(x.duration.end.seconds),
+        id: x.id,
+        tag: x.tags,
+        annotation: x.description,
+        duration: `${x.duration.start.hours}:${x.duration.start.minutes}:${x.duration.start.seconds} - ${x.duration.end.hours}:${x.duration.end.minutes}:${x.duration.end.seconds}`
       };
       const start = new moment(obj.start * 1000);
       const end = new moment(obj.end * 1000);
@@ -56,11 +56,15 @@ function VideoPage(props) {
   const currentTime = () => YTplayer.getCurrentTime();
 
   const updateAnnotations = annotation => {
+    props.video.annotations.map(currentAnnotation =>
+      currentAnnotation.id == annotation.id ? annotation : currentAnnotation
+    );
+    console.log(props.video.annotations);
     console.log(annotation);
   };
   //this is a duplicate of the same function inside datasetPage/videos.js
   const uniqueAnnotation = Array.from(
-    new Set(props.video.Annotations.map(annotation => annotation.Tags))
+    new Set(props.video.annotations.map(annotation => annotation.tags))
   );
   const subAnnotationTab = () => {
     if (selectedAnnotation == null)
@@ -98,13 +102,13 @@ function VideoPage(props) {
       />
 
       <MainAnnotationsVis
-        annotationData={getAnnotationData(props.video.Annotations)}
+        annotationData={getAnnotationData(props.video.annotations)}
         seekTo={seekTo}
         currentTime={currentTime}
         annotationLength={
-          props.video.VideoLength.hours * 3600 +
-          props.video.VideoLength.minutes * 60 +
-          props.video.VideoLength.seconds
+          props.video.videoLength.hours * 3600 +
+          props.video.videoLength.minutes * 60 +
+          props.video.videoLength.seconds
         }
         setSelectedAnnotation={setSelectedAnnotation}
         divId={"#video-annotations"}
@@ -148,15 +152,15 @@ function VideoPage(props) {
               paddingRight: "5%"
             }}
           >
-            {props.video.VideoTitle}
-            {props.video.VideoAuthor}
+            {props.video.videoTitle}
+            {props.video.videoAuthor}
             <br />
             <VideoInfo searchQuery={props.searchQuery} vidElem={props.video} />
           </div>
         </TabPanel>
         <TabPanel>
           <div>
-            {props.video.Annotations.map(item => (
+            {props.video.annotations.map(item => (
               <div>
                 {" "}
                 <AnnotationBox passedSeek={seekTo} annElement={item} />

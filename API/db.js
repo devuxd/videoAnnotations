@@ -31,7 +31,7 @@ const getvideData = (videoId, sheetId) =>
   });
 const findVideo = (dataset, videoId) =>
   dataset.find(
-    video => video.VideoURL.replace("https://youtu.be/", "") == videoId
+    video => video.videoURL.replace("https://youtu.be/", "") == videoId
   );
 const cachData = (dataset, id) =>
   localStorage.setItem(id, JSON.stringify(dataset));
@@ -41,57 +41,57 @@ const parse = rowDataset => {
     let dataset = rowDataset.sheets.map(({ data }, sheetIndex) => {
       let videoJSON = {};
       let video = data[0].rowData[2];
-      videoJSON.Id = sheetIndex;
-      videoJSON.VideoTitle = video.values[0].userEnteredValue.stringValue;
-      videoJSON.VideoURL = video.values[1].userEnteredValue.stringValue;
-      videoJSON.VideoLength = { hours: "", minutes: "", seconds: "" };
-      videoJSON.VideoLength.hours =
+      videoJSON.id = sheetIndex;
+      videoJSON.videoTitle = video.values[0].userEnteredValue.stringValue;
+      videoJSON.videoURL = video.values[1].userEnteredValue.stringValue;
+      videoJSON.videoLength = { hours: "", minutes: "", seconds: "" };
+      videoJSON.videoLength.hours =
         video.values[2].userEnteredValue.numberValue;
-      videoJSON.VideoLength.minutes =
+      videoJSON.videoLength.minutes =
         video.values[3].userEnteredValue.numberValue;
-      videoJSON.VideoLength.seconds =
+      videoJSON.videoLength.seconds =
         video.values[4].userEnteredValue.numberValue;
 
-      videoJSON.ProgrammingLanguage = video.values[5].userEnteredValue
+      videoJSON.programmingLanguage = video.values[5].userEnteredValue
         ? video.values[5].userEnteredValue.stringValue
         : "";
-      videoJSON.ProgrammingTools = video.values[6].userEnteredValue
+      videoJSON.programmingTools = video.values[6].userEnteredValue
         ? video.values[6].userEnteredValue.stringValue
         : "";
-      videoJSON.GithubURL = video.values[7].userEnteredValue
+      videoJSON.githubURL = video.values[7].userEnteredValue
         ? video.values[7].userEnteredValue.stringValue
         : "";
 
-      videoJSON.ProjectSize = video.values[8].userEnteredValue
+      videoJSON.projectSize = video.values[8].userEnteredValue
         ? video.values[8].userEnteredValue.numberValue
         : "";
 
-      videoJSON.DeveloperGithubURL = video.values[9].userEnteredValue
+      videoJSON.developerGithubURL = video.values[9].userEnteredValue
         ? video.values[9].userEnteredValue.stringValue
         : "";
 
       let annotationsData = data[0].rowData.splice(10, data[0].rowData.length);
-      videoJSON.Annotations = [];
+      videoJSON.annotations = [];
       let annotationIndex = 11;
-      videoJSON.Annotations = annotationsData.map(annotation => {
+      videoJSON.annotations = annotationsData.map(annotation => {
         let annotationJSON = {};
-        annotationJSON.Duration = { start: {}, end: {} };
-        annotationJSON.Duration.start.hours =
+        annotationJSON.duration = { start: {}, end: {} };
+        annotationJSON.duration.start.hours =
           annotation.values[0].userEnteredValue.numberValue;
-        annotationJSON.Duration.start.minutes =
+        annotationJSON.duration.start.minutes =
           annotation.values[1].userEnteredValue.numberValue;
-        annotationJSON.Duration.start.seconds =
+        annotationJSON.duration.start.seconds =
           annotation.values[2].userEnteredValue.numberValue;
-        annotationJSON.Duration.end.hours =
+        annotationJSON.duration.end.hours =
           annotation.values[3].userEnteredValue.numberValue;
-        annotationJSON.Duration.end.minutes =
+        annotationJSON.duration.end.minutes =
           annotation.values[4].userEnteredValue.numberValue;
-        annotationJSON.Duration.end.seconds =
+        annotationJSON.duration.end.seconds =
           annotation.values[5].userEnteredValue.numberValue;
-        annotationJSON.Tags = annotation.values[6].userEnteredValue.stringValue;
-        annotationJSON.Description =
+        annotationJSON.tags = annotation.values[6].userEnteredValue.stringValue;
+        annotationJSON.description =
           annotation.values[7].userEnteredValue.stringValue;
-        annotationJSON.Id = annotationIndex;
+        annotationJSON.id = annotationIndex;
         annotationIndex++;
         return annotationJSON;
       });

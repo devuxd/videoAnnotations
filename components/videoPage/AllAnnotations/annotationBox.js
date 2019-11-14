@@ -27,14 +27,14 @@ export default class AnnotationBox extends React.Component {
 
   render() {
     const totalStartSec =
-      Number(this.props.annElement.Duration.start.hours * 60 * 60) +
-      Number(this.props.annElement.Duration.start.minutes * 60) +
-      Number(this.props.annElement.Duration.start.seconds);
+      Number(this.props.annElement.duration.start.hours * 60 * 60) +
+      Number(this.props.annElement.duration.start.minutes * 60) +
+      Number(this.props.annElement.duration.start.seconds);
 
     const totalEndSec =
-      Number(this.props.annElement.Duration.end.hours * 60 * 60) +
-      Number(this.props.annElement.Duration.end.minutes * 60) +
-      Number(this.props.annElement.Duration.end.seconds);
+      Number(this.props.annElement.duration.end.hours * 60 * 60) +
+      Number(this.props.annElement.duration.end.minutes * 60) +
+      Number(this.props.annElement.duration.end.seconds);
 
     return (
       <div
@@ -58,10 +58,10 @@ export default class AnnotationBox extends React.Component {
               this.props.passedSeek(totalStartSec);
             }}
           >
-            {this.numberFormatter(this.props.annElement.Duration.start.hours)}:
-            {this.numberFormatter(this.props.annElement.Duration.start.minutes)}
+            {this.numberFormatter(this.props.annElement.duration.start.hours)}:
+            {this.numberFormatter(this.props.annElement.duration.start.minutes)}
             :
-            {this.numberFormatter(this.props.annElement.Duration.start.seconds)}
+            {this.numberFormatter(this.props.annElement.duration.start.seconds)}
           </button>
           <span> until </span>
           <button
@@ -71,9 +71,9 @@ export default class AnnotationBox extends React.Component {
               this.props.passedSeek(totalEndSec);
             }}
           >
-            {this.numberFormatter(this.props.annElement.Duration.end.hours)}:
-            {this.numberFormatter(this.props.annElement.Duration.end.minutes)}:
-            {this.numberFormatter(this.props.annElement.Duration.end.seconds)}
+            {this.numberFormatter(this.props.annElement.duration.end.hours)}:
+            {this.numberFormatter(this.props.annElement.duration.end.minutes)}:
+            {this.numberFormatter(this.props.annElement.duration.end.seconds)}
           </button>
         </h7>
         <div style={{ display: "inline", marginLeft: "65px" }}>
@@ -89,7 +89,7 @@ export default class AnnotationBox extends React.Component {
           cols="80"
           disabled
         >
-          {this.props.annElement.Description}
+          {this.props.annElement.description}
         </textarea>
         <br />
       </div>

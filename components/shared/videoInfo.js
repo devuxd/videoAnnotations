@@ -41,19 +41,19 @@ export default class VideoInfo extends React.Component {
     return (
       <h6>
         {/* Instances: 2 <br /> */}
-        Total Time: {this.numberFormatter(this.props.vidElem.VideoLength.hours)}
-        :{this.numberFormatter(this.props.vidElem.VideoLength.minutes)}:
-        {this.numberFormatter(this.props.vidElem.VideoLength.seconds)} <br />{" "}
+        Total Time: {this.numberFormatter(this.props.vidElem.videoLength.hours)}
+        :{this.numberFormatter(this.props.vidElem.videoLength.minutes)}:
+        {this.numberFormatter(this.props.vidElem.videoLength.seconds)} <br />{" "}
         <br />
-        Programming Language: {this.props.vidElem.ProgrammingLanguage} <br />
-        Programming Tools : {this.props.vidElem.ProgrammingTools} <br />
+        Programming Language: {this.props.vidElem.programmingLanguage} <br />
+        Programming Tools : {this.props.vidElem.programmingTools} <br />
         Project URL(s):{" "}
         <ul style={{ listStyle: "square inside" }}>
-          {this.urlFormatter(this.props.vidElem.GithubURL.split(", "))}
+          {this.urlFormatter(this.props.vidElem.githubURL.split(", "))}
         </ul>
         Developer Github: <span> </span>
-        <a href={this.props.vidElem.DeveloperGithubURL}>
-          {this.props.vidElem.DeveloperGithubURL}
+        <a href={this.props.vidElem.developerGithubURL}>
+          {this.props.vidElem.developerGithubURL}
         </a>{" "}
         <br />
       </h6>

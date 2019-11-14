@@ -13,9 +13,9 @@ class Videos extends React.Component {
 
   render() {
     const video = this.props.video;
-    const videoId = video.VideoURL.replace("https://youtu.be/", "");
+    const videoId = video.videoURL.replace("https://youtu.be/", "");
     let uniqueAnnotation = Array.from(
-      new Set(video.Annotations.map(annotation => annotation.Tags))
+      new Set(video.annotations.map(annotation => annotation.Tags))
     );
     return (
       <div class="card">
@@ -51,7 +51,7 @@ class Videos extends React.Component {
                 e.target.style.textDecoration = "none";
               }}
             >
-              {video.VideoTitle}
+              {video.videoTitle}
             </h5>
           </Link>
           <p class="card-text">

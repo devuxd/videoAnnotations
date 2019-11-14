@@ -15,7 +15,7 @@ export default class dataset extends React.Component {
 
   // This function fetch the data from google sheet
   async componentDidMount() {
-    let localDataSet;
+    let localDataSet = undefined;
     try {
       localDataSet = await getDataset(this.props.query.sheetId);
     } catch (e) {
