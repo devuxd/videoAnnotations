@@ -6,7 +6,7 @@ import moment from "moment";
 import SubAnnotationsVis from "./subAnnotationsVis";
 
 function SubAnnotationsTab(props) {
-  const [subannotations, addSubAnnotation] = useState([]);
+  const [subAnnotations, addSubAnnotation] = useState([]);
   const [activeTab, activateTab] = useState(0);
   const [activeSubAnnotationIndex, changeActiveSubAnnotationIndex] = useState(
     9
@@ -15,12 +15,12 @@ function SubAnnotationsTab(props) {
   const newTitle = useRef(null);
 
   useEffect(() => {
-    props.updateAnnotations({ ...props.selectedAnnotation, subannotations });
+    props.updateAnnotations({ ...props.selectedAnnotation, subAnnotations });
   }, [activeSubAnnotationIndex]);
   const handleSubmit = e => {
     e.preventDefault();
     const newSubAnnotations = [
-      ...subannotations,
+      ...subAnnotations,
       {
         title: newTitle.current.value,
         annotations: []
@@ -31,7 +31,7 @@ function SubAnnotationsTab(props) {
   };
   const addNewSubAnnotation = newSubAnnotation => {
     addSubAnnotation(
-      subannotations.map(annotation =>
+      subAnnotations.map(annotation =>
         annotation.title === newSubAnnotation.title
           ? newSubAnnotation
           : annotation
@@ -42,7 +42,7 @@ function SubAnnotationsTab(props) {
   const editAnnotation = annotation => {
     changeActiveSubAnnotation(annotation);
     activateTab(
-      subannotations.findIndex(
+      subAnnotations.findIndex(
         subannotation => subannotation.title === annotation.tag
       )
     );
@@ -54,7 +54,7 @@ function SubAnnotationsTab(props) {
 
       <div id="subAnn-tooltip" style={{ bottom: "8px" }}></div>
       <SubAnnotationsVis
-        annotationData={subannotations
+        annotationData={subAnnotations
           .map(element => element.annotations)
           .flat(1)}
         seekTo={props.seekTo}
@@ -71,13 +71,13 @@ function SubAnnotationsTab(props) {
       <Tabs
         selectedIndex={activeTab}
         onSelect={tabIndex => {
-          if (tabIndex === subannotations.length) return;
+          if (tabIndex === subAnnotations.length) return;
           activateTab(tabIndex);
           changeActiveSubAnnotation({});
         }}
       >
         <TabList>
-          {subannotations.map((annotation, index) => {
+          {subAnnotations.map((annotation, index) => {
             return <Tab key={annotation.title}>{annotation.title}</Tab>;
           })}
           <Tab>
@@ -93,11 +93,11 @@ function SubAnnotationsTab(props) {
             </form>
           </Tab>
         </TabList>
-        {subannotations.map((annotation, index) => (
+        {subAnnotations.map((annotation, index) => (
           <TabPanel key={index}>
             {AddAnnotation(
               props.currentTime,
-              subannotations[index],
+              subAnnotations[index],
               addNewSubAnnotation,
               props.selectedAnnotation,
               activeSubAnnotation
@@ -112,7 +112,7 @@ function SubAnnotationsTab(props) {
 
 function AddAnnotation(
   currentTime,
-  subannotations,
+  subAnnotations,
   addNewSubAnnotation,
   selectedAnnotation,
   activeSubAnnotation
@@ -143,8 +143,8 @@ function AddAnnotation(
         moment.duration(refEndTime.current.value).asSeconds() -
         selectedAnnotation.start,
       annotation: refDescription.current.value,
-      id: subannotations.annotations.length,
-      tag: subannotations.title,
+      id: subAnnotations.annotations.length,
+      tag: subAnnotations.title,
       duration: refStartTime.current.value + " - " + refEndTime.current.value
     };
     const start = new moment(localNewAnnotation.start * 1000);
@@ -152,11 +152,11 @@ function AddAnnotation(
     const diff = moment.duration(end.diff(start));
     localNewAnnotation.totalTime = `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
 
-    subannotations.annotations = [
-      ...subannotations.annotations,
+    subAnnotations.annotations = [
+      ...subAnnotations.annotations,
       localNewAnnotation
     ];
-    addNewSubAnnotation(subannotations);
+    addNewSubAnnotation(subAnnotations);
   };
 
   return (

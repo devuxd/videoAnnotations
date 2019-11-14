@@ -56,9 +56,11 @@ function VideoPage(props) {
   const currentTime = () => YTplayer.getCurrentTime();
 
   const updateAnnotations = annotation => {
-    props.video.annotations.map(currentAnnotation =>
-      currentAnnotation.id == annotation.id ? annotation : currentAnnotation
-    );
+    props.video.annotations = props.video.annotations.map(currentAnnotation => {
+      if (currentAnnotation.id == annotation.id)
+        currentAnnotation.subAnnotations = annotation.subAnnotations;
+      return currentAnnotation;
+    });
     console.log(props.video.annotations);
     console.log(annotation);
   };
