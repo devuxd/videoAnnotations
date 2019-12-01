@@ -9,14 +9,11 @@ function SubAnnotationsTab(props) {
   const [subAnnotations, addSubAnnotation] = useState([]);
   const [activeTab, activateTab] = useState(0);
   const [activeSubAnnotationIndex, changeActiveSubAnnotationIndex] = useState(
-    9
+    0
   );
   const [activeSubAnnotation, changeActiveSubAnnotation] = useState({});
   const newTitle = useRef(null);
 
-  useEffect(() => {
-    props.updateAnnotations({ ...props.selectedAnnotation, subAnnotations });
-  }, [activeSubAnnotationIndex]);
   const handleSubmit = e => {
     e.preventDefault();
     const newSubAnnotations = [
@@ -27,6 +24,7 @@ function SubAnnotationsTab(props) {
       }
     ];
     addSubAnnotation(newSubAnnotations);
+
     newTitle.current.value = "";
   };
   const addNewSubAnnotation = newSubAnnotation => {
@@ -37,13 +35,14 @@ function SubAnnotationsTab(props) {
           : annotation
       )
     );
+    props.updateAnnotations({ ...props.selectedAnnotation, subAnnotations });
     changeActiveSubAnnotationIndex(activeSubAnnotationIndex + 1);
   };
   const editAnnotation = annotation => {
     changeActiveSubAnnotation(annotation);
     activateTab(
       subAnnotations.findIndex(
-        subannotation => subannotation.title === annotation.tag
+        subAnnotation => subAnnotation.title === annotation.tag
       )
     );
   };

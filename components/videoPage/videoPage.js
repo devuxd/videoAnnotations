@@ -6,7 +6,7 @@ import MainAnnotationsVis from "./mainAnnotationsVis";
 import ReactPlayer from "react-player";
 import SubAnnotationsTab from "./SubAnnotations/subAnnotationsTab";
 import moment from "moment";
-
+import { saveData } from "../../API/db";
 /**
  * MediaPlayer: component for embedding video and parent for all video function components
  */
@@ -61,8 +61,11 @@ function VideoPage(props) {
         currentAnnotation.subAnnotations = annotation.subAnnotations;
       return currentAnnotation;
     });
-    console.log(props.video.annotations);
-    console.log(annotation);
+    saveData(
+      localStorage.key(0),
+      `${props.video.id}!I${annotation.id}`,
+      annotation.subAnnotations
+    );
   };
   //this is a duplicate of the same function inside datasetPage/videos.js
   const uniqueAnnotation = Array.from(

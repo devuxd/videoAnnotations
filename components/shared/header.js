@@ -2,6 +2,8 @@ import Head from "next/head";
 const Header = () => (
   <div>
     <Head>
+      <script async defer src="https://apis.google.com/js/api.js" />
+      <script src="https://apis.google.com/js/api.js" />
       <link
         rel="stylesheet"
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"

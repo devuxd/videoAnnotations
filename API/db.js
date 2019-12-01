@@ -1,5 +1,5 @@
 const fetch = require("node-fetch");
-const { key } = require("./config"); // create file in API folder and call it config.js
+const { key, clientId } = require("./config"); // create file in API folder and call it config.js
 
 const getDataset = id =>
   new Promise((res, rej) =>
@@ -14,6 +14,7 @@ const getDataset = id =>
       })
       .catch(e => rej(e))
   );
+
 const getvideData = (videoId, sheetId) =>
   new Promise((res, rej) => {
     try {
@@ -41,7 +42,7 @@ const parse = rowDataset => {
     let dataset = rowDataset.sheets.map(({ data }, sheetIndex) => {
       let videoJSON = {};
       let video = data[0].rowData[2];
-      videoJSON.id = sheetIndex;
+      videoJSON.id = `Video${sheetIndex + 1}`;
       videoJSON.videoTitle = video.values[0].userEnteredValue.stringValue;
       videoJSON.videoURL = video.values[1].userEnteredValue.stringValue;
       videoJSON.videoLength = { hours: "", minutes: "", seconds: "" };
@@ -104,4 +105,44 @@ const parse = rowDataset => {
   }
 };
 
-module.exports = { cachData, getDataset, getvideData };
+const saveData = (spreadsheetId, range, annotations) =>
+  gapi.load("client:auth2", () =>
+    gapi.client
+      .init({
+        apiKey: key,
+        clientId: clientId,
+        scope: "https://www.googleapis.com/auth/spreadsheets",
+        discoveryDocs: [
+          "https://sheets.googleapis.com/$discovery/rest?version=v4"
+        ]
+      })
+      .then(
+        () => {
+          const handleSignedIn = signedIn => {
+            if (signedIn) {
+              gapi.client.sheets.spreadsheets.values
+                .update(
+                  { spreadsheetId, range, valueInputOption: "RAW" },
+                  { values: [[JSON.stringify(annotations)]] }
+                )
+                .then(() => {
+                  console.log("saved");
+                });
+            }
+          };
+          gapi.auth2
+            .getAuthInstance()
+            .isSignedIn.listen(signedIn => handleSignedIn(signedIn));
+          if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+            handleSignedIn(true);
+          } else {
+            gapi.auth2.getAuthInstance().signIn();
+          }
+        },
+        function(error) {
+          console.log(JSON.stringify(error, null, 2));
+        }
+      )
+  );
+
+module.exports = { cachData, getDataset, getvideData, saveData };

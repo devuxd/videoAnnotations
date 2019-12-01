@@ -1,47 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
-export default class FileUpload extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      // sheetId: "1IZgX6i_yiuq9U3oksIl5aCaLq2RZuu-aU0p4kzAhaNY"
-      sheetId: "1cKmJ-mP5ahtnki6cqilwd2NSBM9t_G6vGXcbsZ6K_J0"
-    };
-    this.updateSheetId = this.updateSheetId.bind(this);
-  }
-  updateSheetId(event) {
-    this.setState({ sheetId: event.target.value });
-  }
+function FileUpload() {
+  const [sheetId, updateSheetId] = useState(
+    "1cKmJ-mP5ahtnki6cqilwd2NSBM9t_G6vGXcbsZ6K_J0"
+  );
 
-  render() {
-    return (
-      <div className="input-group mb-3">
-        <input
-          type="text"
-          className="form-control"
-          aria-label="Recipient's username"
-          aria-describedby="basic-addon2"
-          placeholder="Spreadsheet ID"
-          list="annotations"
-          onChange={this.updateSheetId}
-          value={this.state.sheetId}
-        />
-        <Link href="/dataset/[sheetId]" as={`/dataset/${this.state.sheetId}`}>
-          <button
-            style={{ width: "48px", "padding-top": "0px" }}
-            className="btn btn-outline-secondary"
-            onClick={this.handleSubmit}
-            data-toggle="tooltip"
-            data-placement="top"
-            title="Browse The Dataset"
-          >
-            <FontAwesomeIcon icon={faUpload} />
-          </button>
-        </Link>
-      </div>
-    );
-  }
+  return (
+    <div className="input-group mb-3">
+      <input
+        type="text"
+        className="form-control"
+        aria-label="Recipient's username"
+        aria-describedby="basic-addon2"
+        placeholder="Spreadsheet ID"
+        list="annotations"
+        onChange={event => updateSheetId(event.target.value)}
+        value={sheetId}
+      />
+      <Link href="/dataset/[sheetId]" as={`/dataset/${sheetId}`}>
+        <button
+          style={{ width: "48px", "padding-top": "0px" }}
+          className="btn btn-outline-secondary"
+          data-toggle="tooltip"
+          data-placement="top"
+          title="Browse The Dataset"
+        >
+          <FontAwesomeIcon icon={faUpload} />
+        </button>
+      </Link>
+    </div>
+  );
 }
+
+export default FileUpload;
