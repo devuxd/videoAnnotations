@@ -121,13 +121,17 @@ function VideoPage(props) {
       >
         <div id="video-annotations" style={{ bottom: "8px" }}></div>
         <p
-          class="card-text"
+          className="card-text"
           id={`annotations-badges`}
           style={{ margin: "30px auto", maxWidth: "400px" }}
           disabled
         >
-          {uniqueAnnotation.map(annotation => (
-            <span class="badge badge-pill" id={`${annotation}-badge`}>
+          {uniqueAnnotation.map((annotation, index) => (
+            <span
+              key={index}
+              className="badge badge-pill"
+              id={`${annotation}-badge`}
+            >
               {annotation}
             </span>
           ))}
@@ -139,12 +143,12 @@ function VideoPage(props) {
         onSelect={tabIndex => activateTab(tabIndex)}
       >
         <TabList>
-          <Tab>General Information</Tab>
-          <Tab>All Annotations</Tab>
-          <Tab>Sub Annotations</Tab>
+          <Tab key="0">General Information</Tab>
+          <Tab key="1">All Annotations</Tab>
+          <Tab key="2">Sub Annotations</Tab>
         </TabList>
 
-        <TabPanel>
+        <TabPanel key="0">
           <div
             style={{
               borderStyle: "solid",
@@ -163,18 +167,17 @@ function VideoPage(props) {
             <VideoInfo searchQuery={props.searchQuery} vidElem={props.video} />
           </div>
         </TabPanel>
-        <TabPanel>
+        <TabPanel key="1">
           <div>
-            {props.video.annotations.map(item => (
-              <div>
-                {" "}
+            {props.video.annotations.map((item, index) => (
+              <div key={index}>
                 <AnnotationBox passedSeek={seekTo} annElement={item} />
                 <br />
               </div>
             ))}
           </div>
         </TabPanel>
-        <TabPanel>{subAnnotationTab()}</TabPanel>
+        <TabPanel key="2">{subAnnotationTab()}</TabPanel>
       </Tabs>
     </div>
   );

@@ -26,9 +26,9 @@ export default class VideoInfo extends React.Component {
   urlFormatter(arr) {
     let rows = [];
     if (Array.isArray(arr)) {
-      arr.map(item =>
+      arr.map((item, index) =>
         rows.push(
-          <li>
+          <li key={index}>
             <a href={item}>{item}</a>
           </li>
         )

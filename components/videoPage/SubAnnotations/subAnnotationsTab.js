@@ -80,10 +80,10 @@ function SubAnnotationsTab(props) {
             return <Tab key={annotation.title}>{annotation.title}</Tab>;
           })}
           <Tab>
-            <form class="form-inline" onSubmit={handleSubmit}>
+            <form className="form-inline" onSubmit={handleSubmit}>
               <input
                 type="text"
-                class="form-control form-control-sm"
+                className="form-control form-control-sm"
                 id="formGroupExampleInput2"
                 placeholder="Add Sub-annotation"
                 ref={newTitle}
@@ -119,6 +119,8 @@ function AddAnnotation(
   const refStartTime = React.createRef();
   const refEndTime = React.createRef();
   const refDescription = React.createRef();
+  const subAnnotationId = React.createRef();
+  subAnnotationId.current = activeSubAnnotation.id;
 
   const getCurrentTime = e => {
     const time = moment("2015-01-01")
@@ -142,7 +144,10 @@ function AddAnnotation(
         moment.duration(refEndTime.current.value).asSeconds() -
         selectedAnnotation.start,
       annotation: refDescription.current.value,
-      id: subAnnotations.annotations.length,
+      id:
+        subAnnotationId.current === undefined
+          ? subAnnotations.annotations.length
+          : subAnnotationId.current,
       tag: subAnnotations.title,
       duration: refStartTime.current.value + " - " + refEndTime.current.value
     };
@@ -152,31 +157,38 @@ function AddAnnotation(
     localNewAnnotation.totalTime = `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
 
     subAnnotations.annotations = [
-      ...subAnnotations.annotations,
+      ...subAnnotations.annotations.filter(
+        annotation => annotation.id != localNewAnnotation.id
+      ),
       localNewAnnotation
     ];
     addNewSubAnnotation(subAnnotations);
+    refStartTime.current.value = "";
+    refEndTime.current.value = "";
+    refDescription.current.value = "";
+    subAnnotationId.current = "";
   };
 
   return (
     <>
-      <div class="input-group input-group-sm mb-3">
+      <div className="input-group input-group-sm mb-3">
         <input
+          key={subAnnotationId.current + "startTime"}
           type="text"
-          class="form-control"
+          className="form-control"
           placeholder="Start time"
           aria-label="Start time"
           aria-describedby="button-addon2"
+          defaultValue={activeSubAnnotation.startTime}
           ref={refStartTime}
-          value={activeSubAnnotation.startTime}
         />
-        <div class="input-group-append">
+        <div className="input-group-append">
           <button
             onClick={getCurrentTime}
-            class="btn btn-outline-secondary"
+            className="btn btn-outline-secondary"
             type="button"
             id="start"
-            style={{ width: "42px", "padding-top": "1px" }}
+            style={{ width: "42px", paddingTop: "1px" }}
             data-placement="bottom"
             title="Get current time"
           >
@@ -184,22 +196,23 @@ function AddAnnotation(
           </button>
         </div>
         <input
+          key={subAnnotationId.current + "endTime"}
           type="text"
-          class="form-control"
+          className="form-control"
           placeholder="End time  "
           aria-label="Start time"
           aria-describedby="button-addon2"
-          style={{ "margin-left": "10px" }}
+          style={{ marginLeft: "10px" }}
+          defaultValue={activeSubAnnotation.endTime}
           ref={refEndTime}
-          value={activeSubAnnotation.endTime}
         />
-        <div class="input-group-append">
+        <div className="input-group-append">
           <button
             onClick={getCurrentTime}
-            class="btn btn-outline-secondary"
+            className="btn btn-outline-secondary"
             type="button"
             id="end"
-            style={{ width: "42px", "padding-top": "1px" }}
+            style={{ width: "42px", paddingTop: "1px" }}
             data-placement="bottom"
             title="Get current time"
           >
@@ -208,21 +221,26 @@ function AddAnnotation(
         </div>
       </div>
       <textarea
-        class="form-control"
+        key={subAnnotationId.current + "textarea"}
+        className="form-control"
         id="exampleFormControlTextarea1"
         placeholder="Annotation description"
         rows="3"
+        defaultValue={activeSubAnnotation.annotation}
         ref={refDescription}
-        value={activeSubAnnotation.annotation}
       ></textarea>
       <div
         style={{
           display: "flex",
-          "flex-direction": "row-reverse",
+          flexDirection: "row-reverse",
           paddingTop: "10px"
         }}
       >
-        <button type="button" class="btn btn-success" onClick={handleSubmit}>
+        <button
+          type="button"
+          className="btn btn-success"
+          onClick={handleSubmit}
+        >
           Save
         </button>
       </div>
