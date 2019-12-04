@@ -30,7 +30,10 @@ const getVideoAnnotations = (videoId, sheetId) =>
   });
 const cacheVideoAnnotation = (videoAnnotations, videoId, sheetId) => {
   const dataset = JSON.parse(localStorage.getItem(sheetId));
-  dataset.map(video => (video.id === videoId ? videoAnnotations : video));
+  const newDataset = dataset.map(video =>
+    video.id === videoId ? videoAnnotations : video
+  );
+  cacheData(newDataset, sheetId);
 };
 const findVideo = (dataset, videoId) =>
   dataset.find(

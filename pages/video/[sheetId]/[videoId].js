@@ -14,7 +14,7 @@ import {
  * Dynamic page for each individual video post page
  */
 function MainVideoPage() {
-  const [videoAnnotations, updateVideoAnnotations] = useState();
+  const [videoAnnotations, updateVideoAnnotations] = useState({ test: 1 });
   const [
     videoAnnotationIsStillLoading,
     updateVideoAnnotationIsStillLoading
@@ -31,6 +31,7 @@ function MainVideoPage() {
       updateVideoAnnotations(localVideoAnnotations);
       updateVideoAnnotationIsStillLoading(false);
     };
+
     if (sheetId !== undefined) {
       fetchVideo();
     }
@@ -79,7 +80,7 @@ function MainVideoPage() {
         return currentAnnotation;
       }
     );
-    const localVideoAnnotations = { ...videoAnnotations, annotations };
+    let localVideoAnnotations = { ...videoAnnotations, annotations };
 
     //Also update the formated Annotation
     localVideoAnnotations.formatedAnnotation = videoAnnotations.formatedAnnotation.map(
@@ -90,17 +91,20 @@ function MainVideoPage() {
     );
     updateVideoAnnotations(localVideoAnnotations);
 
-    //remove the formated data
-    const { formatedAnnotation, ...videoAnnotations } = videoAnnotations;
+    //remove the formated data before caching and saving.
+    const {
+      formatedAnnotation,
+      ...newLocalVideoAnnotations
+    } = localVideoAnnotations;
     cacheVideoAnnotation(
-      videoAnnotations,
-      videoAnnotations.id,
+      newLocalVideoAnnotations,
+      newLocalVideoAnnotations.id,
       localStorage.key(0)
     );
 
     saveVideoAnnotations(
       localStorage.key(0),
-      `${videoAnnotations.id}!I${newAnnotation.id}`,
+      `${newLocalVideoAnnotations.id}!I${newAnnotation.id}`,
       newAnnotation.subAnnotations
     );
   };
