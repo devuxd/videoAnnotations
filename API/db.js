@@ -1,40 +1,42 @@
 const fetch = require("node-fetch");
 const { key, clientId } = require("./config"); // create file in API folder and call it config.js
 
-const getDataset = id =>
-  new Promise((res, rej) =>
-    fetch(
-      `https://content-sheets.googleapis.com/v4/spreadsheets/${id}?includeGridData=true&fields=sheets(data(rowData(values(hyperlink%2Cnote%2CuserEnteredValue))))&key=${key}`
+const getDataset = sheetId =>
+  new Promise((res, rej) => {
+    if (sheetId === undefined) rej("sheet id cannot be undefined");
+
+    return fetch(
+      `https://content-sheets.googleapis.com/v4/spreadsheets/${sheetId}?includeGridData=true&fields=sheets(data(rowData(values(hyperlink%2Cnote%2CuserEnteredValue))))&key=${key}`
     )
       .then(response => response.json())
       .then(rowDataset => parse(rowDataset))
       .then(dataset => {
-        cachData(dataset, id);
+        cacheData(dataset, sheetId);
         res(dataset);
       })
-      .catch(e => rej(e))
-  );
+      .catch(e => rej(e));
+  });
 
-const getvideData = (videoId, sheetId) =>
+const getVideoAnnotations = (videoId, sheetId) =>
   new Promise((res, rej) => {
-    try {
-      const dataset = JSON.parse(localStorage.getItem(sheetId));
-      if (dataset) {
-        return res(findVideo(dataset, videoId));
-      } else {
-        return res(
-          getDataset(sheetId).then(dataset => findVideo(dataset, videoId))
-        );
-      }
-    } catch (e) {
-      rej(e);
+    const dataset = JSON.parse(localStorage.getItem(sheetId));
+    if (dataset) {
+      return res(findVideo(dataset, videoId));
+    } else {
+      return res(
+        getDataset(sheetId).then(dataset => findVideo(dataset, videoId))
+      );
     }
   });
+const cacheVideoAnnotation = (videoAnnotations, videoId, sheetId) => {
+  const dataset = JSON.parse(localStorage.getItem(sheetId));
+  dataset.map(video => (video.id === videoId ? videoAnnotations : video));
+};
 const findVideo = (dataset, videoId) =>
   dataset.find(
     video => video.videoURL.replace("https://youtu.be/", "") == videoId
   );
-const cachData = (dataset, id) =>
+const cacheData = (dataset, id) =>
   localStorage.setItem(id, JSON.stringify(dataset));
 
 const parse = rowDataset => {
@@ -93,6 +95,9 @@ const parse = rowDataset => {
         annotationJSON.description =
           annotation.values[7].userEnteredValue.stringValue;
         annotationJSON.id = annotationIndex;
+        annotationJSON.subAnnotations = annotation.values[8]
+          ? JSON.parse(annotation.values[8].userEnteredValue.stringValue)
+          : [];
         annotationIndex++;
         return annotationJSON;
       });
@@ -101,11 +106,42 @@ const parse = rowDataset => {
     });
     return dataset;
   } catch (e) {
-    return new Error("The template you used cannot be parsed : " + e);
+    throw Error("The template you used cannot be parsed : " + e);
   }
 };
+const googleLogin = () => {
+  return new Promise((res, rej) =>
+    gapi.load("client:auth2", () =>
+      gapi.client
+        .init({
+          apiKey: key,
+          clientId: clientId,
+          scope: "https://www.googleapis.com/auth/spreadsheets",
+          discoveryDocs: [
+            "https://sheets.googleapis.com/$discovery/rest?version=v4"
+          ]
+        })
+        .then(
+          () => {
+            gapi.auth2
+              .getAuthInstance()
+              .isSignedIn.listen(signedIn => res(true));
+            if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+              res(true);
+            } else {
+              gapi.auth2.getAuthInstance().signIn();
+            }
+          },
+          function(error) {
+            console.log(JSON.stringify(error, null, 2));
+            rej(false);
+          }
+        )
+    )
+  );
+};
 
-const saveData = (spreadsheetId, range, annotations) =>
+const saveVideoAnnotations = (spreadsheetId, range, annotations) =>
   gapi.load("client:auth2", () =>
     gapi.client
       .init({
@@ -145,4 +181,11 @@ const saveData = (spreadsheetId, range, annotations) =>
       )
   );
 
-module.exports = { cachData, getDataset, getvideData, saveData };
+module.exports = {
+  cacheData,
+  getDataset,
+  getVideoAnnotations,
+  saveVideoAnnotations,
+  googleLogin,
+  cacheVideoAnnotation
+};

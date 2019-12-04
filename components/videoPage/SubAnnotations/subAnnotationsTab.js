@@ -4,16 +4,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import SubAnnotationsVis from "./subAnnotationsVis";
-
+import { googleLogin } from "../../../API/db";
 function SubAnnotationsTab(props) {
-  const [subAnnotations, addSubAnnotation] = useState([]);
+  let initialSubAnnotation = props.selectedAnnotation.subAnnotations || [];
+
+  const [subAnnotations, addSubAnnotation] = useState(initialSubAnnotation);
   const [activeTab, activateTab] = useState(0);
   const [activeSubAnnotationIndex, changeActiveSubAnnotationIndex] = useState(
     0
   );
   const [activeSubAnnotation, changeActiveSubAnnotation] = useState({});
   const newTitle = useRef(null);
-
+  console.log(props, subAnnotations);
   const handleSubmit = e => {
     e.preventDefault();
     const newSubAnnotations = [
@@ -27,16 +29,15 @@ function SubAnnotationsTab(props) {
 
     newTitle.current.value = "";
   };
-  const addNewSubAnnotation = newSubAnnotation => {
+  const addNewSubAnnotation = (newAnnotation, NewAnnotation) => {
     addSubAnnotation(
       subAnnotations.map(annotation =>
-        annotation.title === newSubAnnotation.title
-          ? newSubAnnotation
-          : annotation
+        annotation.title === newAnnotation.title ? newAnnotation : annotation
       )
     );
     props.updateAnnotations({ ...props.selectedAnnotation, subAnnotations });
     changeActiveSubAnnotationIndex(activeSubAnnotationIndex + 1);
+    changeActiveSubAnnotation(NewAnnotation);
   };
   const editAnnotation = annotation => {
     changeActiveSubAnnotation(annotation);
@@ -46,6 +47,7 @@ function SubAnnotationsTab(props) {
       )
     );
   };
+
   return (
     <>
       <div id="ann-tooltip" />
@@ -120,6 +122,7 @@ function AddAnnotation(
   const refEndTime = React.createRef();
   const refDescription = React.createRef();
   const subAnnotationId = React.createRef();
+
   subAnnotationId.current = activeSubAnnotation.id;
 
   const getCurrentTime = e => {
@@ -133,7 +136,7 @@ function AddAnnotation(
       refEndTime.current.value = time;
     }
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const localNewAnnotation = {
       startTime: refStartTime.current.value,
       endTime: refEndTime.current.value,
@@ -155,18 +158,22 @@ function AddAnnotation(
     const end = new moment(localNewAnnotation.end * 1000);
     const diff = moment.duration(end.diff(start));
     localNewAnnotation.totalTime = `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
-
+    try {
+      await googleLogin();
+    } catch (e) {
+      return;
+    }
     subAnnotations.annotations = [
       ...subAnnotations.annotations.filter(
         annotation => annotation.id != localNewAnnotation.id
       ),
       localNewAnnotation
     ];
-    addNewSubAnnotation(subAnnotations);
-    refStartTime.current.value = "";
-    refEndTime.current.value = "";
-    refDescription.current.value = "";
-    subAnnotationId.current = "";
+    addNewSubAnnotation(subAnnotations, localNewAnnotation);
+    // refStartTime.current.value = "";
+    // refEndTime.current.value = "";
+    // refDescription.current.value = "";
+    // subAnnotationId.current = "";
   };
 
   return (
