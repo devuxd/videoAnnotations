@@ -15,7 +15,6 @@ function SubAnnotationsTab(props) {
   );
   const [activeSubAnnotation, changeActiveSubAnnotation] = useState({});
   const newTitle = useRef(null);
-  console.log(props, subAnnotations);
   const handleSubmit = e => {
     e.preventDefault();
     const newSubAnnotations = [
