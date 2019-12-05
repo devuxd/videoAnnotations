@@ -66,15 +66,7 @@ export default class extends React.Component {
       .enter()
       .append("rect")
       .style("fill", d => {
-        return this.props.selectedAnnotation.annotationVisElement.style.fill;
-      })
-      .style("stroke", d => {
-        const strokeColor = color(myColor(d.tag));
-        const currentColor = color(
-          this.props.selectedAnnotation.annotationVisElement.style.fill
-        );
-        if (strokeColor.hex() == currentColor.hex())
-          return color(myColor(d.tag + Math.random())).darken(0.5);
+        const strokeColor = color(myColor(d.title));
         return strokeColor.darken(0.5);
       })
       .style("stroke-width", 2.5)
@@ -83,7 +75,7 @@ export default class extends React.Component {
         return scale(d.start);
       })
       .attr("id", function(d) {
-        return d.tag;
+        return d.title;
       })
       .attr("width", function(d) {
         return scale(d.end - d.start);
@@ -102,15 +94,19 @@ export default class extends React.Component {
 
         initTooltip()
           .html(
-            `${d.annotation}
-                          <br>
-                          <b>Duration:</b> ${d.duration}. <b>Total Time:</b> ${d.totalTime}.<b> Annotation:</b> ${d.tag}.`
+            // `${d.annotation}
+            // <br>
+            //<b>Duration:</b> ${d.duration}.
+            `<b>Total Time:</b> ${d.totalTime}`
+            // .<b> Annotation:</b> ${d.title}.
           )
-          .style("left", d3.event.pageX + "px")
-          .style("top", d3.event.pageY + "px")
+          .style("margin-left", scale(d.start) + "px")
+          .style("width", scale(d.end - d.start) + "px")
           .transition()
           .style("opacity", 1)
-          .style("background", myColor(d.tag));
+          .style("color", "white")
+          .style("background", color(myColor(d.title)).darken(0.7))
+          .style("text-align", "center");
       });
   }
 

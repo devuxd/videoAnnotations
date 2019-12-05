@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
@@ -42,7 +42,7 @@ function SubAnnotationsTab(props) {
     changeActiveSubAnnotation(annotation);
     activateTab(
       subAnnotations.findIndex(
-        subAnnotation => subAnnotation.title === annotation.tag
+        subAnnotation => subAnnotation.title === annotation.title
       )
     );
   };
@@ -52,7 +52,6 @@ function SubAnnotationsTab(props) {
       <div id="ann-tooltip" />
       <br />
 
-      <div id="subAnn-tooltip" style={{ bottom: "8px" }}></div>
       <SubAnnotationsVis
         annotationData={subAnnotations
           .map(element => element.annotations)
@@ -67,6 +66,7 @@ function SubAnnotationsTab(props) {
         editAnnotation={editAnnotation}
       >
         <div id="sub-annotations" style={{ bottom: "8px" }}></div>
+        <div id="subAnn-tooltip" style={{ bottom: "8px" }}></div>
       </SubAnnotationsVis>
       <Tabs
         selectedIndex={activeTab}
@@ -150,7 +150,7 @@ function AddAnnotation(
         subAnnotationId.current === undefined
           ? subAnnotations.annotations.length
           : subAnnotationId.current,
-      tag: subAnnotations.title,
+      title: subAnnotations.title,
       duration: refStartTime.current.value + " - " + refEndTime.current.value
     };
     const start = new moment(localNewAnnotation.start * 1000);

@@ -5,7 +5,8 @@ import Link from "next/link";
 
 function FileUpload() {
   const [sheetId, updateSheetId] = useState(
-    "1cKmJ-mP5ahtnki6cqilwd2NSBM9t_G6vGXcbsZ6K_J0"
+    // "1cKmJ-mP5ahtnki6cqilwd2NSBM9t_G6vGXcbsZ6K_J0"
+    ""
   );
 
   return (
