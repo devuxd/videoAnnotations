@@ -5,6 +5,9 @@ import { faClock } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import SubAnnotationsVis from "./subAnnotationsVis";
 import { googleLogin } from "../../../API/db";
+import * as d3 from "d3";
+import color from "color";
+
 function SubAnnotationsTab(props) {
   let initialSubAnnotation = props.selectedAnnotation.subAnnotations || [];
   const [activeSubAnnotations, addSubAnnotation] = useState(
@@ -16,6 +19,16 @@ function SubAnnotationsTab(props) {
   );
   const [activeSubAnnotation, changeActiveSubAnnotation] = useState({});
   const newTitle = useRef(null);
+
+  var myColor = d3
+    .scaleOrdinal()
+    .domain(activeSubAnnotations.map(element => element.annotations).flat(1))
+    .range(d3.schemeSet2);
+
+  const getBackgroundColor = title => {
+    return color(myColor(title)).darken(0.5);
+  };
+
   const handleSubmitSubAnnotationTitle = e => {
     e.preventDefault();
     const newSubAnnotations = [
@@ -84,7 +97,19 @@ function SubAnnotationsTab(props) {
       >
         <TabList>
           {activeSubAnnotations.map((annotation, index) => {
-            return <Tab key={annotation.title}>{annotation.title}</Tab>;
+            return (
+              <Tab key={annotation.title}>
+                <p
+                  style={{
+                    borderTop: `5px solid ${getBackgroundColor(
+                      annotation.title
+                    )}`
+                  }}
+                >
+                  {annotation.title}{" "}
+                </p>
+              </Tab>
+            );
           })}
           <Tab>
             <form

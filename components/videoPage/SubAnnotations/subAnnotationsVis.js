@@ -7,17 +7,11 @@ import color from "color";
 export default class extends React.Component {
   constructor(props) {
     super(props);
-    this.selectedElement;
-    this.selectCategory;
   }
 
   mouseclick = (d, e) => {
     this.props.seekTo(d.startTime);
     this.props.editAnnotation(d);
-    if (this.selectedElement && this.selectedElement !== e) {
-      this.selectedElement.style.opacity = 0.5;
-    }
-    this.selectedElement = e;
   };
   componentDidMount() {
     let annotationLength = this.props.annotationLength;
@@ -30,7 +24,6 @@ export default class extends React.Component {
       return d3
         .select(this.props.tooltipId)
         .append("div")
-        .style("opacity", 0)
         .style("border", "solid")
         .style("border-width", "1px")
         .style("border-radius", "5px")
@@ -81,7 +74,6 @@ export default class extends React.Component {
         return scale(d.end - d.start);
       })
       .attr("height", 15)
-      .style("opacity", 0.5)
       .on("mouseover", function(d) {
         d3.select(this).style("cursor", "pointer");
       })
@@ -90,7 +82,6 @@ export default class extends React.Component {
       })
       .on("click", function(d) {
         mouseclick(d, this);
-        d3.select(this).style("opacity", 1);
 
         initTooltip()
           .html(
@@ -103,7 +94,6 @@ export default class extends React.Component {
           .style("margin-left", scale(d.start) + "px")
           .style("width", scale(d.end - d.start) + "px")
           .transition()
-          .style("opacity", 1)
           .style("color", "white")
           .style("background", color(myColor(d.title)).darken(0.7))
           .style("-webkit-text-stroke-color", "black")
