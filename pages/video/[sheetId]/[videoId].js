@@ -72,7 +72,6 @@ function MainVideoPage() {
 
   const updateAnnotations = newAnnotation => {
     // update the annotation with the newSubAnnotations
-    console.log(newAnnotation);
     const annotations = videoAnnotations.annotations.map(
       (currentAnnotation, index) => {
         if (currentAnnotation.id == newAnnotation.id) {
@@ -90,7 +89,6 @@ function MainVideoPage() {
         subAnnotations: annotations[index].subAnnotations
       })
     );
-    console.log(localVideoAnnotations);
     updateVideoAnnotations(localVideoAnnotations);
     //remove the formated data before caching and saving.
     const {

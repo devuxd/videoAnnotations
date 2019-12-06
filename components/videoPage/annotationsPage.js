@@ -8,14 +8,11 @@ import SubAnnotationsTab from "./subAnnotations/subAnnotationsTab";
  * MediaPlayer: component for embedding video and parent for all video function components
  */
 function AnnotationsPage(props) {
-  console.log(props.video);
-
   const [selectedTab, activateTab] = useState(0);
   const [selectedAnnotation, changeSelectedAnnotation] = useState(null);
 
   const setSelectedAnnotation = (annotationObject, annotationVisElement) => {
     changeSelectedAnnotation({ ...annotationObject, annotationVisElement });
-    console.log(annotationObject);
     if (activateTab != 2) activateTab(2);
   };
 

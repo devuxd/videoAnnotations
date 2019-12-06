@@ -7,7 +7,6 @@ import SubAnnotationsVis from "./subAnnotationsVis";
 import { googleLogin } from "../../../API/db";
 function SubAnnotationsTab(props) {
   let initialSubAnnotation = props.selectedAnnotation.subAnnotations || [];
-  console.log(props.selectedAnnotation);
   const [activeSubAnnotations, addSubAnnotation] = useState(
     initialSubAnnotation
   );

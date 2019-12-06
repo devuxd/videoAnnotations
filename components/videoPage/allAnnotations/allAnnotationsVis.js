@@ -28,7 +28,6 @@ export default class extends React.Component {
     this.selectCategory.style.opacity = 1;
   };
   componentDidMount() {
-    console.log(this.props);
     let annotationLength = this.props.annotationLength;
     let annotationData = this.props.annotationData;
     // Tooltip
