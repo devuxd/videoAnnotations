@@ -34,7 +34,7 @@ export default class extends React.Component {
         .style("border", "solid")
         .style("border-width", "1px")
         .style("border-radius", "5px")
-        .style("padding", "10px")
+        .style("padding", "2px 20px 2px 0px")
         .style("font-size", "14px");
     };
 
@@ -106,7 +106,13 @@ export default class extends React.Component {
           .style("opacity", 1)
           .style("color", "white")
           .style("background", color(myColor(d.title)).darken(0.7))
-          .style("text-align", "center");
+          .style("-webkit-text-stroke-color", "black")
+          .style("-webkit-text-stroke-width", "0.3px")
+          .style("text-align", "center")
+          .style(
+            "writing-mode",
+            scale(d.end - d.start) < 50 ? "vertical-lr" : "inherit"
+          );
       });
   }
 

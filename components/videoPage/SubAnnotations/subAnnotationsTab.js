@@ -7,18 +7,20 @@ import SubAnnotationsVis from "./subAnnotationsVis";
 import { googleLogin } from "../../../API/db";
 function SubAnnotationsTab(props) {
   let initialSubAnnotation = props.selectedAnnotation.subAnnotations || [];
-
-  const [subAnnotations, addSubAnnotation] = useState(initialSubAnnotation);
+  console.log(props.selectedAnnotation);
+  const [activeSubAnnotations, addSubAnnotation] = useState(
+    initialSubAnnotation
+  );
   const [activeTab, activateTab] = useState(0);
   const [activeSubAnnotationIndex, changeActiveSubAnnotationIndex] = useState(
     0
   );
   const [activeSubAnnotation, changeActiveSubAnnotation] = useState({});
   const newTitle = useRef(null);
-  const handleSubmit = e => {
+  const handleSubmitSubAnnotationTitle = e => {
     e.preventDefault();
     const newSubAnnotations = [
-      ...subAnnotations,
+      ...activeSubAnnotations,
       {
         title: newTitle.current.value,
         annotations: []
@@ -28,20 +30,25 @@ function SubAnnotationsTab(props) {
 
     newTitle.current.value = "";
   };
-  const addNewSubAnnotation = (newAnnotation, NewAnnotation) => {
-    addSubAnnotation(
-      subAnnotations.map(annotation =>
-        annotation.title === newAnnotation.title ? newAnnotation : annotation
-      )
+
+  const addNewSubAnnotations = (newAnnotations, localNewAnnotation) => {
+    const localSubAnnotations = activeSubAnnotations.map(annotation =>
+      annotation.title === newAnnotations.title ? newAnnotations : annotation
     );
-    props.updateAnnotations({ ...props.selectedAnnotation, subAnnotations });
+    addSubAnnotation(localSubAnnotations);
+    const { subAnnotations, ...selectedAnnotation } = props.selectedAnnotation;
+    props.updateAnnotations({
+      ...selectedAnnotation,
+      subAnnotations: localSubAnnotations
+    });
     changeActiveSubAnnotationIndex(activeSubAnnotationIndex + 1);
-    changeActiveSubAnnotation(NewAnnotation);
+    changeActiveSubAnnotation(localNewAnnotation);
   };
+
   const editAnnotation = annotation => {
     changeActiveSubAnnotation(annotation);
     activateTab(
-      subAnnotations.findIndex(
+      activeSubAnnotations.findIndex(
         subAnnotation => subAnnotation.title === annotation.title
       )
     );
@@ -53,7 +60,7 @@ function SubAnnotationsTab(props) {
       <br />
 
       <SubAnnotationsVis
-        annotationData={subAnnotations
+        annotationData={activeSubAnnotations
           .map(element => element.annotations)
           .flat(1)}
         seekTo={props.seekTo}
@@ -71,17 +78,20 @@ function SubAnnotationsTab(props) {
       <Tabs
         selectedIndex={activeTab}
         onSelect={tabIndex => {
-          if (tabIndex === subAnnotations.length) return;
+          if (tabIndex === activeSubAnnotations.length) return;
           activateTab(tabIndex);
           changeActiveSubAnnotation({});
         }}
       >
         <TabList>
-          {subAnnotations.map((annotation, index) => {
+          {activeSubAnnotations.map((annotation, index) => {
             return <Tab key={annotation.title}>{annotation.title}</Tab>;
           })}
           <Tab>
-            <form className="form-inline" onSubmit={handleSubmit}>
+            <form
+              className="form-inline"
+              onSubmit={handleSubmitSubAnnotationTitle}
+            >
               <input
                 type="text"
                 className="form-control form-control-sm"
@@ -93,12 +103,12 @@ function SubAnnotationsTab(props) {
             </form>
           </Tab>
         </TabList>
-        {subAnnotations.map((annotation, index) => (
+        {activeSubAnnotations.map((annotation, index) => (
           <TabPanel key={index}>
             {AddAnnotation(
               props.currentTime,
-              subAnnotations[index],
-              addNewSubAnnotation,
+              activeSubAnnotations[index],
+              addNewSubAnnotations,
               props.selectedAnnotation,
               activeSubAnnotation
             )}
@@ -112,8 +122,8 @@ function SubAnnotationsTab(props) {
 
 function AddAnnotation(
   currentTime,
-  subAnnotations,
-  addNewSubAnnotation,
+  activeSubAnnotations,
+  addNewSubAnnotations,
   selectedAnnotation,
   activeSubAnnotation
 ) {
@@ -135,7 +145,7 @@ function AddAnnotation(
       refEndTime.current.value = time;
     }
   };
-  const handleSubmit = async () => {
+  const handleSubmitNewSubAnnotation = async () => {
     const localNewAnnotation = {
       startTime: refStartTime.current.value,
       endTime: refEndTime.current.value,
@@ -148,9 +158,9 @@ function AddAnnotation(
       annotation: refDescription.current.value,
       id:
         subAnnotationId.current === undefined
-          ? subAnnotations.annotations.length
+          ? activeSubAnnotations.annotations.length
           : subAnnotationId.current,
-      title: subAnnotations.title,
+      title: activeSubAnnotations.title,
       duration: refStartTime.current.value + " - " + refEndTime.current.value
     };
     const start = new moment(localNewAnnotation.start * 1000);
@@ -162,17 +172,13 @@ function AddAnnotation(
     } catch (e) {
       return;
     }
-    subAnnotations.annotations = [
-      ...subAnnotations.annotations.filter(
+    activeSubAnnotations.annotations = [
+      ...activeSubAnnotations.annotations.filter(
         annotation => annotation.id != localNewAnnotation.id
       ),
       localNewAnnotation
     ];
-    addNewSubAnnotation(subAnnotations, localNewAnnotation);
-    // refStartTime.current.value = "";
-    // refEndTime.current.value = "";
-    // refDescription.current.value = "";
-    // subAnnotationId.current = "";
+    addNewSubAnnotations(activeSubAnnotations, localNewAnnotation);
   };
 
   return (
@@ -207,7 +213,7 @@ function AddAnnotation(
           className="form-control"
           placeholder="End time  "
           aria-label="Start time"
-          aria-describedby="button-addon2"
+          aria-described="button-addon2"
           style={{ marginLeft: "10px" }}
           defaultValue={activeSubAnnotation.endTime}
           ref={refEndTime}
@@ -245,7 +251,7 @@ function AddAnnotation(
         <button
           type="button"
           className="btn btn-success"
-          onClick={handleSubmit}
+          onClick={handleSubmitNewSubAnnotation}
         >
           Save
         </button>

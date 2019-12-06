@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import AnnotationBox from "./AllAnnotations/annotationBox";
+import AnnotationBox from "./allAnnotations/allAnnotationsTab";
 import VideoInfo from "../shared/videoInfo";
-import MainAnnotationsVis from "./mainAnnotationsVis";
-import SubAnnotationsTab from "./SubAnnotations/subAnnotationsTab";
+import MainAnnotationsVis from "./allAnnotations/allAnnotationsVis";
+import SubAnnotationsTab from "./subAnnotations/subAnnotationsTab";
 /**
  * MediaPlayer: component for embedding video and parent for all video function components
  */
 function AnnotationsPage(props) {
+  console.log(props.video);
+
   const [selectedTab, activateTab] = useState(0);
   const [selectedAnnotation, changeSelectedAnnotation] = useState(null);
 
   const setSelectedAnnotation = (annotationObject, annotationVisElement) => {
     changeSelectedAnnotation({ ...annotationObject, annotationVisElement });
-    activateTab(2);
+    console.log(annotationObject);
+    if (activateTab != 2) activateTab(2);
   };
 
   //this is a duplicate of the same function inside datasetPage/videos.js
@@ -41,6 +44,7 @@ function AnnotationsPage(props) {
   return (
     <>
       <MainAnnotationsVis
+        key={JSON.stringify(props.video.annotations)}
         annotationData={props.formatedAnnotationData}
         seekTo={props.player.seekTo}
         currentTime={props.player.currentTime}

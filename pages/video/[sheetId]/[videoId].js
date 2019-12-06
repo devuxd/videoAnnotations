@@ -14,7 +14,7 @@ import {
  * Dynamic page for each individual video post page
  */
 function MainVideoPage() {
-  const [videoAnnotations, updateVideoAnnotations] = useState({ test: 1 });
+  const [videoAnnotations, updateVideoAnnotations] = useState();
   const [
     videoAnnotationIsStillLoading,
     updateVideoAnnotationIsStillLoading
@@ -72,6 +72,7 @@ function MainVideoPage() {
 
   const updateAnnotations = newAnnotation => {
     // update the annotation with the newSubAnnotations
+    console.log(newAnnotation);
     const annotations = videoAnnotations.annotations.map(
       (currentAnnotation, index) => {
         if (currentAnnotation.id == newAnnotation.id) {
@@ -86,11 +87,11 @@ function MainVideoPage() {
     localVideoAnnotations.formatedAnnotation = videoAnnotations.formatedAnnotation.map(
       (annotation, index) => ({
         ...annotation,
-        ...annotations[index].subAnnotations
+        subAnnotations: annotations[index].subAnnotations
       })
     );
+    console.log(localVideoAnnotations);
     updateVideoAnnotations(localVideoAnnotations);
-
     //remove the formated data before caching and saving.
     const {
       formatedAnnotation,

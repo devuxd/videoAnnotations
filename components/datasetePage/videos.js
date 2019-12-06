@@ -17,36 +17,29 @@ function Video(props) {
         href="/video/[sheetId]/[videoId]"
         as={`/video/${props.sheetId}/${videoId}`}
       >
-        <img
-          src={"https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"}
-          class="card-img-top "
-          onMouseEnter={e => {
-            e.target.style.cursor = "pointer";
-            e.target.style.opacity = 0.7;
-          }}
-          onMouseLeave={e => {
-            e.target.style.opacity = 1;
-          }}
-          alt="..."
-        />
+        <a>
+          <img
+            src={"https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"}
+            class="card-img-top "
+            onMouseEnter={e => {
+              e.target.style.cursor = "pointer";
+              e.target.style.opacity = 0.7;
+            }}
+            onMouseLeave={e => {
+              e.target.style.opacity = 1;
+            }}
+            alt="..."
+          />
+        </a>
       </Link>
       <div class="card-body bg-light text-dark">
         <Link
           href="/video/[sheetId]/[videoId]"
           as={`/video/${props.sheetId}/${videoId}`}
         >
-          <h5
-            class="card-title"
-            onMouseEnter={e => {
-              e.target.style.cursor = "pointer";
-              e.target.style.textDecoration = "underline";
-            }}
-            onMouseLeave={e => {
-              e.target.style.textDecoration = "none";
-            }}
-          >
-            {video.videoTitle}
-          </h5>
+          <a>
+            <h5 class="card-title">{video.videoTitle}</h5>
+          </a>
         </Link>
         <p class="card-text">
           <VideoInfo vidElem={video} />
