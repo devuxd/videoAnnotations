@@ -21,12 +21,21 @@ function MainVideoPage() {
   ] = useState(true);
   const { videoId, sheetId } = useRouter().query;
   const [YTplaying, YTpause] = useState(false);
+
+  const [uniqueAnnotation, changeUniqueAnnotation] = useState([]);
   const YTplayerRef = useRef(null);
   useEffect(() => {
     const fetchVideo = async () => {
       let localVideoAnnotations = await getVideoAnnotations(videoId, sheetId);
       localVideoAnnotations.formatedAnnotation = localVideoAnnotations.annotations.map(
         getFormatedAnnotationData
+      );
+      changeUniqueAnnotation(
+        Array.from(
+          new Set(
+            localVideoAnnotations.annotations.map(annotation => annotation.tags)
+          )
+        )
       );
       updateVideoAnnotations(localVideoAnnotations);
       updateVideoAnnotationIsStillLoading(false);
@@ -107,6 +116,7 @@ function MainVideoPage() {
       newAnnotation.subAnnotations
     );
   };
+
   if (videoAnnotationIsStillLoading) {
     return (
       <div>
@@ -188,25 +198,68 @@ function MainVideoPage() {
         </div>
         <div
           style={{
-            margin: "0 auto",
-            height: "700px",
-            maxWidth: "1250px"
+            display: "grid",
+            gridTemplateColumns: "10% auto 10%",
+            gridTemplateRows: "350px 360px auto"
           }}
         >
-          <ReactPlayer
-            url={`https://www.youtube.com/embed/${videoId}?enablejsapi=1`}
-            ref={YTplayerRef}
-            controls={true}
-            width="100%"
-            height="100%"
-            playing={YTplaying}
-          />
-          <AnnotationsPage
-            video={videoAnnotations}
-            formatedAnnotationData={videoAnnotations.formatedAnnotation}
-            player={{ seekTo, seekTo_subAnnotations, currentTime }}
-            updateAnnotations={updateAnnotations}
-          />
+          <div
+            className="card-text"
+            id={`annotations-badges`}
+            disabled
+            style={{
+              gridColumnStart: "1",
+              gridColumnEnd: "1",
+              gridRowStart: "3",
+              gridRowEnd: "3",
+              alignSelf: "flex-start",
+              justifySelf: "center"
+            }}
+          >
+            {uniqueAnnotation.map((annotation, index) => (
+              <span
+                key={index}
+                className="badge badge-pill"
+                id={`${annotation}-badge`}
+                style={{ display: "block", marginBottom: "2px" }}
+              >
+                {annotation}
+              </span>
+            ))}
+          </div>
+          <div
+            style={{
+              gridColumnStart: "2",
+              gridColumnEnd: "2",
+              gridRowStart: "1",
+              gridRowEnd: "span 2"
+            }}
+            id="YTplayer"
+          >
+            <ReactPlayer
+              url={`https://www.youtube.com/embed/${videoId}?enablejsapi=1`}
+              ref={YTplayerRef}
+              controls={true}
+              width="100%"
+              height="100%"
+              playing={YTplaying}
+            />
+          </div>
+          <div
+            style={{
+              gridColumnStart: "2",
+              gridColumnEnd: "2",
+              gridRowStart: "3",
+              gridRowEnd: "3"
+            }}
+          >
+            <AnnotationsPage
+              video={videoAnnotations}
+              formatedAnnotationData={videoAnnotations.formatedAnnotation}
+              player={{ seekTo, seekTo_subAnnotations, currentTime }}
+              updateAnnotations={updateAnnotations}
+            />
+          </div>
         </div>
       </Layouts>
     </div>

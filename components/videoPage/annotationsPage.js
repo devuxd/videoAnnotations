@@ -10,18 +10,16 @@ import SubAnnotationsTab from "./subAnnotations/subAnnotationsTab";
 function AnnotationsPage(props) {
   const [selectedTab, activateTab] = useState(0);
   const [selectedAnnotation, changeSelectedAnnotation] = useState(null);
-
+  const [activeAnnotationId, activateAnnotation] = useState(-1);
   const setSelectedAnnotation = (annotationObject, annotationVisElement) => {
     changeSelectedAnnotation({ ...annotationObject, annotationVisElement });
-    if (activateTab != 2) activateTab(2);
+    activateAnnotation(annotationObject.id);
   };
 
   //this is a duplicate of the same function inside datasetPage/videos.js
-  const uniqueAnnotation = Array.from(
-    new Set(props.video.annotations.map(annotation => annotation.tags))
-  );
+
   const subAnnotationTab = () => {
-    if (selectedAnnotation == null)
+    if (activeAnnotationId === -1)
       return (
         <>
           <h4>Please select annotation first.</h4>
@@ -52,27 +50,14 @@ function AnnotationsPage(props) {
         }
         setSelectedAnnotation={setSelectedAnnotation}
         divId={"#video-annotations"}
-        tooltipId={"#ann-tooltip"}
+        //  tooltipId={"#ann-tooltip"}
       >
-        <div id="video-annotations" style={{ bottom: "8px" }}></div>
-        <p
-          className="card-text"
-          id={`annotations-badges`}
-          style={{ margin: "30px auto", maxWidth: "400px" }}
-          disabled
-        >
-          {uniqueAnnotation.map((annotation, index) => (
-            <span
-              key={index}
-              className="badge badge-pill"
-              id={`${annotation}-badge`}
-            >
-              {annotation}
-            </span>
-          ))}
-        </p>
+        <div
+          id="video-annotations"
+          style={{ bottom: "5px", display: "inline" }}
+        ></div>
       </MainAnnotationsVis>
-
+      {subAnnotationTab()}
       <Tabs
         selectedIndex={selectedTab}
         onSelect={tabIndex => activateTab(tabIndex)}
@@ -115,7 +100,7 @@ function AnnotationsPage(props) {
             ))}
           </div>
         </TabPanel>
-        <TabPanel key="2">{subAnnotationTab()}</TabPanel>
+        {/* <TabPanel key="2">{subAnnotationTab()}</TabPanel> */}
       </Tabs>
     </>
   );

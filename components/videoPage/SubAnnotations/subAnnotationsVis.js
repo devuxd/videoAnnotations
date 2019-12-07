@@ -9,13 +9,23 @@ export default class extends React.Component {
     super(props);
   }
 
-  mouseclick = (d, e) => {
+  mouseClick = (d, e) => {
     this.props.seekTo(d.startTime);
     this.props.editAnnotation(d);
   };
   componentDidMount() {
+    console.log();
     let annotationLength = this.props.annotationLength;
     let annotationData = this.props.annotationData;
+    const arrowX = Number(
+      this.props.selectedAnnotation.annotationVisElement.getAttribute("x")
+    );
+    const arrowOffset =
+      this.props.selectedAnnotation.annotationVisElement.getAttribute("width") /
+      2;
+    console.log(arrowX, arrowOffset, `${arrowX + arrowOffset}px`);
+    document.getElementsByClassName("arrow")[0].style.left = `${arrowX +
+      arrowOffset}px`;
     // Tooltip
     const initTooltip = () => {
       d3.select(this.props.tooltipId)
@@ -31,8 +41,8 @@ export default class extends React.Component {
         .style("font-size", "14px");
     };
 
-    const mouseclick = this.mouseclick;
-    const w = 1250,
+    const mouseClick = this.mouseClick;
+    const w = document.getElementById("YTplayer").offsetWidth,
       h = 100;
 
     var mini = d3
@@ -81,7 +91,7 @@ export default class extends React.Component {
         d3.select(this).style("cursor", "default");
       })
       .on("click", function(d) {
-        mouseclick(d, this);
+        mouseClick(d, this);
 
         initTooltip()
           .html(
@@ -107,6 +117,36 @@ export default class extends React.Component {
   }
 
   render() {
-    return <>{this.props.children}</>;
+    return (
+      <>
+        <style jsx>
+          {`
+            .box {
+              position: relative;
+              background: #d0d0d0;
+              border-radius: 0.4em;
+              border-color: black;
+            }
+
+            .arrow {
+              content: "";
+              position: absolute;
+              top: 0;
+              width: 0;
+              height: 0;
+              border: 20px solid transparent;
+              border-bottom-color: #d0d0d0;
+              border-top: 0;
+              margin-left: -20px;
+              margin-top: -20px;
+            }
+          `}
+        </style>
+        <div className="box">
+          {this.props.children}
+          <p className="arrow"></p>
+        </div>
+      </>
+    );
   }
 }

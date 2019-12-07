@@ -47,15 +47,14 @@ export default class extends React.Component {
     };
 
     const mouseclick = this.mouseclick;
-    const w = 1250,
+    const w = document.getElementById("YTplayer").offsetWidth,
       h = 100;
 
     var mini = d3
       .select(this.props.divId)
       .append("svg")
       .attr("width", w)
-      .attr("height", 22)
-      .attr("class", "chart");
+      .attr("height", 22);
 
     var myColor = d3
       .scaleOrdinal()
