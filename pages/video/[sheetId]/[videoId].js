@@ -98,6 +98,7 @@ function MainVideoPage() {
         subAnnotations: annotations[index].subAnnotations
       })
     );
+
     updateVideoAnnotations(localVideoAnnotations);
     //remove the formated data before caching and saving.
     const {

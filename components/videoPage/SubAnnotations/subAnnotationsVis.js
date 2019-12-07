@@ -123,9 +123,9 @@ export default class extends React.Component {
           {`
             .box {
               position: relative;
-              background: #d0d0d0;
               border-radius: 0.4em;
-              border-color: black;
+              border-top: 4px solid #d0d0d0;
+              padding: 5px;
             }
 
             .arrow {
@@ -144,7 +144,7 @@ export default class extends React.Component {
         </style>
         <div className="box">
           {this.props.children}
-          <p className="arrow"></p>
+          <div className="arrow"></div>
         </div>
       </>
     );

@@ -53,7 +53,7 @@ function SubAnnotationsTab(props) {
       ...selectedAnnotation,
       subAnnotations: localSubAnnotations
     });
-    changeActiveSubAnnotationIndex(activeSubAnnotationIndex + 1);
+    changeActiveSubAnnotationIndex(localNewAnnotation.id);
     changeActiveSubAnnotation(localNewAnnotation);
   };
 
@@ -68,7 +68,7 @@ function SubAnnotationsTab(props) {
 
   return (
     <>
-      <div id="ann-tooltip" />
+      {/* <div id="ann-tooltip" /> */}
       <br />
 
       <SubAnnotationsVis
@@ -79,7 +79,7 @@ function SubAnnotationsTab(props) {
         currentTime={props.currentTime}
         annotationLength={props.annotationLength}
         divId={"#sub-annotations"}
-        tooltipId={"#subAnn-tooltip"}
+        // tooltipId={"#subAnn-tooltip"}
         key={activeSubAnnotationIndex}
         selectedAnnotation={props.selectedAnnotation}
         editAnnotation={editAnnotation}
@@ -87,15 +87,15 @@ function SubAnnotationsTab(props) {
         <div id="sub-annotations" style={{ bottom: "8px" }}></div>
         <div id="subAnn-tooltip" style={{ bottom: "8px" }}></div>
       </SubAnnotationsVis>
-      <Tabs
+      {/* <Tabs
         selectedIndex={activeTab}
         onSelect={tabIndex => {
           if (tabIndex === activeSubAnnotations.length) return;
           activateTab(tabIndex);
           changeActiveSubAnnotation({});
         }}
-      >
-        <TabList>
+      > */}
+      {/* <TabList>
           {activeSubAnnotations.map((annotation, index) => {
             return (
               <Tab key={annotation.title}>
@@ -109,9 +109,9 @@ function SubAnnotationsTab(props) {
                   {annotation.title}{" "}
                 </p>
               </Tab>
-            );
-          })}
-          <Tab>
+            ); */}
+      {/* })} */}
+      {/* <Tab>
             <form
               className="form-inline"
               onSubmit={handleSubmitSubAnnotationTitle}
@@ -126,19 +126,19 @@ function SubAnnotationsTab(props) {
               />
             </form>
           </Tab>
-        </TabList>
-        {activeSubAnnotations.map((annotation, index) => (
-          <TabPanel key={index}>
-            {AddAnnotation(
-              props.currentTime,
-              activeSubAnnotations[index],
-              addNewSubAnnotations,
-              props.selectedAnnotation,
-              activeSubAnnotation
-            )}
-          </TabPanel>
-        ))}
-      </Tabs>
+        </TabList> */}
+      {/* {activeSubAnnotations.map((annotation, index) => (
+          <TabPanel key={index}> */}
+      {AddAnnotation(
+        props.currentTime,
+        activeSubAnnotations[activeSubAnnotationIndex],
+        addNewSubAnnotations,
+        props.selectedAnnotation,
+        activeSubAnnotation
+      )}
+      {/* </TabPanel> */}
+      {/* ))} */}
+      {/* </Tabs> */}
       <br />
     </>
   );
@@ -207,7 +207,32 @@ function AddAnnotation(
 
   return (
     <>
-      <div className="input-group input-group-sm mb-3">
+      <style jsx>
+        {`
+          .box-sub-annotation {
+            position: relative;
+            border-radius: 0.4em;
+            border-top: 2px solid #d0d0d0;
+            padding: 5px;
+          }
+
+          .arrow-sub-annotation {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border: 20px solid transparent;
+            border-bottom-color: #d0d0d0;
+            border-top: 0;
+            margin-left: -20px;
+            margin-top: -20px;
+          }
+        `}
+      </style>
+
+      <div className="input-group input-group-sm mb-3 box-sub-annotation">
+        <p className="arrow-sub-annotation"></p>
         <input
           key={subAnnotationId.current + "startTime"}
           type="text"
@@ -280,6 +305,7 @@ function AddAnnotation(
           Save
         </button>
       </div>
+
       <br />
     </>
   );

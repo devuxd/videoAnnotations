@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import AnnotationBox from "./allAnnotations/allAnnotationsTab";
 import VideoInfo from "../shared/videoInfo";
@@ -8,6 +8,7 @@ import SubAnnotationsTab from "./subAnnotations/subAnnotationsTab";
  * MediaPlayer: component for embedding video and parent for all video function components
  */
 function AnnotationsPage(props) {
+  console.log(props);
   const [selectedTab, activateTab] = useState(0);
   const [selectedAnnotation, changeSelectedAnnotation] = useState(null);
   const [activeAnnotationId, activateAnnotation] = useState(-1);
@@ -20,11 +21,7 @@ function AnnotationsPage(props) {
 
   const subAnnotationTab = () => {
     if (activeAnnotationId === -1)
-      return (
-        <>
-          <h4>Please select annotation first.</h4>
-        </>
-      );
+      return <>{/* <h4>Please select annotation first.</h4> */}</>;
     return (
       <SubAnnotationsTab
         seekTo={props.player.seekTo_subAnnotations}
@@ -38,25 +35,32 @@ function AnnotationsPage(props) {
   };
   return (
     <>
-      <MainAnnotationsVis
-        key={JSON.stringify(props.video.annotations)}
-        annotationData={props.formatedAnnotationData}
-        seekTo={props.player.seekTo}
-        currentTime={props.player.currentTime}
-        annotationLength={
-          props.video.videoLength.hours * 3600 +
-          props.video.videoLength.minutes * 60 +
-          props.video.videoLength.seconds
-        }
-        setSelectedAnnotation={setSelectedAnnotation}
-        divId={"#video-annotations"}
-        //  tooltipId={"#ann-tooltip"}
-      >
-        <div
-          id="video-annotations"
-          style={{ bottom: "5px", display: "inline" }}
-        ></div>
-      </MainAnnotationsVis>
+      <div style={{ marginBottom: "-10px" }}>
+        {useMemo(
+          () => (
+            <MainAnnotationsVis
+              key={JSON.stringify(props.video.annotations)}
+              annotationData={props.formatedAnnotationData}
+              seekTo={props.player.seekTo}
+              currentTime={props.player.currentTime}
+              annotationLength={
+                props.video.videoLength.hours * 3600 +
+                props.video.videoLength.minutes * 60 +
+                props.video.videoLength.seconds
+              }
+              setSelectedAnnotation={setSelectedAnnotation}
+              divId={"#video-annotations"}
+              //  tooltipId={"#ann-tooltip"}
+            >
+              <div
+                id="video-annotations"
+                style={{ bottom: "5px", display: "inline" }}
+              ></div>
+            </MainAnnotationsVis>
+          ),
+          [selectedAnnotation]
+        )}
+      </div>
       {subAnnotationTab()}
       <Tabs
         selectedIndex={selectedTab}
