@@ -12,7 +12,10 @@ import {
 
 /**
  * Dynamic page for each individual video post page
+ *
  */
+
+//TODO: use context for player
 function MainVideoPage() {
   const [videoAnnotations, updateVideoAnnotations] = useState();
   const [
@@ -77,7 +80,7 @@ function MainVideoPage() {
     YTplayerRef.current.seekTo(moment.duration(seconds).asSeconds());
     YTpause(true);
   };
-  const currentTime = () => YTplayerRef.current.getCurrentTime();
+  const getCurrentTime = () => YTplayerRef.current.getCurrentTime();
 
   const updateAnnotations = newAnnotation => {
     // update the annotation with the newSubAnnotations
@@ -257,7 +260,7 @@ function MainVideoPage() {
             <AnnotationsPage
               video={videoAnnotations}
               formatedAnnotationData={videoAnnotations.formatedAnnotation}
-              player={{ seekTo, seekTo_subAnnotations, currentTime }}
+              player={{ seekTo, seekTo_subAnnotations, getCurrentTime }}
               updateAnnotations={updateAnnotations}
             />
           </div>

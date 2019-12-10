@@ -11,9 +11,8 @@ export default class extends React.Component {
     this.selectCategory;
   }
 
-  mouseclick = (annotationObject, annotationVisElement) => {
-    this.props.seekTo(annotationObject.start);
-    this.props.setSelectedAnnotation(annotationObject, annotationVisElement);
+  mouseClick = (selectedAnnotation, annotationVisElement) => {
+    this.props.onAnnotationClick(selectedAnnotation);
     if (this.selectedElement && this.selectedElement !== annotationVisElement) {
       this.selectedElement.style.opacity = 0.75;
       this.selectedElement.style.stroke = "none";
@@ -21,15 +20,26 @@ export default class extends React.Component {
       this.selectCategory.style.borderStyle = "none";
     }
     this.selectCategory = document.getElementById(
-      `${annotationObject.tag}-badge`
+      `${selectedAnnotation.tag}-badge`
     );
     this.selectedElement = annotationVisElement;
     this.selectCategory.style.borderStyle = "solid";
     this.selectCategory.style.opacity = 1;
+    const arrowX = Number(annotationVisElement.getAttribute("x"));
+    const arrowOffset = annotationVisElement.getAttribute("width") / 2;
+    const annotationPointer = document.getElementsByClassName(
+      "allAnnotations-arrow"
+    )[0];
+    const annotationExpansion = document.getElementsByClassName(
+      "allAnnotations-box"
+    )[0];
+    annotationPointer.style.left = `${arrowX + arrowOffset}px`;
+    annotationExpansion.style.display = "block";
   };
   componentDidMount() {
-    let annotationLength = this.props.annotationLength;
+    let videoLength = this.props.videoLength;
     let annotationData = this.props.annotationData;
+
     // Tooltip
     const initTooltip = () => {
       d3.select(this.props.tooltipId)
@@ -46,14 +56,15 @@ export default class extends React.Component {
         .style("font-size", "14px");
     };
 
-    const mouseclick = this.mouseclick;
-    const w = document.getElementById("YTplayer").offsetWidth,
-      h = 100;
+    const mouseClick = this.mouseClick;
+    const YouTubeIframeWidth = document.getElementById("YTplayer").offsetWidth,
+      h = 100,
+      marginOffset = (videoLength / YouTubeIframeWidth) * 30; // this to remove the margin (left and right) created by YouTube progress bar. Maybe there is an easier way :)
 
     var mini = d3
       .select(this.props.divId)
       .append("svg")
-      .attr("width", w)
+      .attr("width", YouTubeIframeWidth)
       .attr("height", 22);
 
     var myColor = d3
@@ -62,8 +73,8 @@ export default class extends React.Component {
       .range(d3.schemeSet2);
     let scale = d3
       .scaleLinear()
-      .domain([0, annotationLength])
-      .range([0, w]);
+      .domain([0, videoLength - marginOffset])
+      .range([0, YouTubeIframeWidth]);
 
     mini
       .append("g")
@@ -93,7 +104,7 @@ export default class extends React.Component {
         d3.select(this).style("cursor", "default");
       })
       .on("click", function(d) {
-        mouseclick(d, this);
+        mouseClick(d, this);
         d3.select(this)
           .style("opacity", 1)
           .style("stroke", "black")

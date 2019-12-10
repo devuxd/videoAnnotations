@@ -1,66 +1,62 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
-import SubAnnotationsVis from "./subAnnotationsVis";
 import { googleLogin } from "../../../API/db";
 import * as d3 from "d3";
 import color from "color";
 
-function SubAnnotationsTab(props) {
-  let initialSubAnnotation = props.selectedAnnotation.subAnnotations || [];
-  const [activeSubAnnotations, addSubAnnotation] = useState(
-    initialSubAnnotation
-  );
-  const [activeTab, activateTab] = useState(0);
-  const [activeSubAnnotationIndex, changeActiveSubAnnotationIndex] = useState(
-    0
-  );
-  const [activeSubAnnotation, changeActiveSubAnnotation] = useState({});
-  const newTitle = useRef(null);
+function SubAnnotationForm(props) {
+  //based on the selected annotation, display the sub-annotations related to it.
+  //If non is selected or there are no sub-annotations display nothing.
+  const selectedSubAnnotation = props.selectedSubAnnotation || {};
+  console.log(selectedSubAnnotation);
 
-  var myColor = d3
-    .scaleOrdinal()
-    .domain(activeSubAnnotations.map(element => element.annotations).flat(1))
-    .range(d3.schemeSet2);
+  // const newTitle = useRef(null);
 
-  const getBackgroundColor = title => {
-    return color(myColor(title)).darken(0.5);
-  };
+  // revisit this
+  // const myColor = d3
+  //   .scaleOrdinal()
+  //   .domain(selectedSubAnnotation.map(element => element.annotations).flat(1))
+  //   .range(d3.schemeSet2);
 
+  // const getBackgroundColor = title => {
+  //   return color(myColor(title)).darken(0.5);
+  // };
+
+  // adding new sub-annotation category
   const handleSubmitSubAnnotationTitle = e => {
     e.preventDefault();
     const newSubAnnotations = [
-      ...activeSubAnnotations,
+      ...selectedSubAnnotation,
       {
         title: newTitle.current.value,
         annotations: []
       }
     ];
     addSubAnnotation(newSubAnnotations);
-
-    newTitle.current.value = "";
+    // newTitle.current.value = "";
   };
+  // const updateSubAnnotation
 
   const addNewSubAnnotations = (newAnnotations, localNewAnnotation) => {
-    const localSubAnnotations = activeSubAnnotations.map(annotation =>
+    //locating under what sub-annotation category the new added subannoation belong
+    // then replace the new sub-annotations with the old one
+    const localSubAnnotations = selectedSubAnnotation.map(annotation =>
       annotation.title === newAnnotations.title ? newAnnotations : annotation
     );
     addSubAnnotation(localSubAnnotations);
-    const { subAnnotations, ...selectedAnnotation } = props.selectedAnnotation;
-    props.updateAnnotations({
-      ...selectedAnnotation,
-      subAnnotations: localSubAnnotations
-    });
+
     changeActiveSubAnnotationIndex(localNewAnnotation.id);
     changeActiveSubAnnotation(localNewAnnotation);
   };
 
   const editAnnotation = annotation => {
     changeActiveSubAnnotation(annotation);
+    console.log(annotation);
     activateTab(
-      activeSubAnnotations.findIndex(
+      selectedSubAnnotation.findIndex(
         subAnnotation => subAnnotation.title === annotation.title
       )
     );
@@ -68,85 +64,23 @@ function SubAnnotationsTab(props) {
 
   return (
     <>
-      {/* <div id="ann-tooltip" /> */}
       <br />
 
-      <SubAnnotationsVis
-        annotationData={activeSubAnnotations
-          .map(element => element.annotations)
-          .flat(1)}
-        seekTo={props.seekTo}
-        currentTime={props.currentTime}
-        annotationLength={props.annotationLength}
-        divId={"#sub-annotations"}
-        // tooltipId={"#subAnn-tooltip"}
-        key={activeSubAnnotationIndex}
-        selectedAnnotation={props.selectedAnnotation}
-        editAnnotation={editAnnotation}
-      >
-        <div id="sub-annotations" style={{ bottom: "8px" }}></div>
-        <div id="subAnn-tooltip" style={{ bottom: "8px" }}></div>
-      </SubAnnotationsVis>
-      {/* <Tabs
-        selectedIndex={activeTab}
-        onSelect={tabIndex => {
-          if (tabIndex === activeSubAnnotations.length) return;
-          activateTab(tabIndex);
-          changeActiveSubAnnotation({});
-        }}
-      > */}
-      {/* <TabList>
-          {activeSubAnnotations.map((annotation, index) => {
-            return (
-              <Tab key={annotation.title}>
-                <p
-                  style={{
-                    borderTop: `5px solid ${getBackgroundColor(
-                      annotation.title
-                    )}`
-                  }}
-                >
-                  {annotation.title}{" "}
-                </p>
-              </Tab>
-            ); */}
-      {/* })} */}
-      {/* <Tab>
-            <form
-              className="form-inline"
-              onSubmit={handleSubmitSubAnnotationTitle}
-            >
-              <input
-                type="text"
-                className="form-control form-control-sm"
-                id="formGroupExampleInput2"
-                placeholder="Add Sub-annotation"
-                ref={newTitle}
-                key={"newTab"}
-              />
-            </form>
-          </Tab>
-        </TabList> */}
-      {/* {activeSubAnnotations.map((annotation, index) => (
-          <TabPanel key={index}> */}
-      {AddAnnotation(
+      {/* {Add_Edit_SubAnnotation(
         props.currentTime,
-        activeSubAnnotations[activeSubAnnotationIndex],
+        selectedSubAnnotation[1],
         addNewSubAnnotations,
         props.selectedAnnotation,
         activeSubAnnotation
-      )}
-      {/* </TabPanel> */}
-      {/* ))} */}
-      {/* </Tabs> */}
+      )} */}
       <br />
     </>
   );
 }
 
-function AddAnnotation(
+function Add_Edit_SubAnnotation(
   currentTime,
-  activeSubAnnotations,
+  selectedSubAnnotation,
   addNewSubAnnotations,
   selectedAnnotation,
   activeSubAnnotation
@@ -169,7 +103,7 @@ function AddAnnotation(
       refEndTime.current.value = time;
     }
   };
-  const handleSubmitNewSubAnnotation = async () => {
+  const handleSubmit = async () => {
     const localNewAnnotation = {
       startTime: refStartTime.current.value,
       endTime: refEndTime.current.value,
@@ -182,9 +116,9 @@ function AddAnnotation(
       annotation: refDescription.current.value,
       id:
         subAnnotationId.current === undefined
-          ? activeSubAnnotations.annotations.length
+          ? selectedSubAnnotation.annotations.length
           : subAnnotationId.current,
-      title: activeSubAnnotations.title,
+      title: selectedSubAnnotation.title,
       duration: refStartTime.current.value + " - " + refEndTime.current.value
     };
     const start = new moment(localNewAnnotation.start * 1000);
@@ -196,13 +130,13 @@ function AddAnnotation(
     } catch (e) {
       return;
     }
-    activeSubAnnotations.annotations = [
-      ...activeSubAnnotations.annotations.filter(
+    selectedSubAnnotation.annotations = [
+      ...selectedSubAnnotation.annotations.filter(
         annotation => annotation.id != localNewAnnotation.id
       ),
       localNewAnnotation
     ];
-    addNewSubAnnotations(activeSubAnnotations, localNewAnnotation);
+    addNewSubAnnotations(selectedSubAnnotation, localNewAnnotation);
   };
 
   return (
@@ -300,15 +234,14 @@ function AddAnnotation(
         <button
           type="button"
           className="btn btn-success"
-          onClick={handleSubmitNewSubAnnotation}
+          onClick={handleSubmit}
         >
           Save
         </button>
       </div>
-
       <br />
     </>
   );
 }
 
-export default SubAnnotationsTab;
+export default SubAnnotationForm;

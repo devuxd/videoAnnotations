@@ -9,39 +9,13 @@ export default class extends React.Component {
     super(props);
   }
 
-  mouseClick = (d, e) => {
-    this.props.seekTo(d.startTime);
-    this.props.editAnnotation(d);
-  };
   componentDidMount() {
-    console.log();
     let annotationLength = this.props.annotationLength;
-    let annotationData = this.props.annotationData;
-    const arrowX = Number(
-      this.props.selectedAnnotation.annotationVisElement.getAttribute("x")
-    );
-    const arrowOffset =
-      this.props.selectedAnnotation.annotationVisElement.getAttribute("width") /
-      2;
-    console.log(arrowX, arrowOffset, `${arrowX + arrowOffset}px`);
-    document.getElementsByClassName("arrow")[0].style.left = `${arrowX +
-      arrowOffset}px`;
-    // Tooltip
-    const initTooltip = () => {
-      d3.select(this.props.tooltipId)
-        .selectAll("div")
-        .remove();
-      return d3
-        .select(this.props.tooltipId)
-        .append("div")
-        .style("border", "solid")
-        .style("border-width", "1px")
-        .style("border-radius", "5px")
-        .style("padding", "2px 20px 2px 0px")
-        .style("font-size", "14px");
-    };
+    let subAnnotations = this.props.subAnnotations
+      .map(subAnnotation => subAnnotation.annotations)
+      .flat();
 
-    const mouseClick = this.mouseClick;
+    const onMouseClick = this.props.onSubAnnotationClick;
     const w = document.getElementById("YTplayer").offsetWidth,
       h = 100;
 
@@ -54,7 +28,7 @@ export default class extends React.Component {
 
     var myColor = d3
       .scaleOrdinal()
-      .domain(annotationData)
+      .domain(subAnnotations)
       .range(d3.schemeSet2);
     let scale = d3
       .scaleLinear()
@@ -64,8 +38,7 @@ export default class extends React.Component {
     mini
       .append("g")
       .selectAll("miniItems")
-
-      .data(annotationData)
+      .data(subAnnotations)
       .enter()
       .append("rect")
       .style("fill", d => {
@@ -78,7 +51,7 @@ export default class extends React.Component {
         return scale(d.start);
       })
       .attr("id", function(d) {
-        return d.title;
+        return d.title + d.id;
       })
       .attr("width", function(d) {
         return scale(d.end - d.start);
@@ -91,62 +64,11 @@ export default class extends React.Component {
         d3.select(this).style("cursor", "default");
       })
       .on("click", function(d) {
-        mouseClick(d, this);
-
-        initTooltip()
-          .html(
-            // `${d.annotation}
-            // <br>
-            //<b>Duration:</b> ${d.duration}.
-            `<b>Total Time:</b> ${d.totalTime}`
-            // .<b> Annotation:</b> ${d.title}.
-          )
-          .style("margin-left", scale(d.start) + "px")
-          .style("width", scale(d.end - d.start) + "px")
-          .transition()
-          .style("color", "white")
-          .style("background", color(myColor(d.title)).darken(0.7))
-          .style("-webkit-text-stroke-color", "black")
-          .style("-webkit-text-stroke-width", "0.3px")
-          .style("text-align", "center")
-          .style(
-            "writing-mode",
-            scale(d.end - d.start) < 50 ? "vertical-lr" : "inherit"
-          );
+        onMouseClick(d);
       });
   }
 
   render() {
-    return (
-      <>
-        <style jsx>
-          {`
-            .box {
-              position: relative;
-              border-radius: 0.4em;
-              border-top: 4px solid #d0d0d0;
-              padding: 5px;
-            }
-
-            .arrow {
-              content: "";
-              position: absolute;
-              top: 0;
-              width: 0;
-              height: 0;
-              border: 20px solid transparent;
-              border-bottom-color: #d0d0d0;
-              border-top: 0;
-              margin-left: -20px;
-              margin-top: -20px;
-            }
-          `}
-        </style>
-        <div className="box">
-          {this.props.children}
-          <div className="arrow"></div>
-        </div>
-      </>
-    );
+    return <>{this.props.children}</>;
   }
 }

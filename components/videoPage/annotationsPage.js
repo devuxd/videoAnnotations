@@ -1,111 +1,121 @@
 import React, { useState, useMemo } from "react";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import AnnotationBox from "./allAnnotations/allAnnotationsTab";
-import VideoInfo from "../shared/videoInfo";
 import MainAnnotationsVis from "./allAnnotations/allAnnotationsVis";
-import SubAnnotationsTab from "./subAnnotations/subAnnotationsTab";
-/**
- * MediaPlayer: component for embedding video and parent for all video function components
- */
+import SubAnnotationForm from "./subAnnotations/SubAnnotationForm";
+import SubAnnotationsVis from "./subAnnotations/subAnnotationsVis";
+
+//    ===  ===  ===== =====     <- these are the annotations.
+//    ^                         <- this this the selected annotation
+//    ==== ====== ===== =====   <- these are the sub-annotations related to the selected annotation.
+//           ^                  <- this is the selected sub-annotation.
+
 function AnnotationsPage(props) {
-  console.log(props);
-  const [selectedTab, activateTab] = useState(0);
+  debugger;
+  // keep track of the selected annotation and sub-annotation.
   const [selectedAnnotation, changeSelectedAnnotation] = useState(null);
-  const [activeAnnotationId, activateAnnotation] = useState(-1);
-  const setSelectedAnnotation = (annotationObject, annotationVisElement) => {
-    changeSelectedAnnotation({ ...annotationObject, annotationVisElement });
-    activateAnnotation(annotationObject.id);
+  const [selectedSubAnnotation, changeSelectedSubAnnotation] = useState(null);
+
+  // handel the click on annotation and sub-annotation
+  const onAnnotationClick = selectedAnnotation => {
+    changeSelectedAnnotation({ ...selectedAnnotation });
+    props.player.seekTo(selectedAnnotation.start);
   };
+  const onSubAnnotationClick = selectedSubAnnotation => {
+    props.player.seekTo(selectedAnnotation.start + selectedSubAnnotation.start);
+    changeSelectedSubAnnotation(selectedSubAnnotation);
+  };
+  // when one of the sub-annotation updated -> propagate this update to the main sate maintained by [videoId].s
+  const updateSubAnnotations = newSubAnnotations =>
+    props.updateAnnotations({ ...selectedAnnotation, newSubAnnotations });
 
-  //this is a duplicate of the same function inside datasetPage/videos.js
-
-  const subAnnotationTab = () => {
-    if (activeAnnotationId === -1)
-      return <>{/* <h4>Please select annotation first.</h4> */}</>;
-    return (
-      <SubAnnotationsTab
-        seekTo={props.player.seekTo_subAnnotations}
-        currentTime={props.player.currentTime}
-        selectedAnnotation={selectedAnnotation}
-        annotationLength={selectedAnnotation.end - selectedAnnotation.start}
-        key={selectedAnnotation.start}
-        updateAnnotations={props.updateAnnotations}
-      />
-    );
+  const subAnnotations = () => {
+    if (selectedAnnotation != null) {
+      return (
+        <>
+          <SubAnnotationsVis
+            getCurrentTime={props.player.getCurrentTime}
+            annotationLength={selectedAnnotation.end - selectedAnnotation.start}
+            divId={"#sub-annotations"}
+            key={selectedAnnotation.id}
+            subAnnotations={selectedAnnotation.subAnnotations}
+            onSubAnnotationClick={onSubAnnotationClick}
+          >
+            <div
+              id="sub-annotations"
+              style={{ bottom: "8px", marginTop: "-10px" }}
+            ></div>
+          </SubAnnotationsVis>
+        </>
+      );
+    }
+  };
+  const subAnnotationForm = () => {
+    if (selectedSubAnnotation != null) {
+      return (
+        <>
+          <SubAnnotationForm
+            getCurrentTime={props.player.getCurrentTime}
+            selectedSubAnnotation={selectedSubAnnotation}
+            annotationLength={selectedAnnotation.end - selectedAnnotation.start}
+            key={selectedAnnotation.id}
+            updateSubAnnotations={updateSubAnnotations}
+          />
+        </>
+      );
+    }
   };
   return (
     <>
-      <div style={{ marginBottom: "-10px" }}>
+      <style jsx>
+        {`
+          .allAnnotations-box {
+            position: relative;
+            border-radius: 1.4em;
+            border-top: 4px solid #d0d0d0;
+            padding: 20px;
+            display: none;
+            margin-top: 10px;
+          }
+
+          .allAnnotations-arrow {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border: 20px solid transparent;
+            border-bottom-color: #d0d0d0;
+            border-top: 0;
+            margin-left: -20px;
+            margin-top: -20px;
+            transition: left 0.3s;
+          }
+        `}
+      </style>
+      <div>
         {useMemo(
           () => (
             <MainAnnotationsVis
-              key={JSON.stringify(props.video.annotations)}
               annotationData={props.formatedAnnotationData}
-              seekTo={props.player.seekTo}
-              currentTime={props.player.currentTime}
-              annotationLength={
+              getCurrentTime={props.player.getCurrentTime}
+              videoLength={
                 props.video.videoLength.hours * 3600 +
                 props.video.videoLength.minutes * 60 +
                 props.video.videoLength.seconds
               }
-              setSelectedAnnotation={setSelectedAnnotation}
+              onAnnotationClick={onAnnotationClick}
               divId={"#video-annotations"}
-              //  tooltipId={"#ann-tooltip"}
             >
-              <div
-                id="video-annotations"
-                style={{ bottom: "5px", display: "inline" }}
-              ></div>
+              <div id="video-annotations"></div>
             </MainAnnotationsVis>
           ),
           [selectedAnnotation]
         )}
+        <div className="allAnnotations-box">
+          <div className="allAnnotations-arrow"></div>
+          {subAnnotations()}
+          {subAnnotationForm()}
+        </div>
       </div>
-      {subAnnotationTab()}
-      <Tabs
-        selectedIndex={selectedTab}
-        onSelect={tabIndex => activateTab(tabIndex)}
-      >
-        <TabList>
-          <Tab key="0">General Information</Tab>
-          <Tab key="1">All Annotations</Tab>
-          <Tab key="2">Sub Annotations</Tab>
-        </TabList>
-
-        <TabPanel key="0">
-          <div
-            style={{
-              borderStyle: "solid",
-              borderColor: "#DCDCDC",
-              backgroundColor: "#DCDCDC",
-              borderRadius: "8px",
-              paddingTop: "2%",
-              paddingBottom: "1.3%",
-              paddingLeft: "5%",
-              paddingRight: "5%"
-            }}
-          >
-            {props.video.videoTitle}
-            {props.video.videoAuthor}
-            <br />
-            <VideoInfo vidElem={props.video} />
-          </div>
-        </TabPanel>
-        <TabPanel key="1">
-          <div>
-            {props.video.annotations.map((item, index) => (
-              <div key={index}>
-                <AnnotationBox
-                  passedSeek={props.player.seekTo}
-                  annElement={item}
-                />
-                <br />
-              </div>
-            ))}
-          </div>
-        </TabPanel>
-        {/* <TabPanel key="2">{subAnnotationTab()}</TabPanel> */}
-      </Tabs>
     </>
   );
 }
