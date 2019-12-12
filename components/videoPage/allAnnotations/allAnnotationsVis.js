@@ -20,20 +20,18 @@ export default class extends React.Component {
       this.selectCategory.style.borderStyle = "none";
     }
     this.selectCategory = document.getElementById(
-      `${selectedAnnotation.tag}-badge`
+      `${selectedAnnotation.title}-badge`
     );
     this.selectedElement = annotationVisElement;
     this.selectCategory.style.borderStyle = "solid";
     this.selectCategory.style.opacity = 1;
-    const arrowX = Number(annotationVisElement.getAttribute("x"));
+    const annotationXStartposition = Number(
+      annotationVisElement.getAttribute("x")
+    );
     const arrowOffset = annotationVisElement.getAttribute("width") / 2;
-    const annotationPointer = document.getElementsByClassName(
-      "allAnnotations-arrow"
-    )[0];
-    const annotationExpansion = document.getElementsByClassName(
-      "allAnnotations-box"
-    )[0];
-    annotationPointer.style.left = `${arrowX + arrowOffset}px`;
+    const arrowElement = document.getElementById("allAnnotations-arrow");
+    const annotationExpansion = document.getElementById("allAnnotations-box");
+    arrowElement.style.left = `${annotationXStartposition + arrowOffset}px`;
     annotationExpansion.style.display = "block";
   };
   componentDidMount() {
@@ -52,14 +50,13 @@ export default class extends React.Component {
         .style("border", "solid")
         .style("border-width", "1px")
         .style("border-radius", "5px")
-        .style("padding", "10px")
+        .style("padding", "5px")
         .style("font-size", "14px");
     };
 
     const mouseClick = this.mouseClick;
-    const YouTubeIframeWidth = document.getElementById("YTplayer").offsetWidth,
-      h = 100,
-      marginOffset = (videoLength / YouTubeIframeWidth) * 30; // this to remove the margin (left and right) created by YouTube progress bar. Maybe there is an easier way :)
+    const YouTubeIframeWidth = document.getElementById("YTplayer").offsetWidth;
+    const h = 100;
 
     var mini = d3
       .select(this.props.divId)
@@ -73,7 +70,7 @@ export default class extends React.Component {
       .range(d3.schemeSet2);
     let scale = d3
       .scaleLinear()
-      .domain([0, videoLength - marginOffset])
+      .domain([0, videoLength])
       .range([0, YouTubeIframeWidth]);
 
     mini
@@ -84,13 +81,16 @@ export default class extends React.Component {
       .enter()
       .append("rect")
       .style("fill", d => {
-        return myColor(d.tag);
+        return myColor(d.title);
       })
       .attr("x", d => {
         return scale(d.start);
       })
       .attr("id", function(d) {
-        return d.tag;
+        return d.title + d.id;
+      })
+      .attr("title", function(d) {
+        return d.title;
       })
       .attr("width", function(d) {
         return scale(d.end - d.start);
@@ -111,22 +111,20 @@ export default class extends React.Component {
           .style("stroke-width", 1);
         initTooltip()
           .html(
-            `${d.annotation}
+            `<b>Discription: </b>${d.annotation}
                           <br>
-                          <b>Duration:</b> ${d.duration}. <b>Total Time:</b> ${d.totalTime}.<b> Annotation:</b> ${d.tag}.`
+                          <b>Duration:</b> ${d.duration}. 
+                          <br>
+                          <b>Total Time:</b> ${d.totalTime}. <br>
+                          <b> Annotation:</b> ${d.title}.`
           )
-          .style("left", d3.event.pageX + "px")
-          .style("top", d3.event.pageY + "px")
-          .transition()
           .style("opacity", 1)
-          .style("opacity", 1)
-          .style("background", myColor(d.tag));
+          .style("background", myColor(d.title));
       });
     [...document.getElementById("annotations-badges").children].forEach(
       element => {
-        element.style.backgroundColor = document.getElementById(
-          element.innerText
-        ).style.fill;
+        element.style.backgroundColor = document.querySelectorAll(`
+          [title=${element.innerText}]`)[0].style.fill;
         element.style.opacity = 0.75;
       }
     );

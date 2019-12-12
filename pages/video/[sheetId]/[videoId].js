@@ -36,7 +36,9 @@ function MainVideoPage() {
       changeUniqueAnnotation(
         Array.from(
           new Set(
-            localVideoAnnotations.annotations.map(annotation => annotation.tags)
+            localVideoAnnotations.annotations.map(
+              annotation => annotation.title
+            )
           )
         )
       );
@@ -59,10 +61,9 @@ function MainVideoPage() {
         Number(annotation.duration.end.minutes) * 60 +
         Number(annotation.duration.end.seconds),
       id: annotation.id,
-      tag: annotation.tags,
+      title: annotation.title,
       annotation: annotation.description,
       duration: `${annotation.duration.start.hours}:${annotation.duration.start.minutes}:${annotation.duration.start.seconds} - ${annotation.duration.end.hours}:${annotation.duration.end.minutes}:${annotation.duration.end.seconds}`,
-      // should be available from the database
       subAnnotations: annotation.subAnnotations || []
     };
     const start = new moment(obj.start * 1000);
@@ -203,8 +204,8 @@ function MainVideoPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "10% auto 10%",
-            gridTemplateRows: "350px 360px auto"
+            gridTemplateColumns: "10% 75% 15%",
+            gridTemplateRows: "800px auto"
           }}
         >
           <div
@@ -214,8 +215,8 @@ function MainVideoPage() {
             style={{
               gridColumnStart: "1",
               gridColumnEnd: "1",
-              gridRowStart: "3",
-              gridRowEnd: "3",
+              gridRowStart: "2",
+              gridRowEnd: "2",
               alignSelf: "flex-start",
               justifySelf: "center"
             }}
@@ -236,7 +237,7 @@ function MainVideoPage() {
               gridColumnStart: "2",
               gridColumnEnd: "2",
               gridRowStart: "1",
-              gridRowEnd: "span 2"
+              gridRowEnd: "span 1"
             }}
             id="YTplayer"
           >
@@ -249,12 +250,13 @@ function MainVideoPage() {
               playing={YTplaying}
             />
           </div>
+
           <div
             style={{
               gridColumnStart: "2",
               gridColumnEnd: "2",
-              gridRowStart: "3",
-              gridRowEnd: "3"
+              gridRowStart: "2",
+              gridRowEnd: "2"
             }}
           >
             <AnnotationsPage
@@ -264,6 +266,18 @@ function MainVideoPage() {
               updateAnnotations={updateAnnotations}
             />
           </div>
+          <div
+            id="ann-tooltip"
+            style={{
+              gridColumnStart: "3",
+              gridColumnEnd: "3",
+              gridRowStart: "1",
+              gridRowEnd: "1",
+              alignSelf: "flex-end",
+              justifySelf: "left",
+              maxWidth: "100%"
+            }}
+          />
         </div>
       </Layouts>
     </div>

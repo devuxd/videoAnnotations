@@ -7,7 +7,7 @@ import { googleLogin } from "../../../API/db";
 import * as d3 from "d3";
 import color from "color";
 
-function SubAnnotationForm(props) {
+function SubAnnotationEditForm(props) {
   //based on the selected annotation, display the sub-annotations related to it.
   //If non is selected or there are no sub-annotations display nothing.
   const selectedSubAnnotation = props.selectedSubAnnotation || {};
@@ -54,7 +54,6 @@ function SubAnnotationForm(props) {
 
   const editAnnotation = annotation => {
     changeActiveSubAnnotation(annotation);
-    console.log(annotation);
     activateTab(
       selectedSubAnnotation.findIndex(
         subAnnotation => subAnnotation.title === annotation.title
@@ -64,34 +63,27 @@ function SubAnnotationForm(props) {
 
   return (
     <>
-      <br />
-
-      {/* {Add_Edit_SubAnnotation(
+      {EditSubAnnotation(
         props.currentTime,
-        selectedSubAnnotation[1],
-        addNewSubAnnotations,
-        props.selectedAnnotation,
-        activeSubAnnotation
-      )} */}
+        selectedSubAnnotation,
+        addNewSubAnnotations
+      )}
       <br />
     </>
   );
 }
 
-function Add_Edit_SubAnnotation(
+function EditSubAnnotation(
   currentTime,
   selectedSubAnnotation,
-  addNewSubAnnotations,
-  selectedAnnotation,
-  activeSubAnnotation
+  addNewSubAnnotations
 ) {
+  // getting references
   const refStartTime = React.createRef();
   const refEndTime = React.createRef();
   const refDescription = React.createRef();
-  const subAnnotationId = React.createRef();
 
-  subAnnotationId.current = activeSubAnnotation.id;
-
+  // getting the current time of the video when the user ask for it
   const getCurrentTime = e => {
     const time = moment("2015-01-01")
       .startOf("day")
@@ -103,6 +95,7 @@ function Add_Edit_SubAnnotation(
       refEndTime.current.value = time;
     }
   };
+
   const handleSubmit = async () => {
     const localNewAnnotation = {
       startTime: refStartTime.current.value,
@@ -114,13 +107,11 @@ function Add_Edit_SubAnnotation(
         moment.duration(refEndTime.current.value).asSeconds() -
         selectedAnnotation.start,
       annotation: refDescription.current.value,
-      id:
-        subAnnotationId.current === undefined
-          ? selectedSubAnnotation.annotations.length
-          : subAnnotationId.current,
+      id: selectedSubAnnotation.id,
       title: selectedSubAnnotation.title,
       duration: refStartTime.current.value + " - " + refEndTime.current.value
     };
+
     const start = new moment(localNewAnnotation.start * 1000);
     const end = new moment(localNewAnnotation.end * 1000);
     const diff = moment.duration(end.diff(start));
@@ -146,102 +137,105 @@ function Add_Edit_SubAnnotation(
           .box-sub-annotation {
             position: relative;
             border-radius: 0.4em;
-            border-top: 2px solid #d0d0d0;
+            border: 3px solid;
             padding: 5px;
+            width: 800px;
+            transition: left 1s;
           }
 
           .arrow-sub-annotation {
             content: "";
-            position: absolute;
+            position: relative;
             top: 0;
             width: 0;
             height: 0;
             border: 20px solid transparent;
-            border-bottom-color: #d0d0d0;
             border-top: 0;
             margin-left: -20px;
-            margin-top: -20px;
+            transition: left 0.5s;
           }
         `}
       </style>
+      <div className="arrow-sub-annotation" id="arrow-sub-annotation"></div>
 
-      <div className="input-group input-group-sm mb-3 box-sub-annotation">
-        <p className="arrow-sub-annotation"></p>
-        <input
-          key={subAnnotationId.current + "startTime"}
-          type="text"
-          className="form-control"
-          placeholder="Start time"
-          aria-label="Start time"
-          aria-describedby="button-addon2"
-          defaultValue={activeSubAnnotation.startTime}
-          ref={refStartTime}
-        />
-        <div className="input-group-append">
-          <button
-            onClick={getCurrentTime}
-            className="btn btn-outline-secondary"
-            type="button"
-            id="start"
-            style={{ width: "42px", paddingTop: "1px" }}
-            data-placement="bottom"
-            title="Get current time"
-          >
-            <FontAwesomeIcon icon={faClock} />
-          </button>
+      <div className="box-sub-annotation" id="box-sub-annotation">
+        <div className="input-group input-group-sm mb-3">
+          <input
+            key={selectedSubAnnotation.id + "startTime"}
+            type="text"
+            className="form-control"
+            placeholder="Start time"
+            aria-label="Start time"
+            aria-describedby="button-addon2"
+            defaultValue={selectedSubAnnotation.startTime}
+            ref={refStartTime}
+          />
+          <div className="input-group-append">
+            <button
+              onClick={getCurrentTime}
+              className="btn btn-outline-secondary"
+              type="button"
+              id="start"
+              style={{ width: "42px", paddingTop: "1px" }}
+              data-placement="bottom"
+              title="Get current time"
+            >
+              <FontAwesomeIcon icon={faClock} />
+            </button>
+          </div>
+          <input
+            key={selectedSubAnnotation.id + "endTime"}
+            type="text"
+            className="form-control"
+            placeholder="End time  "
+            aria-label="Start time"
+            aria-described="button-addon2"
+            style={{ marginLeft: "10px" }}
+            defaultValue={selectedSubAnnotation.endTime}
+            ref={refEndTime}
+          />
+          <div className="input-group-append">
+            <button
+              onClick={getCurrentTime}
+              className="btn btn-outline-secondary"
+              type="button"
+              id="end"
+              style={{ width: "42px", paddingTop: "1px" }}
+              data-placement="bottom"
+              title="Get current time"
+            >
+              <FontAwesomeIcon icon={faClock} />
+            </button>
+          </div>
         </div>
-        <input
-          key={subAnnotationId.current + "endTime"}
-          type="text"
+        <textarea
+          key={selectedSubAnnotation.id + "textarea"}
           className="form-control"
-          placeholder="End time  "
-          aria-label="Start time"
-          aria-described="button-addon2"
-          style={{ marginLeft: "10px" }}
-          defaultValue={activeSubAnnotation.endTime}
-          ref={refEndTime}
-        />
-        <div className="input-group-append">
-          <button
-            onClick={getCurrentTime}
-            className="btn btn-outline-secondary"
-            type="button"
-            id="end"
-            style={{ width: "42px", paddingTop: "1px" }}
-            data-placement="bottom"
-            title="Get current time"
-          >
-            <FontAwesomeIcon icon={faClock} />
-          </button>
-        </div>
-      </div>
-      <textarea
-        key={subAnnotationId.current + "textarea"}
-        className="form-control"
-        id="exampleFormControlTextarea1"
-        placeholder="Annotation description"
-        rows="3"
-        defaultValue={activeSubAnnotation.annotation}
-        ref={refDescription}
-      ></textarea>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row-reverse",
-          paddingTop: "10px"
-        }}
-      >
-        <button
-          type="button"
-          className="btn btn-success"
-          onClick={handleSubmit}
+          id="exampleFormControlTextarea1"
+          placeholder="Annotation description"
+          rows="5"
+          defaultValue={selectedSubAnnotation.annotation}
+          ref={refDescription}
+        ></textarea>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row-reverse",
+            paddingTop: "10px"
+          }}
         >
-          Save
-        </button>
+          <button
+            type="button"
+            className="btn btn-success"
+            onClick={handleSubmit}
+          >
+            Save
+          </button>
+        </div>
       </div>
       <br />
     </>
   );
 }
 
-export default SubAnnotationForm;
+export default SubAnnotationEditForm;

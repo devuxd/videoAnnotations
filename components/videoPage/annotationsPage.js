@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import MainAnnotationsVis from "./allAnnotations/allAnnotationsVis";
-import SubAnnotationForm from "./subAnnotations/SubAnnotationForm";
+import SubAnnotationEditForm from "./subAnnotations/SubAnnotationEditForm";
 import SubAnnotationsVis from "./subAnnotations/subAnnotationsVis";
 
 //    ===  ===  ===== =====     <- these are the annotations.
@@ -9,7 +9,6 @@ import SubAnnotationsVis from "./subAnnotations/subAnnotationsVis";
 //           ^                  <- this is the selected sub-annotation.
 
 function AnnotationsPage(props) {
-  debugger;
   // keep track of the selected annotation and sub-annotation.
   const [selectedAnnotation, changeSelectedAnnotation] = useState(null);
   const [selectedSubAnnotation, changeSelectedSubAnnotation] = useState(null);
@@ -17,15 +16,19 @@ function AnnotationsPage(props) {
   // handel the click on annotation and sub-annotation
   const onAnnotationClick = selectedAnnotation => {
     changeSelectedAnnotation({ ...selectedAnnotation });
+    changeSelectedSubAnnotation(null);
     props.player.seekTo(selectedAnnotation.start);
   };
   const onSubAnnotationClick = selectedSubAnnotation => {
     props.player.seekTo(selectedAnnotation.start + selectedSubAnnotation.start);
     changeSelectedSubAnnotation(selectedSubAnnotation);
+    document.getElementById("box-sub-annotation").scrollIntoView();
   };
-  // when one of the sub-annotation updated -> propagate this update to the main sate maintained by [videoId].s
-  const updateSubAnnotations = newSubAnnotations =>
-    props.updateAnnotations({ ...selectedAnnotation, newSubAnnotations });
+  // when one of the sub-annotation updated -> propagate this update to the main state maintained by [videoId].s
+  const updateSubAnnotations = newSubAnnotations => {
+    console({ ...selectedAnnotation, newSubAnnotations });
+    // props.updateAnnotations({ ...selectedAnnotation, newSubAnnotations });
+  };
 
   const subAnnotations = () => {
     if (selectedAnnotation != null) {
@@ -52,10 +55,9 @@ function AnnotationsPage(props) {
     if (selectedSubAnnotation != null) {
       return (
         <>
-          <SubAnnotationForm
+          <SubAnnotationEditForm
             getCurrentTime={props.player.getCurrentTime}
             selectedSubAnnotation={selectedSubAnnotation}
-            annotationLength={selectedAnnotation.end - selectedAnnotation.start}
             key={selectedAnnotation.id}
             updateSubAnnotations={updateSubAnnotations}
           />
@@ -67,11 +69,15 @@ function AnnotationsPage(props) {
     <>
       <style jsx>
         {`
+          html {
+            scroll-behavior: smooth;
+          }
+
           .allAnnotations-box {
-            position: relative;
+            position: absolute;
             border-radius: 1.4em;
             border-top: 4px solid #d0d0d0;
-            padding: 20px;
+            padding-top: 20px;
             display: none;
             margin-top: 10px;
           }
@@ -104,14 +110,15 @@ function AnnotationsPage(props) {
               }
               onAnnotationClick={onAnnotationClick}
               divId={"#video-annotations"}
+              tooltipId={"#ann-tooltip"}
             >
               <div id="video-annotations"></div>
             </MainAnnotationsVis>
           ),
           [selectedAnnotation]
         )}
-        <div className="allAnnotations-box">
-          <div className="allAnnotations-arrow"></div>
+        <div className="allAnnotations-box" id="allAnnotations-box">
+          <div className="allAnnotations-arrow" id="allAnnotations-arrow"></div>
           {subAnnotations()}
           {subAnnotationForm()}
         </div>

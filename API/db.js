@@ -94,7 +94,8 @@ const parse = rowDataset => {
           annotation.values[4].userEnteredValue.numberValue;
         annotationJSON.duration.end.seconds =
           annotation.values[5].userEnteredValue.numberValue;
-        annotationJSON.tags = annotation.values[6].userEnteredValue.stringValue;
+        annotationJSON.title =
+          annotation.values[6].userEnteredValue.stringValue;
         annotationJSON.description =
           annotation.values[7].userEnteredValue.stringValue;
         annotationJSON.id = annotationIndex;
