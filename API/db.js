@@ -4,7 +4,6 @@ const { key, clientId } = require("./config"); // create file in API folder and 
 const getDataset = sheetId =>
   new Promise((res, rej) => {
     if (sheetId === undefined) rej("sheet id cannot be undefined");
-
     return fetch(
       `https://content-sheets.googleapis.com/v4/spreadsheets/${sheetId}?includeGridData=true&fields=sheets(data(rowData(values(hyperlink%2Cnote%2CuserEnteredValue))))&key=${key}`
     )
@@ -43,75 +42,75 @@ const cacheData = (dataset, id) =>
   localStorage.setItem(id, JSON.stringify(dataset));
 
 const parse = rowDataset => {
-  try {
-    let dataset = rowDataset.sheets.map(({ data }, sheetIndex) => {
-      let videoJSON = {};
-      let video = data[0].rowData[2];
-      videoJSON.id = `Video${sheetIndex + 1}`;
-      videoJSON.videoTitle = video.values[0].userEnteredValue.stringValue;
-      videoJSON.videoURL = video.values[1].userEnteredValue.stringValue;
-      videoJSON.videoLength = { hours: "", minutes: "", seconds: "" };
-      videoJSON.videoLength.hours =
-        video.values[2].userEnteredValue.numberValue;
-      videoJSON.videoLength.minutes =
-        video.values[3].userEnteredValue.numberValue;
-      videoJSON.videoLength.seconds =
-        video.values[4].userEnteredValue.numberValue;
+  let dataset = rowDataset.sheets.map(({ data }, sheetIndex) => {
+    let videoJSON = {};
+    let video = data[0].rowData[2];
+    videoJSON.id = `Video${sheetIndex + 1}`;
+    videoJSON.videoTitle = video.values[0].userEnteredValue.stringValue;
+    videoJSON.videoURL = video.values[1].userEnteredValue.stringValue;
+    videoJSON.videoLength = { hours: "", minutes: "", seconds: "" };
+    videoJSON.videoLength.hours = video.values[2].userEnteredValue.numberValue;
+    videoJSON.videoLength.minutes =
+      video.values[3].userEnteredValue.numberValue;
+    videoJSON.videoLength.seconds =
+      video.values[4].userEnteredValue.numberValue;
 
-      videoJSON.programmingLanguage = video.values[5].userEnteredValue
-        ? video.values[5].userEnteredValue.stringValue
-        : "";
-      videoJSON.programmingTools = video.values[6].userEnteredValue
-        ? video.values[6].userEnteredValue.stringValue
-        : "";
-      videoJSON.githubURL = video.values[7].userEnteredValue
-        ? video.values[7].userEnteredValue.stringValue
-        : "";
+    videoJSON.programmingLanguage = video.values[5].userEnteredValue
+      ? video.values[5].userEnteredValue.stringValue
+      : "";
+    videoJSON.programmingTools = video.values[6].userEnteredValue
+      ? video.values[6].userEnteredValue.stringValue
+      : "";
+    videoJSON.githubURL = video.values[7].userEnteredValue
+      ? video.values[7].userEnteredValue.stringValue
+      : "";
 
-      videoJSON.projectSize = video.values[8].userEnteredValue
-        ? video.values[8].userEnteredValue.numberValue
-        : "";
+    videoJSON.projectSize = video.values[8].userEnteredValue
+      ? video.values[8].userEnteredValue.numberValue
+      : "";
 
-      videoJSON.developerGithubURL = video.values[9].userEnteredValue
-        ? video.values[9].userEnteredValue.stringValue
-        : "";
+    videoJSON.developerGithubURL = video.values[9].userEnteredValue
+      ? video.values[9].userEnteredValue.stringValue
+      : "";
 
-      let annotationsData = data[0].rowData.splice(10, data[0].rowData.length);
-      videoJSON.annotations = [];
-      let annotationIndex = 11;
-      videoJSON.annotations = annotationsData.map(annotation => {
-        let annotationJSON = {};
-        annotationJSON.duration = { start: {}, end: {} };
-        annotationJSON.duration.start.hours =
-          annotation.values[0].userEnteredValue.numberValue;
-        annotationJSON.duration.start.minutes =
-          annotation.values[1].userEnteredValue.numberValue;
-        annotationJSON.duration.start.seconds =
-          annotation.values[2].userEnteredValue.numberValue;
-        annotationJSON.duration.end.hours =
-          annotation.values[3].userEnteredValue.numberValue;
-        annotationJSON.duration.end.minutes =
-          annotation.values[4].userEnteredValue.numberValue;
-        annotationJSON.duration.end.seconds =
-          annotation.values[5].userEnteredValue.numberValue;
-        annotationJSON.title =
-          annotation.values[6].userEnteredValue.stringValue;
-        annotationJSON.description =
-          annotation.values[7].userEnteredValue.stringValue;
-        annotationJSON.id = annotationIndex;
-        annotationJSON.subAnnotations = annotation.values[8]
-          ? JSON.parse(annotation.values[8].userEnteredValue.stringValue)
-          : [];
-        annotationIndex++;
-        return annotationJSON;
-      });
-
-      return videoJSON;
+    let annotationsData = data[0].rowData.splice(10, data[0].rowData.length);
+    videoJSON.annotations = [];
+    let annotationIndex = 11;
+    //remove empty cells from the spreedsheet
+    const filteredAnnotationsData = annotationsData.filter(
+      annotation =>
+        annotation.values != undefined &&
+        annotation.values[0].userEnteredValue != undefined
+    );
+    videoJSON.annotations = filteredAnnotationsData.map(annotation => {
+      let annotationJSON = {};
+      annotationJSON.duration = { start: {}, end: {} };
+      annotationJSON.duration.start.hours =
+        annotation.values[0].userEnteredValue.numberValue;
+      annotationJSON.duration.start.minutes =
+        annotation.values[1].userEnteredValue.numberValue;
+      annotationJSON.duration.start.seconds =
+        annotation.values[2].userEnteredValue.numberValue;
+      annotationJSON.duration.end.hours =
+        annotation.values[3].userEnteredValue.numberValue;
+      annotationJSON.duration.end.minutes =
+        annotation.values[4].userEnteredValue.numberValue;
+      annotationJSON.duration.end.seconds =
+        annotation.values[5].userEnteredValue.numberValue;
+      annotationJSON.title = annotation.values[6].userEnteredValue.stringValue;
+      annotationJSON.description =
+        annotation.values[7].userEnteredValue.stringValue;
+      annotationJSON.id = annotationIndex;
+      annotationJSON.subAnnotations = annotation.values[8]
+        ? JSON.parse(annotation.values[8].userEnteredValue.stringValue)
+        : [];
+      annotationIndex++;
+      return annotationJSON;
     });
-    return dataset;
-  } catch (e) {
-    throw Error("The template you used cannot be parsed : " + e);
-  }
+
+    return videoJSON;
+  });
+  return dataset;
 };
 const googleLogin = () => {
   return new Promise((res, rej) =>

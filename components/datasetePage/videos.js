@@ -9,7 +9,7 @@ function Video(props) {
   const video = props.video;
   const videoId = video.videoURL.replace("https://youtu.be/", "");
   let uniqueAnnotation = Array.from(
-    new Set(video.annotations.map(annotation => annotation.Tags))
+    new Set(video.annotations.map(annotation => annotation.title))
   );
   return (
     <div class="card">

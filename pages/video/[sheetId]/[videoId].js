@@ -254,9 +254,9 @@ function MainVideoPage() {
           <div
             style={{
               gridColumnStart: "2",
-              gridColumnEnd: "2",
+              gridColumnEnd: "span 3",
               gridRowStart: "2",
-              gridRowEnd: "2"
+              gridRowEnd: "span 2"
             }}
           >
             <AnnotationsPage
@@ -266,6 +266,7 @@ function MainVideoPage() {
               updateAnnotations={updateAnnotations}
             />
           </div>
+
           <div
             id="ann-tooltip"
             style={{

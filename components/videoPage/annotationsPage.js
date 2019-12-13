@@ -18,7 +18,7 @@ function AnnotationsPage(props) {
     document.getElementById("nav-bar").scrollIntoView();
     changeSelectedAnnotation({ ...selectedAnnotation });
     props.player.seekTo(selectedAnnotation.start);
-    setTimeout(() => changeSelectedSubAnnotation(null), 500);
+    changeSelectedSubAnnotation(null);
   };
   const onSubAnnotationClick = selectedSubAnnotation => {
     props.player.seekTo(selectedAnnotation.start + selectedSubAnnotation.start);
@@ -45,7 +45,7 @@ function AnnotationsPage(props) {
           >
             <div
               id="sub-annotations"
-              style={{ bottom: "8px", marginTop: "-10px" }}
+              style={{ marginBottom: "-5px", marginTop: "-10px" }}
             ></div>
           </SubAnnotationsVis>
         </>
@@ -94,31 +94,79 @@ function AnnotationsPage(props) {
           }
         `}
       </style>
-      <div>
-        {useMemo(
-          () => (
-            <MainAnnotationsVis
-              annotationData={props.formatedAnnotationData}
-              getCurrentTime={props.player.getCurrentTime}
-              videoLength={
-                props.video.videoLength.hours * 3600 +
-                props.video.videoLength.minutes * 60 +
-                props.video.videoLength.seconds
-              }
-              onAnnotationClick={onAnnotationClick}
-              divId={"#video-annotations"}
-              tooltipId={"#ann-tooltip"}
-            >
-              <div id="video-annotations"></div>
-            </MainAnnotationsVis>
-          ),
-          [selectedAnnotation]
-        )}
-        <div className="allAnnotations-box" id="allAnnotations-box">
-          <div className="allAnnotations-arrow" id="allAnnotations-arrow"></div>
-          {subAnnotations()}
-          {subAnnotationForm()}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "85% 15%",
+          gridTemplateRows: "30px 350px auto"
+        }}
+      >
+        {" "}
+        <div
+          style={{
+            gridColumnStart: "1",
+            gridColumnEnd: "1",
+            gridRowStart: "1",
+            gridRowEnd: "1"
+          }}
+        >
+          {useMemo(
+            () => (
+              <MainAnnotationsVis
+                annotationData={props.formatedAnnotationData}
+                getCurrentTime={props.player.getCurrentTime}
+                videoLength={
+                  props.video.videoLength.hours * 3600 +
+                  props.video.videoLength.minutes * 60 +
+                  props.video.videoLength.seconds
+                }
+                onAnnotationClick={onAnnotationClick}
+                divId={"#video-annotations"}
+                tooltipId={"#ann-tooltip"}
+              >
+                <div id="video-annotations"></div>
+              </MainAnnotationsVis>
+            ),
+            [selectedAnnotation]
+          )}
         </div>
+        <div
+          style={{
+            gridColumnStart: "1",
+            gridColumnEnd: "1",
+            gridRowStart: "2",
+            gridRowEnd: "2"
+          }}
+        >
+          <div className="allAnnotations-box" id="allAnnotations-box">
+            <div
+              className="allAnnotations-arrow"
+              id="allAnnotations-arrow"
+            ></div>
+            {subAnnotations()}
+            {subAnnotationForm()}
+          </div>
+        </div>
+        {selectedAnnotation && (
+          <div
+            style={{
+              gridColumnStart: "2",
+              gridColumnEnd: "2",
+              gridRowStart: "2",
+              gridRowEnd: "2",
+              marginTop: "15px"
+            }}
+          >
+            <button
+              type="button"
+              className="btn btn-outline-info btn-sm"
+
+              // onClick={}
+            >
+              Add sub-annotation
+            </button>
+          </div>
+        )}
       </div>
     </>
   );

@@ -160,7 +160,12 @@ function EditSubAnnotation(
 
       <div className="box-sub-annotation" id="box-sub-annotation">
         <div className="input-group input-group-sm mb-3">
+          <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
+            {" "}
+            Start:{" "}
+          </label>
           <input
+            id="StartTime"
             key={selectedSubAnnotation.id + "startTime"}
             type="text"
             className="form-control"
@@ -183,7 +188,11 @@ function EditSubAnnotation(
               <FontAwesomeIcon icon={faClock} />
             </button>
           </div>
+          <label for="EndTime" style={{ margin: "3px", paddingLeft: "5px" }}>
+            End:{" "}
+          </label>
           <input
+            id="EndTime"
             key={selectedSubAnnotation.id + "endTime"}
             type="text"
             className="form-control"
@@ -208,7 +217,9 @@ function EditSubAnnotation(
             </button>
           </div>
         </div>
+        <label for="description">Description: </label>
         <textarea
+          id="description"
           key={selectedSubAnnotation.id + "textarea"}
           className="form-control"
           id="exampleFormControlTextarea1"
@@ -217,6 +228,13 @@ function EditSubAnnotation(
           defaultValue={selectedSubAnnotation.annotation}
           ref={refDescription}
         ></textarea>
+        <span
+          className="badge badge-pill badge-primary"
+          id="subAnnotationTitleBadget"
+        >
+          {selectedSubAnnotation.title}
+        </span>
+
         <div
           style={{
             display: "flex",

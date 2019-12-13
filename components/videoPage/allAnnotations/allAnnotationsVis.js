@@ -33,6 +33,10 @@ export default class extends React.Component {
     const annotationExpansion = document.getElementById("allAnnotations-box");
     arrowElement.style.left = `${annotationXStartposition + arrowOffset}px`;
     annotationExpansion.style.display = "block";
+
+    const backgroundColor = annotationVisElement.style.fill;
+    arrowElement.style.borderBottomColor = backgroundColor;
+    annotationExpansion.style.borderColor = backgroundColor;
   };
   componentDidMount() {
     let videoLength = this.props.videoLength;
