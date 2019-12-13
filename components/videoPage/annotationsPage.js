@@ -15,9 +15,10 @@ function AnnotationsPage(props) {
 
   // handel the click on annotation and sub-annotation
   const onAnnotationClick = selectedAnnotation => {
+    document.getElementById("nav-bar").scrollIntoView();
     changeSelectedAnnotation({ ...selectedAnnotation });
-    changeSelectedSubAnnotation(null);
     props.player.seekTo(selectedAnnotation.start);
+    setTimeout(() => changeSelectedSubAnnotation(null), 500);
   };
   const onSubAnnotationClick = selectedSubAnnotation => {
     props.player.seekTo(selectedAnnotation.start + selectedSubAnnotation.start);
@@ -69,10 +70,6 @@ function AnnotationsPage(props) {
     <>
       <style jsx>
         {`
-          html {
-            scroll-behavior: smooth;
-          }
-
           .allAnnotations-box {
             position: absolute;
             border-radius: 1.4em;

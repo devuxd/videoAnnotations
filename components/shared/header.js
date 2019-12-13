@@ -21,6 +21,14 @@ const Header = () => (
         type="text/css"
       />
     </Head>
+    <style jsx global>{`
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        overflow-y: scroll;
+      }
+    `}</style>
   </div>
 );
 

@@ -184,7 +184,7 @@ function MainVideoPage() {
   return (
     <div style={{ fontFamily: "Lato" }}>
       <Layouts>
-        <div>
+        <div id="nav-bar">
           <nav className="navbar navbar-expand-lg navbar-light bg-white">
             <a className="navbar-brand" style={{ width: "20%" }} href="/">
               <img
@@ -275,7 +275,7 @@ function MainVideoPage() {
               gridRowEnd: "1",
               alignSelf: "flex-end",
               justifySelf: "left",
-              maxWidth: "100%"
+              width: "90%"
             }}
           />
         </div>
