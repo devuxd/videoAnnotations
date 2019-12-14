@@ -1,21 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faArrowDown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClock,
+  faArrowRight,
+  faArrowLeft
+} from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import { googleLogin } from "../../../API/db";
 
-function AnnotationEditForm(props) {
+function AnnotationEditForm({
+  currentTime,
+  expandAnnotation,
+  selectedAnnotation
+}) {
   //based on the selected annotation, display the sub-annotations related to it.
   //If non is selected or there are no sub-annotations display nothing.
-  const selectedAnnotation = props.selectedAnnotation || {};
-  console.log(selectedAnnotation);
 
   return (
     <>
       {editAnnotation(
-        props.currentTime,
-        selectedAnnotation
+        currentTime,
+        selectedAnnotation,
         // updatedAnnotation
+        expandAnnotation
       )}
       <br />
     </>
@@ -24,7 +31,8 @@ function AnnotationEditForm(props) {
 
 function editAnnotation(
   currentTime,
-  selectedAnnotation
+  selectedAnnotation,
+  expandAnnotation
   // updatedAnnotation
 ) {
   // getting references
@@ -34,7 +42,6 @@ function editAnnotation(
   const timeStartAndEnd = selectedAnnotation.duration.split(" ");
   const startTime = timeStartAndEnd[0];
   const endTime = timeStartAndEnd[2];
-
   // getting the current time of the video when the user ask for it
   const getCurrentTime = e => {
     const time = moment("2015-01-01")
@@ -84,157 +91,147 @@ function editAnnotation(
 
   return (
     <>
-      <style jsx>
-        {`
-          .box-annotation {
-            position: relative;
-            border-radius: 0.4em;
-            border: 3px solid;
-            padding: 5px;
-            width: 800px;
-            transition: left 1s;
+      <style jsx>{`
+        .animation-expand-left {
+          animation: mymove-left 1s infinite ease-in-out;
+        }
+        @keyframes mymove-left {
+          0% {
+            padding-right: 0px;
           }
+          25% {
+            padding-right: 2.5px;
+          }
+          50% {
+            padding-right: 5px;
+          }
+          75% {
+            padding-right: 2.5px;
+          }
+          100% {
+            padding-right: 0px;
+          }
+        }
+        .animation-expand-right {
+          animation: mymove-right 1s infinite ease-in-out;
+        }
 
-          .arrow-annotation {
-            content: "";
-            position: relative;
-            top: 0;
-            width: 0;
-            height: 0;
-            border: 20px solid transparent;
-            border-top: 0;
-            margin-left: -20px;
-            transition: left 0.5s;
+        @keyframes mymove-right {
+          0% {
+            padding-left: 0px;
           }
-          .allAnnotations-box {
-            position: absolute;
-            border-radius: 1.4em;
-            border-top: 4px solid #d0d0d0;
-            padding-top: 20px;
-            display: none;
-            margin-top: 10px;
+          25% {
+            padding-left: 2.5px;
           }
-
-          .allAnnotations-arrow {
-            content: "";
-            position: absolute;
-            top: 0;
-            width: 0;
-            height: 0;
-            border: 20px solid transparent;
-            border-bottom-color: #d0d0d0;
-            border-top: 0;
-            margin-left: -20px;
-            margin-top: -20px;
-            transition: left 0.3s;
+          50% {
+            padding-left: 5px;
           }
-
-          @keyframes mymove {
-            from {
-              padding-top: 0px;
-            }
-            to {
-              padding-top: 2px;
-            }
+          75% {
+            padding-left: 2.5px;
           }
-        `}
-      </style>
-      <div className="arrow-annotation" id="arrow-annotation"></div>
-      <div className="box-annotation" id="box-annotation">
-        <div className="input-group input-group-sm mb-3">
-          <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
-            Start:
-          </label>
-          <input
-            id="StartTime"
-            key={selectedAnnotation.id + "startTime"}
-            type="text"
-            className="form-control"
-            placeholder="Start time"
-            aria-label="Start time"
-            aria-describedby="button-addon2"
-            defaultValue={startTime}
-            ref={refStartTime}
-          />
-          <div className="input-group-append">
-            <button
-              onClick={getCurrentTime}
-              className="btn btn-outline-secondary"
-              type="button"
-              id="start"
-              style={{ width: "42px", paddingTop: "1px" }}
-              data-placement="bottom"
-              title="Get current time"
-            >
-              <FontAwesomeIcon icon={faClock} />
-            </button>
-          </div>
-          <label for="EndTime" style={{ margin: "3px", paddingLeft: "5px" }}>
-            End:
-          </label>
-          <input
-            id="EndTime"
-            key={selectedAnnotation.id + "endTime"}
-            type="text"
-            className="form-control"
-            placeholder="End time  "
-            aria-label="Start time"
-            aria-described="button-addon2"
-            style={{ marginLeft: "10px" }}
-            defaultValue={endTime}
-            ref={refEndTime}
-          />
-          <div className="input-group-append">
-            <button
-              onClick={getCurrentTime}
-              className="btn btn-outline-secondary"
-              type="button"
-              id="end"
-              style={{ width: "42px", paddingTop: "1px" }}
-              data-placement="bottom"
-              title="Get current time"
-            >
-              <FontAwesomeIcon icon={faClock} />
-            </button>
-          </div>
-        </div>
-        <label for="description">Description: </label>
-        <textarea
-          id="description"
-          key={selectedAnnotation.id + "textarea"}
+          100% {
+            padding-left: 0px;
+          }
+        }
+      `}</style>
+      <div className="input-group input-group-sm mb-3">
+        <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
+          Start:
+        </label>
+        <input
+          id="StartTime"
+          key={selectedAnnotation.id + "startTime"}
+          type="text"
           className="form-control"
-          id="exampleFormControlTextarea1"
-          placeholder="Annotation description"
-          rows="5"
-          defaultValue={selectedAnnotation.annotation}
-          ref={refDescription}
-        ></textarea>
-
-        <div
-          style={{
-            display: "grid",
-            justifyContent: "center",
-            paddingTop: "5px",
-            animation: "mymove 1s infinite"
-          }}
-        >
+          placeholder="Start time"
+          aria-label="Start time"
+          aria-describedby="button-addon2"
+          defaultValue={startTime}
+          ref={refStartTime}
+        />
+        <div className="input-group-append">
           <button
+            onClick={getCurrentTime}
+            className="btn btn-outline-secondary"
             type="button"
-            className="btn btn-success"
-            onClick={handleSubmit}
+            id="start"
+            style={{ width: "42px", paddingTop: "1px" }}
+            data-placement="bottom"
+            title="Get current time"
           >
-            <FontAwesomeIcon
-              style={{ width: "15px", paddingRight: "3px", display: "inline" }}
-              icon={faArrowDown}
-            />
-            Expand to see sub-annotations
-            <FontAwesomeIcon
-              style={{ width: "15px", paddingLeft: "3px", display: "inline" }}
-              icon={faArrowDown}
-            />
+            <FontAwesomeIcon icon={faClock} />
           </button>
         </div>
-        <br />
+        <label for="EndTime" style={{ margin: "3px", paddingLeft: "5px" }}>
+          End:
+        </label>
+        <input
+          id="EndTime"
+          key={selectedAnnotation.id + "endTime"}
+          type="text"
+          className="form-control"
+          placeholder="End time  "
+          aria-label="Start time"
+          aria-described="button-addon2"
+          style={{ marginLeft: "10px" }}
+          defaultValue={endTime}
+          ref={refEndTime}
+        />
+        <div className="input-group-append">
+          <button
+            onClick={getCurrentTime}
+            className="btn btn-outline-secondary"
+            type="button"
+            id="end"
+            style={{ width: "42px", paddingTop: "1px" }}
+            data-placement="bottom"
+            title="Get current time"
+          >
+            <FontAwesomeIcon icon={faClock} />
+          </button>
+        </div>
+      </div>
+      <label for="description"> General description: </label>
+      <textarea
+        id="description"
+        key={selectedAnnotation.id + "textarea"}
+        className="form-control"
+        id="exampleFormControlTextarea1"
+        placeholder="Annotation description"
+        rows="5"
+        defaultValue={selectedAnnotation.annotation}
+        ref={refDescription}
+      ></textarea>
+
+      <div
+        style={{
+          display: "grid",
+          justifyContent: "center",
+          paddingTop: "5px",
+          maxHeight: "59px",
+          alignContent: "center",
+          gridTemplateColumns: "20px 250px 20px"
+        }}
+      >
+        <p
+          className={"animation-expand-left"}
+          style={{ display: "inline-block", margin: "0 auto" }}
+        >
+          <FontAwesomeIcon style={{ width: "15px" }} icon={faArrowLeft} />
+        </p>
+        <button
+          type="button"
+          className="btn btn-outline-secondary btn-sm"
+          onClick={() => expandAnnotation(true)}
+        >
+          Expand to see sub-annotations
+        </button>
+        <p
+          className={"animation-expand-right"}
+          style={{ display: "inline-block", margin: "0 auto" }}
+        >
+          <FontAwesomeIcon style={{ width: "15px" }} icon={faArrowRight} />
+        </p>
       </div>
     </>
   );

@@ -14,19 +14,37 @@ function AnnotationsPage(props) {
   // keep track of the selected annotation and sub-annotation.
   const [selectedAnnotation, changeSelectedAnnotation] = useState(null);
   const [selectedSubAnnotation, changeSelectedSubAnnotation] = useState(null);
+  const [
+    selectedAnnotationExpanded,
+    changeSelectedAnnotationExpanded
+  ] = useState(false);
 
   // handel the click on annotation and sub-annotation
   const onAnnotationClick = selectedAnnotation => {
     document.getElementById("video-annotations").scrollIntoView();
+    changeSelectedAnnotationExpanded(false);
     changeSelectedAnnotation({ ...selectedAnnotation });
     props.player.seekTo(selectedAnnotation.start);
-    changeSelectedSubAnnotation(null);
+
+    if (selectedAnnotation.subAnnotations.length > 0) {
+      changeSelectedSubAnnotation(
+        selectedAnnotation.subAnnotations[0].annotations[0]
+      );
+    } else {
+      changeSelectedSubAnnotation(null);
+    }
   };
-  const onSubAnnotationClick = selectedSubAnnotation => {
-    props.player.seekTo(selectedAnnotation.start + selectedSubAnnotation.start);
-    changeSelectedSubAnnotation(selectedSubAnnotation);
-    document.getElementById("box-sub-annotation").scrollIntoView();
+  const onSubAnnotationClick = newSelectedSubAnnotation => {
+    props.player.seekTo(
+      selectedAnnotation.start + newSelectedSubAnnotation.start
+    );
+    changeSelectedSubAnnotation(newSelectedSubAnnotation);
+    setTimeout(
+      () => document.getElementById("box-sub-annotation").scrollIntoView(),
+      500
+    );
   };
+
   // when one of the sub-annotation updated -> propagate this update to the main state maintained by [videoId].s
   const updateSubAnnotations = newSubAnnotations => {
     console({ ...selectedAnnotation, newSubAnnotations });
@@ -35,28 +53,58 @@ function AnnotationsPage(props) {
 
   const subAnnotations = () => {
     if (selectedAnnotation != null) {
+      if (!selectedAnnotationExpanded) {
+        return (
+          <>
+            <style jsx>{`
+              .box-annotation {
+                position: relative;
+                border-radius: 0.4em;
+                border: 3px solid;
+                padding: 5px;
+                max-width: 800px;
+                transition: all 1s;
+              }
+            `}</style>
+            <div className="box-annotation" id="box-annotation">
+              <AnnotationEditForm
+                selectedAnnotation={selectedAnnotation}
+                expandAnnotation={changeSelectedAnnotationExpanded}
+              />
+            </div>
+          </>
+        );
+      }
       return (
         <>
-          <AnnotationEditForm selectedAnnotation={selectedAnnotation} />
-          {/* <SubAnnotationsVis
-            getCurrentTime={props.player.getCurrentTime}
-            annotationLength={selectedAnnotation.end - selectedAnnotation.start}
-            divId={"#sub-annotations"}
-            key={selectedAnnotation.id}
-            subAnnotations={selectedAnnotation.subAnnotations}
-            onSubAnnotationClick={onSubAnnotationClick}
-          >
-            <div
-              id="sub-annotations"
-              style={{ marginBottom: "-5px", marginTop: "-10px" }}
-            ></div>
-          </SubAnnotationsVis> */}
+          <style jsx>{`
+            .box-annotation-expanded {
+              border-radius: 1.4em;
+              border-top: 5px solid;
+              padding: 5px;
+              transition: all 1s;
+            }
+          `}</style>
+          <div className="box-annotation-expanded" id="box-annotation-expanded">
+            <SubAnnotationsVis
+              getCurrentTime={props.player.getCurrentTime}
+              annotationLength={
+                selectedAnnotation.end - selectedAnnotation.start
+              }
+              divId={"#sub-annotations"}
+              key={selectedAnnotation.id}
+              subAnnotations={selectedAnnotation.subAnnotations}
+              onSubAnnotationClick={onSubAnnotationClick}
+            >
+              <div id="sub-annotations" style={{ marginBottom: "-5px" }}></div>
+            </SubAnnotationsVis>
+          </div>
         </>
       );
     }
   };
   const subAnnotationForm = () => {
-    if (selectedSubAnnotation != null) {
+    if (selectedAnnotationExpanded && selectedSubAnnotation != null) {
       return (
         <>
           <SubAnnotationEditForm
@@ -64,6 +112,7 @@ function AnnotationsPage(props) {
             selectedSubAnnotation={selectedSubAnnotation}
             key={selectedAnnotation.id}
             updateSubAnnotations={updateSubAnnotations}
+            expandAnnotation={changeSelectedAnnotationExpanded}
           />
         </>
       );
@@ -71,7 +120,19 @@ function AnnotationsPage(props) {
   };
   return (
     <>
-      <style jsx>{``}</style>
+      <style jsx>{`
+        .arrow-annotation {
+          content: "";
+          position: relative;
+          top: 0;
+          width: 0;
+          height: 0;
+          border: 20px solid transparent;
+          border-top: 0;
+          margin-left: -20px;
+          transition: left 0.5s;
+        }
+      `}</style>
       <div
         style={{
           display: "grid",
@@ -79,7 +140,6 @@ function AnnotationsPage(props) {
           gridTemplateRows: "30px 350px auto"
         }}
       >
-        {" "}
         <div
           style={{
             gridColumnStart: "1",
@@ -116,6 +176,8 @@ function AnnotationsPage(props) {
             gridRowEnd: "2"
           }}
         >
+          <div className="arrow-annotation" id="arrow-annotation"></div>
+
           {subAnnotations()}
           {subAnnotationForm()}
         </div>

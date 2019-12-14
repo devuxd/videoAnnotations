@@ -1,14 +1,21 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClock,
+  faArrowRight,
+  faArrowLeft
+} from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import { googleLogin } from "../../../API/db";
 
-function SubAnnotationEditForm(props) {
+function SubAnnotationEditForm({
+  selectedSubAnnotation,
+  currentTime,
+  updateSubAnnotations,
+  expandAnnotation
+}) {
   //based on the selected annotation, display the sub-annotations related to it.
   //If non is selected or there are no sub-annotations display nothing.
-  const selectedSubAnnotation = props.selectedSubAnnotation || {};
-
   // const newTitle = useRef(null);
 
   // revisit this
@@ -60,9 +67,10 @@ function SubAnnotationEditForm(props) {
   return (
     <>
       {editSubAnnotation(
-        props.currentTime,
+        currentTime,
         selectedSubAnnotation,
-        addNewSubAnnotations
+        addNewSubAnnotations,
+        expandAnnotation
       )}
       <br />
     </>
@@ -72,7 +80,8 @@ function SubAnnotationEditForm(props) {
 function editSubAnnotation(
   currentTime,
   selectedSubAnnotation,
-  addNewSubAnnotations
+  addNewSubAnnotations,
+  expandAnnotation
 ) {
   // getting references
   const refStartTime = React.createRef();
@@ -149,6 +158,47 @@ function editSubAnnotation(
             border-top: 0;
             margin-left: -20px;
             transition: left 0.5s;
+          }
+          .animation-expand-left {
+            animation: mymove-left 1s infinite ease-in-out;
+          }
+          @keyframes mymove-left {
+            0% {
+              padding-right: 0px;
+            }
+            25% {
+              padding-right: 2.5px;
+            }
+            50% {
+              padding-right: 5px;
+            }
+            75% {
+              padding-right: 2.5px;
+            }
+            100% {
+              padding-right: 0px;
+            }
+          }
+          .animation-expand-right {
+            animation: mymove-right 1s infinite ease-in-out;
+          }
+
+          @keyframes mymove-right {
+            0% {
+              padding-left: 0px;
+            }
+            25% {
+              padding-left: 2.5px;
+            }
+            50% {
+              padding-left: 5px;
+            }
+            75% {
+              padding-left: 2.5px;
+            }
+            100% {
+              padding-left: 0px;
+            }
           }
         `}
       </style>
@@ -233,18 +283,33 @@ function editSubAnnotation(
 
         <div
           style={{
-            display: "flex",
-            flexDirection: "row-reverse",
-            paddingTop: "10px"
+            display: "grid",
+            justifyContent: "center",
+            paddingTop: "5px",
+            maxHeight: "59px",
+            alignContent: "center",
+            gridTemplateColumns: "20px 250px 20px"
           }}
         >
+          <p
+            className={"animation-expand-left"}
+            style={{ display: "inline-block", margin: "0 auto" }}
+          >
+            <FontAwesomeIcon style={{ width: "15px" }} icon={faArrowRight} />
+          </p>
           <button
             type="button"
-            className="btn btn-success"
-            onClick={handleSubmit}
+            className="btn btn-outline-secondary btn-sm"
+            onClick={() => expandAnnotation(false)}
           >
-            Save
+            Collapse sub-annotations
           </button>
+          <p
+            className={"animation-expand-right"}
+            style={{ display: "inline-block", margin: "0 auto" }}
+          >
+            <FontAwesomeIcon style={{ width: "15px" }} icon={faArrowLeft} />
+          </p>
         </div>
       </div>
       <br />

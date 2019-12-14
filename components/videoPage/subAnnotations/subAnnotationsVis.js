@@ -42,9 +42,9 @@ export default class extends React.Component {
         "subAnnotationTitleBadget"
       ).style.backgroundColor = backgroundColor;
     };
-    const w = document.getElementById("YTplayer").offsetWidth,
-      h = 100;
-
+    const w = document.getElementById("YTplayer").offsetWidth;
+    document.getElementById("box-annotation-expanded").style.width = `${w +
+      10}px`;
     var mini = d3
       .select(this.props.divId)
       .append("svg")
@@ -77,7 +77,7 @@ export default class extends React.Component {
         return scale(selectedSubAnnotation.start);
       })
       .attr("id", function(selectedSubAnnotation) {
-        return selectedSubAnnotation.title + selectedSubAnnotation.id;
+        return selectedSubAnnotation.id;
       })
       .attr("width", function(selectedSubAnnotation) {
         return scale(selectedSubAnnotation.end - selectedSubAnnotation.start);
@@ -92,6 +92,13 @@ export default class extends React.Component {
       .on("click", function(selectedSubAnnotation) {
         onMouseClick(selectedSubAnnotation, this);
       });
+    if (this.props.subAnnotations.length > 0) {
+      const selectedSubAnnotation = this.props.subAnnotations[0].annotations[0];
+      onMouseClick(
+        selectedSubAnnotation,
+        document.getElementById(selectedSubAnnotation.id)
+      );
+    }
   }
 
   render() {

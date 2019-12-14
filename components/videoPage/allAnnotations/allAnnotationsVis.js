@@ -40,7 +40,6 @@ export default class extends React.Component {
     annotationEditForm.style.borderColor = backgroundColor;
     const annotationMaxWidth = document.getElementById("video-annotations")
       .offsetWidth;
-    debugger;
     if (annotationXStartposition + 800 > annotationMaxWidth) {
       annotationEditForm.style.left = `${annotationMaxWidth - 800}px`;
     } else {
