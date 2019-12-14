@@ -24,15 +24,15 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.19",
     "@fortawesome/free-solid-svg-icons": "^5.9.0",
     "@fortawesome/react-fontawesome": "^0.1.4",
+    "color": "^3.1.2",
     "d3": "^5.9.7",
     "moment": "^2.24.0",
     "next": "latest",
-    "now": "latest",
+    "now": "^16.4.4",
     "react": "16.8.6",
     "react-dom": "16.8.6",
     "react-player": "^1.13.0",
-    "react-tabs": "^3.0.0",
-    "color": "^3.1.2"
+    "react-tabs": "^3.0.0"
   },
   "husky": {
     "hooks": {

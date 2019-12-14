@@ -25,18 +25,27 @@ export default class extends React.Component {
     this.selectedElement = annotationVisElement;
     this.selectCategory.style.borderStyle = "solid";
     this.selectCategory.style.opacity = 1;
+
     const annotationXStartposition = Number(
       annotationVisElement.getAttribute("x")
     );
     const arrowOffset = annotationVisElement.getAttribute("width") / 2;
-    const arrowElement = document.getElementById("allAnnotations-arrow");
-    const annotationExpansion = document.getElementById("allAnnotations-box");
-    arrowElement.style.left = `${annotationXStartposition + arrowOffset}px`;
-    annotationExpansion.style.display = "block";
 
+    const arrowElement = document.getElementById("arrow-annotation");
+    const annotationEditForm = document.getElementById("box-annotation");
+    arrowElement.style.left = `${annotationXStartposition + arrowOffset}px`;
+    annotationEditForm.style.display = "block";
     const backgroundColor = annotationVisElement.style.fill;
     arrowElement.style.borderBottomColor = backgroundColor;
-    annotationExpansion.style.borderColor = backgroundColor;
+    annotationEditForm.style.borderColor = backgroundColor;
+    const annotationMaxWidth = document.getElementById("video-annotations")
+      .offsetWidth;
+    debugger;
+    if (annotationXStartposition + 800 > annotationMaxWidth) {
+      annotationEditForm.style.left = `${annotationMaxWidth - 800}px`;
+    } else {
+      annotationEditForm.style.left = `${annotationXStartposition - 20}px`;
+    }
   };
   componentDidMount() {
     let videoLength = this.props.videoLength;

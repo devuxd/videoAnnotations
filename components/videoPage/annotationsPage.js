@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from "react";
 import MainAnnotationsVis from "./allAnnotations/allAnnotationsVis";
-import SubAnnotationEditForm from "./subAnnotations/SubAnnotationEditForm";
+import AnnotationEditForm from "./allAnnotations/annotationEditForm";
+
+import SubAnnotationEditForm from "./subAnnotations/subAnnotationEditForm";
 import SubAnnotationsVis from "./subAnnotations/subAnnotationsVis";
 
 //    ===  ===  ===== =====     <- these are the annotations.
@@ -15,7 +17,7 @@ function AnnotationsPage(props) {
 
   // handel the click on annotation and sub-annotation
   const onAnnotationClick = selectedAnnotation => {
-    document.getElementById("nav-bar").scrollIntoView();
+    document.getElementById("video-annotations").scrollIntoView();
     changeSelectedAnnotation({ ...selectedAnnotation });
     props.player.seekTo(selectedAnnotation.start);
     changeSelectedSubAnnotation(null);
@@ -35,7 +37,8 @@ function AnnotationsPage(props) {
     if (selectedAnnotation != null) {
       return (
         <>
-          <SubAnnotationsVis
+          <AnnotationEditForm selectedAnnotation={selectedAnnotation} />
+          {/* <SubAnnotationsVis
             getCurrentTime={props.player.getCurrentTime}
             annotationLength={selectedAnnotation.end - selectedAnnotation.start}
             divId={"#sub-annotations"}
@@ -47,7 +50,7 @@ function AnnotationsPage(props) {
               id="sub-annotations"
               style={{ marginBottom: "-5px", marginTop: "-10px" }}
             ></div>
-          </SubAnnotationsVis>
+          </SubAnnotationsVis> */}
         </>
       );
     }
@@ -68,32 +71,7 @@ function AnnotationsPage(props) {
   };
   return (
     <>
-      <style jsx>
-        {`
-          .allAnnotations-box {
-            position: absolute;
-            border-radius: 1.4em;
-            border-top: 4px solid #d0d0d0;
-            padding-top: 20px;
-            display: none;
-            margin-top: 10px;
-          }
-
-          .allAnnotations-arrow {
-            content: "";
-            position: absolute;
-            top: 0;
-            width: 0;
-            height: 0;
-            border: 20px solid transparent;
-            border-bottom-color: #d0d0d0;
-            border-top: 0;
-            margin-left: -20px;
-            margin-top: -20px;
-            transition: left 0.3s;
-          }
-        `}
-      </style>
+      <style jsx>{``}</style>
       <div
         style={{
           display: "grid",
@@ -138,14 +116,8 @@ function AnnotationsPage(props) {
             gridRowEnd: "2"
           }}
         >
-          <div className="allAnnotations-box" id="allAnnotations-box">
-            <div
-              className="allAnnotations-arrow"
-              id="allAnnotations-arrow"
-            ></div>
-            {subAnnotations()}
-            {subAnnotationForm()}
-          </div>
+          {subAnnotations()}
+          {subAnnotationForm()}
         </div>
         {selectedAnnotation && (
           <div
