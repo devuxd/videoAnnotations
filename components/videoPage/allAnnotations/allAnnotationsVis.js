@@ -50,22 +50,6 @@ export default class extends React.Component {
     let videoLength = this.props.videoLength;
     let annotationData = this.props.annotationData;
 
-    // Tooltip
-    // const initTooltip = () => {
-    //   d3.select(this.props.tooltipId)
-    //     .selectAll("div")
-    //     .remove();
-    //   return d3
-    //     .select(this.props.tooltipId)
-    //     .append("div")
-    //     .style("opacity", 0)
-    //     .style("border", "solid")
-    //     .style("border-width", "1px")
-    //     .style("border-radius", "5px")
-    //     .style("padding", "5px")
-    //     .style("font-size", "14px");
-    // };
-
     const mouseClick = this.mouseClick;
     const YouTubeIframeWidth = document.getElementById("YTplayer").offsetWidth;
     const h = 100;

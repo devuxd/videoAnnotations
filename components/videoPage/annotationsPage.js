@@ -40,10 +40,6 @@ function AnnotationsPage(props) {
       selectedAnnotation.start + newSelectedSubAnnotation.start
     );
     changeSelectedSubAnnotation(newSelectedSubAnnotation);
-    // setTimeout(
-    //   () => document.getElementById("box-sub-annotation").scrollIntoView(),
-    //   500
-    // );
   };
 
   // when one of the sub-annotation updated -> propagate this update to the main state maintained by [videoId].s

@@ -264,19 +264,6 @@ function MainVideoPage() {
               updateAnnotations={updateAnnotations}
             />
           </div>
-          {/* 
-          <div
-            id="ann-tooltip"
-            style={{
-              gridColumnStart: "3",
-              gridColumnEnd: "3",
-              gridRowStart: "1",
-              gridRowEnd: "1",
-              alignSelf: "flex-end",
-              justifySelf: "left",
-              width: "90%"
-            }}
-          /> */}
         </div>
       </Layouts>
     </div>

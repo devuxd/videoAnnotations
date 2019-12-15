@@ -54,9 +54,6 @@ export default class extends React.Component {
       } else {
         subAnnotationEditForm.style.left = `${annotationXStartposition - 20}px`;
       }
-      // document.getElementById(
-      //   "subAnnotationTitleBadget"
-      // ).style.backgroundColor = backgroundColor;
     };
     const w = document.getElementById("YTplayer").offsetWidth;
     document.getElementById("box-annotation-expanded").style.width = `${w +
