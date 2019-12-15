@@ -23,7 +23,7 @@ function MainVideoPage() {
     updateVideoAnnotationIsStillLoading
   ] = useState(true);
   const { videoId, sheetId } = useRouter().query;
-  const [YTplaying, YTpause] = useState(false);
+  const [YTplaying, changeYTplaying] = useState(false);
 
   const [uniqueAnnotation, changeUniqueAnnotation] = useState([]);
   const YTplayerRef = useRef(null);
@@ -75,24 +75,22 @@ function MainVideoPage() {
 
   const seekTo = seconds => {
     YTplayerRef.current.seekTo(seconds);
-    YTpause(true);
+    changeYTplaying(true);
   };
   const seekTo_subAnnotations = seconds => {
     YTplayerRef.current.seekTo(moment.duration(seconds).asSeconds());
-    YTpause(true);
+    changeYTplaying(true);
   };
   const getCurrentTime = () => YTplayerRef.current.getCurrentTime();
 
   const updateAnnotations = newAnnotation => {
     // update the annotation with the newSubAnnotations
-    const annotations = videoAnnotations.annotations.map(
-      (currentAnnotation, index) => {
-        if (currentAnnotation.id == newAnnotation.id) {
-          currentAnnotation.subAnnotations = newAnnotation.subAnnotations;
-        }
-        return currentAnnotation;
+    const annotations = videoAnnotations.annotations.map(currentAnnotation => {
+      if (currentAnnotation.id == newAnnotation.id) {
+        currentAnnotation.subAnnotations = newAnnotation.subAnnotations;
       }
-    );
+      return currentAnnotation;
+    });
     let localVideoAnnotations = { ...videoAnnotations, annotations };
 
     //Also update the formated Annotation
@@ -253,7 +251,7 @@ function MainVideoPage() {
 
           <div
             style={{
-              gridColumnStart: "2",
+              gridColumnStart: "1",
               gridColumnEnd: "span 3",
               gridRowStart: "2",
               gridRowEnd: "span 2"
@@ -266,7 +264,7 @@ function MainVideoPage() {
               updateAnnotations={updateAnnotations}
             />
           </div>
-
+          {/* 
           <div
             id="ann-tooltip"
             style={{
@@ -278,7 +276,7 @@ function MainVideoPage() {
               justifySelf: "left",
               width: "90%"
             }}
-          />
+          /> */}
         </div>
       </Layouts>
     </div>

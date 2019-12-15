@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClock,
-  faArrowRight,
-  faArrowLeft
-} from "@fortawesome/free-solid-svg-icons";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import { googleLogin } from "../../../API/db";
 
@@ -91,49 +87,6 @@ function editAnnotation(
 
   return (
     <>
-      <style jsx>{`
-        .animation-expand-left {
-          animation: mymove-left 1s infinite ease-in-out;
-        }
-        @keyframes mymove-left {
-          0% {
-            padding-right: 0px;
-          }
-          25% {
-            padding-right: 2.5px;
-          }
-          50% {
-            padding-right: 5px;
-          }
-          75% {
-            padding-right: 2.5px;
-          }
-          100% {
-            padding-right: 0px;
-          }
-        }
-        .animation-expand-right {
-          animation: mymove-right 1s infinite ease-in-out;
-        }
-
-        @keyframes mymove-right {
-          0% {
-            padding-left: 0px;
-          }
-          25% {
-            padding-left: 2.5px;
-          }
-          50% {
-            padding-left: 5px;
-          }
-          75% {
-            padding-left: 2.5px;
-          }
-          100% {
-            padding-left: 0px;
-          }
-        }
-      `}</style>
       <div className="input-group input-group-sm mb-3">
         <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
           Start:
@@ -202,37 +155,6 @@ function editAnnotation(
         defaultValue={selectedAnnotation.annotation}
         ref={refDescription}
       ></textarea>
-
-      <div
-        style={{
-          display: "grid",
-          justifyContent: "center",
-          paddingTop: "5px",
-          maxHeight: "59px",
-          alignContent: "center",
-          gridTemplateColumns: "20px 250px 20px"
-        }}
-      >
-        <p
-          className={"animation-expand-left"}
-          style={{ display: "inline-block", margin: "0 auto" }}
-        >
-          <FontAwesomeIcon style={{ width: "15px" }} icon={faArrowLeft} />
-        </p>
-        <button
-          type="button"
-          className="btn btn-outline-secondary btn-sm"
-          onClick={() => expandAnnotation(true)}
-        >
-          Expand to see sub-annotations
-        </button>
-        <p
-          className={"animation-expand-right"}
-          style={{ display: "inline-block", margin: "0 auto" }}
-        >
-          <FontAwesomeIcon style={{ width: "15px" }} icon={faArrowRight} />
-        </p>
-      </div>
     </>
   );
 }

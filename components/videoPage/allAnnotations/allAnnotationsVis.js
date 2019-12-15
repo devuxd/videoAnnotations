@@ -51,20 +51,20 @@ export default class extends React.Component {
     let annotationData = this.props.annotationData;
 
     // Tooltip
-    const initTooltip = () => {
-      d3.select(this.props.tooltipId)
-        .selectAll("div")
-        .remove();
-      return d3
-        .select(this.props.tooltipId)
-        .append("div")
-        .style("opacity", 0)
-        .style("border", "solid")
-        .style("border-width", "1px")
-        .style("border-radius", "5px")
-        .style("padding", "5px")
-        .style("font-size", "14px");
-    };
+    // const initTooltip = () => {
+    //   d3.select(this.props.tooltipId)
+    //     .selectAll("div")
+    //     .remove();
+    //   return d3
+    //     .select(this.props.tooltipId)
+    //     .append("div")
+    //     .style("opacity", 0)
+    //     .style("border", "solid")
+    //     .style("border-width", "1px")
+    //     .style("border-radius", "5px")
+    //     .style("padding", "5px")
+    //     .style("font-size", "14px");
+    // };
 
     const mouseClick = this.mouseClick;
     const YouTubeIframeWidth = document.getElementById("YTplayer").offsetWidth;
@@ -121,17 +121,6 @@ export default class extends React.Component {
           .style("opacity", 1)
           .style("stroke", "black")
           .style("stroke-width", 1);
-        initTooltip()
-          .html(
-            `<b>Discription: </b>${d.annotation}
-                          <br>
-                          <b>Duration:</b> ${d.duration}. 
-                          <br>
-                          <b>Total Time:</b> ${d.totalTime}. <br>
-                          <b> Annotation:</b> ${d.title}.`
-          )
-          .style("opacity", 1)
-          .style("background", myColor(d.title));
       });
     [...document.getElementById("annotations-badges").children].forEach(
       element => {

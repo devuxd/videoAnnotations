@@ -7,6 +7,8 @@ import color from "color";
 export default class extends React.Component {
   constructor(props) {
     super(props);
+    this.selectedElement;
+    this.selectCategory;
   }
 
   componentDidMount() {
@@ -16,6 +18,20 @@ export default class extends React.Component {
       .flat();
 
     const onMouseClick = (selectedSubAnnotation, subAnnotationVisElement) => {
+      if (
+        this.selectedElement &&
+        this.selectedElement !== subAnnotationVisElement
+      ) {
+        this.selectCategory.style.opacity = 0.75;
+        this.selectCategory.style.borderStyle = "none";
+      }
+      this.selectCategory = document.getElementById(
+        `${selectedSubAnnotation.title}-badge`
+      );
+      this.selectedElement = subAnnotationVisElement;
+      this.selectCategory.style.border = "3px black solid";
+      this.selectCategory.style.opacity = 1;
+
       this.props.onSubAnnotationClick(selectedSubAnnotation);
       const annotationXStartposition = Number(
         subAnnotationVisElement.getAttribute("x")
@@ -38,9 +54,9 @@ export default class extends React.Component {
       } else {
         subAnnotationEditForm.style.left = `${annotationXStartposition - 20}px`;
       }
-      document.getElementById(
-        "subAnnotationTitleBadget"
-      ).style.backgroundColor = backgroundColor;
+      // document.getElementById(
+      //   "subAnnotationTitleBadget"
+      // ).style.backgroundColor = backgroundColor;
     };
     const w = document.getElementById("YTplayer").offsetWidth;
     document.getElementById("box-annotation-expanded").style.width = `${w +
@@ -99,6 +115,20 @@ export default class extends React.Component {
         document.getElementById(selectedSubAnnotation.id)
       );
     }
+    [...document.getElementById("sub-annotations-badges").children].forEach(
+      (element, index) => {
+        element.style.backgroundColor = document.getElementById(
+          `${element.innerText}0`
+        ).style.fill;
+        if (index === 0) {
+          element.style.border = "3px black solid";
+          element.style.color = "white";
+        } else {
+          element.style.opacity = 0.75;
+          element.style.color = "white";
+        }
+      }
+    );
   }
 
   render() {

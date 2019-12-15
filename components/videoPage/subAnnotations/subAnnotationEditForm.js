@@ -11,8 +11,7 @@ import { googleLogin } from "../../../API/db";
 function SubAnnotationEditForm({
   selectedSubAnnotation,
   currentTime,
-  updateSubAnnotations,
-  expandAnnotation
+  updateSubAnnotations
 }) {
   //based on the selected annotation, display the sub-annotations related to it.
   //If non is selected or there are no sub-annotations display nothing.
@@ -69,10 +68,8 @@ function SubAnnotationEditForm({
       {editSubAnnotation(
         currentTime,
         selectedSubAnnotation,
-        addNewSubAnnotations,
-        expandAnnotation
+        addNewSubAnnotations
       )}
-      <br />
     </>
   );
 }
@@ -80,8 +77,7 @@ function SubAnnotationEditForm({
 function editSubAnnotation(
   currentTime,
   selectedSubAnnotation,
-  addNewSubAnnotations,
-  expandAnnotation
+  addNewSubAnnotations
 ) {
   // getting references
   const refStartTime = React.createRef();
@@ -159,51 +155,10 @@ function editSubAnnotation(
             margin-left: -20px;
             transition: left 0.5s;
           }
-          .animation-expand-left {
-            animation: mymove-left 1s infinite ease-in-out;
-          }
-          @keyframes mymove-left {
-            0% {
-              padding-right: 0px;
-            }
-            25% {
-              padding-right: 2.5px;
-            }
-            50% {
-              padding-right: 5px;
-            }
-            75% {
-              padding-right: 2.5px;
-            }
-            100% {
-              padding-right: 0px;
-            }
-          }
-          .animation-expand-right {
-            animation: mymove-right 1s infinite ease-in-out;
-          }
-
-          @keyframes mymove-right {
-            0% {
-              padding-left: 0px;
-            }
-            25% {
-              padding-left: 2.5px;
-            }
-            50% {
-              padding-left: 5px;
-            }
-            75% {
-              padding-left: 2.5px;
-            }
-            100% {
-              padding-left: 0px;
-            }
-          }
         `}
       </style>
-      <div className="arrow-sub-annotation" id="arrow-sub-annotation"></div>
 
+      <div className="arrow-sub-annotation" id="arrow-sub-annotation"></div>
       <div className="box-sub-annotation" id="box-sub-annotation">
         <div className="input-group input-group-sm mb-3">
           <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
@@ -274,45 +229,7 @@ function editSubAnnotation(
           defaultValue={selectedSubAnnotation.annotation}
           ref={refDescription}
         ></textarea>
-        <span
-          className="badge badge-pill badge-primary"
-          id="subAnnotationTitleBadget"
-        >
-          {selectedSubAnnotation.title}
-        </span>
-
-        <div
-          style={{
-            display: "grid",
-            justifyContent: "center",
-            paddingTop: "5px",
-            maxHeight: "59px",
-            alignContent: "center",
-            gridTemplateColumns: "20px 250px 20px"
-          }}
-        >
-          <p
-            className={"animation-expand-left"}
-            style={{ display: "inline-block", margin: "0 auto" }}
-          >
-            <FontAwesomeIcon style={{ width: "15px" }} icon={faArrowRight} />
-          </p>
-          <button
-            type="button"
-            className="btn btn-outline-secondary btn-sm"
-            onClick={() => expandAnnotation(false)}
-          >
-            Collapse sub-annotations
-          </button>
-          <p
-            className={"animation-expand-right"}
-            style={{ display: "inline-block", margin: "0 auto" }}
-          >
-            <FontAwesomeIcon style={{ width: "15px" }} icon={faArrowLeft} />
-          </p>
-        </div>
       </div>
-      <br />
     </>
   );
 }
