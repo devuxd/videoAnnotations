@@ -10,8 +10,9 @@ import { googleLogin } from "../../../API/db";
 
 function SubAnnotationEditForm({
   selectedSubAnnotation,
-  currentTime,
-  updateSubAnnotations
+  getCurrentTime,
+  updateSubAnnotations,
+  selectedAnnotationStart
 }) {
   //based on the selected annotation, display the sub-annotations related to it.
   //If non is selected or there are no sub-annotations display nothing.
@@ -62,22 +63,25 @@ function SubAnnotationEditForm({
       )
     );
   };
-
-  return (
-    <>
-      {editSubAnnotation(
-        currentTime,
-        selectedSubAnnotation,
-        addNewSubAnnotations
-      )}
-    </>
-  );
+  if (selectedSubAnnotation != null)
+    return (
+      <>
+        {editSubAnnotation(
+          getCurrentTime,
+          selectedSubAnnotation,
+          updateSubAnnotations,
+          selectedAnnotationStart
+        )}
+      </>
+    );
+  return <></>;
 }
 
 function editSubAnnotation(
-  currentTime,
+  getCurrentTime,
   selectedSubAnnotation,
-  addNewSubAnnotations
+  updateSubAnnotations,
+  selectedAnnotationStart
 ) {
   // getting references
   const refStartTime = React.createRef();
@@ -85,10 +89,10 @@ function editSubAnnotation(
   const refDescription = React.createRef();
 
   // getting the current time of the video when the user ask for it
-  const getCurrentTime = e => {
+  const getTime = e => {
     const time = moment("2015-01-01")
       .startOf("day")
-      .seconds(currentTime())
+      .seconds(getCurrentTime())
       .format("H:mm:ss");
     if (e.currentTarget.id === "start") {
       refStartTime.current.value = time;
@@ -103,10 +107,10 @@ function editSubAnnotation(
       endTime: refEndTime.current.value,
       start:
         moment.duration(refStartTime.current.value).asSeconds() -
-        selectedAnnotation.start,
+        selectedAnnotationStart,
       end:
         moment.duration(refEndTime.current.value).asSeconds() -
-        selectedAnnotation.start,
+        selectedAnnotationStart,
       annotation: refDescription.current.value,
       id: selectedSubAnnotation.id,
       title: selectedSubAnnotation.title,
@@ -122,13 +126,7 @@ function editSubAnnotation(
     } catch (e) {
       return;
     }
-    selectedSubAnnotation.annotations = [
-      ...selectedSubAnnotation.annotations.filter(
-        annotation => annotation.id != localNewAnnotation.id
-      ),
-      localNewAnnotation
-    ];
-    addNewSubAnnotations(selectedSubAnnotation, localNewAnnotation);
+    updateSubAnnotations(localNewAnnotation);
   };
 
   return (
@@ -162,8 +160,7 @@ function editSubAnnotation(
       <div className="box-sub-annotation" id="box-sub-annotation">
         <div className="input-group input-group-sm mb-3">
           <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
-            {" "}
-            Start:{" "}
+            Start:
           </label>
           <input
             id="StartTime"
@@ -175,22 +172,24 @@ function editSubAnnotation(
             aria-describedby="button-addon2"
             defaultValue={selectedSubAnnotation.startTime}
             ref={refStartTime}
+            onBlur={handleSubmit}
           />
           <div className="input-group-append">
             <button
-              onClick={getCurrentTime}
+              onClick={getTime}
               className="btn btn-outline-secondary"
               type="button"
               id="start"
               style={{ width: "42px", paddingTop: "1px" }}
               data-placement="bottom"
               title="Get current time"
+              onBlur={handleSubmit}
             >
               <FontAwesomeIcon icon={faClock} />
             </button>
           </div>
           <label for="EndTime" style={{ margin: "3px", paddingLeft: "5px" }}>
-            End:{" "}
+            End:
           </label>
           <input
             id="EndTime"
@@ -203,16 +202,18 @@ function editSubAnnotation(
             style={{ marginLeft: "10px" }}
             defaultValue={selectedSubAnnotation.endTime}
             ref={refEndTime}
+            onBlur={handleSubmit}
           />
           <div className="input-group-append">
             <button
-              onClick={getCurrentTime}
+              onClick={getTime}
               className="btn btn-outline-secondary"
               type="button"
               id="end"
               style={{ width: "42px", paddingTop: "1px" }}
               data-placement="bottom"
               title="Get current time"
+              onBlur={handleSubmit}
             >
               <FontAwesomeIcon icon={faClock} />
             </button>
@@ -228,6 +229,7 @@ function editSubAnnotation(
           rows="5"
           defaultValue={selectedSubAnnotation.annotation}
           ref={refDescription}
+          onBlur={handleSubmit}
         ></textarea>
       </div>
     </>

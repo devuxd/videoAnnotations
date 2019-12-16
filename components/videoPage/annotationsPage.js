@@ -1,10 +1,11 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import MainAnnotationsVis from "./allAnnotations/allAnnotationsVis";
 import AnnotationEditForm from "./allAnnotations/annotationEditForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import SubAnnotationEditForm from "./subAnnotations/subAnnotationEditForm";
 import SubAnnotationsVis from "./subAnnotations/subAnnotationsVis";
+import { isObject } from "util";
 
 //    ===  ===  ===== =====     <- these are the annotations.
 //    ^                         <- this this the selected annotation
@@ -19,7 +20,9 @@ function AnnotationsPage(props) {
     selectedAnnotationExpanded,
     changeSelectedAnnotationExpanded
   ] = useState(false);
-
+  useEffect(() => {
+    console.log(selectedAnnotation);
+  }, [selectedAnnotation]);
   // handel the click on annotation and sub-annotation
   const onAnnotationClick = selectedAnnotation => {
     document.getElementById("video-annotations").scrollIntoView();
@@ -42,15 +45,32 @@ function AnnotationsPage(props) {
     changeSelectedSubAnnotation(newSelectedSubAnnotation);
   };
 
-  // when one of the sub-annotation updated -> propagate this update to the main state maintained by [videoId].s
-  const updateSubAnnotations = newSubAnnotations => {
-    console({ ...selectedAnnotation, newSubAnnotations });
-    // props.updateAnnotations({ ...selectedAnnotation, newSubAnnotations });
+  // when one of the sub-annotation updated -> propagate this update to the main state maintained by [videoId].js
+  const updateSubAnnotations = newSubAnnotation => {
+    const subAnnotations = selectedAnnotation.subAnnotations.map(
+      subAnnotation => {
+        if (subAnnotation.title === newSubAnnotation.title) {
+          const annotations = subAnnotation.annotations.map(subAnnotation =>
+            subAnnotation.id === newSubAnnotation.id
+              ? newSubAnnotation
+              : subAnnotation
+          );
+          return { ...subAnnotation, annotations };
+        } else {
+          return subAnnotation;
+        }
+      }
+    );
+    const newAnnotation = { ...selectedAnnotation, subAnnotations };
+    changeSelectedAnnotation(newAnnotation);
+
+    changeSelectedSubAnnotation(newSubAnnotation);
+    props.updateAnnotations(newAnnotation);
   };
 
   const subAnnotations = () => {
     if (selectedAnnotation != null) {
-      if (!selectedAnnotationExpanded) {
+      if (selectedAnnotationExpanded == false) {
         return (
           <>
             <style jsx>{`
@@ -112,6 +132,7 @@ function AnnotationsPage(props) {
               <AnnotationEditForm
                 selectedAnnotation={selectedAnnotation}
                 expandAnnotation={changeSelectedAnnotationExpanded}
+                getCurrentTime={props.player.getCurrentTime}
               />
               <div
                 style={{
@@ -262,6 +283,7 @@ function AnnotationsPage(props) {
             selectedSubAnnotation={selectedSubAnnotation}
             key={selectedAnnotation.id}
             updateSubAnnotations={updateSubAnnotations}
+            selectedAnnotationStart={selectedAnnotation.start}
           />
         </>
       );
@@ -320,6 +342,25 @@ function AnnotationsPage(props) {
         </div>
         <div
           style={{
+            gridColumnStart: "3",
+            gridColumnEnd: "3",
+            gridRowStart: "1",
+            gridRowEnd: "1",
+            justifySelf: "center",
+            alignSelf: "start"
+          }}
+        >
+          <button
+            type="button"
+            className="btn btn btn-outline-secondary btn-sm"
+
+            // onClick={}
+          >
+            Add annotation
+          </button>
+        </div>
+        <div
+          style={{
             gridColumnStart: "2",
             gridColumnEnd: "2",
             gridRowStart: "2",
@@ -364,7 +405,8 @@ function AnnotationsPage(props) {
                 gridColumnEnd: "3",
                 gridRowStart: "2",
                 gridRowEnd: "2",
-                marginTop: "15px"
+                justifySelf: "center",
+                alignSelf: "center"
               }}
             >
               <button
