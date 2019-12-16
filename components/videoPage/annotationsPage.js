@@ -20,9 +20,7 @@ function AnnotationsPage(props) {
     selectedAnnotationExpanded,
     changeSelectedAnnotationExpanded
   ] = useState(false);
-  useEffect(() => {
-    console.log(selectedAnnotation);
-  }, [selectedAnnotation]);
+
   // handel the click on annotation and sub-annotation
   const onAnnotationClick = selectedAnnotation => {
     document.getElementById("video-annotations").scrollIntoView();
@@ -63,7 +61,6 @@ function AnnotationsPage(props) {
     );
     const newAnnotation = { ...selectedAnnotation, subAnnotations };
     changeSelectedAnnotation(newAnnotation);
-
     changeSelectedSubAnnotation(newSubAnnotation);
     props.updateAnnotations(newAnnotation);
   };
@@ -270,9 +267,10 @@ function AnnotationsPage(props) {
                 selectedAnnotation.end - selectedAnnotation.start
               }
               divId={"#sub-annotations"}
-              key={selectedAnnotation.id}
+              key={JSON.stringify(selectedAnnotation.subAnnotations)}
               subAnnotations={selectedAnnotation.subAnnotations}
               onSubAnnotationClick={onSubAnnotationClick}
+              selectedSubAnnotation={selectedSubAnnotation}
             >
               <div id="sub-annotations" style={{ marginBottom: "-5px" }}></div>
             </SubAnnotationsVis>
@@ -320,25 +318,22 @@ function AnnotationsPage(props) {
             gridRowEnd: "1"
           }}
         >
-          {useMemo(
-            () => (
-              <MainAnnotationsVis
-                annotationData={props.formatedAnnotationData}
-                getCurrentTime={props.player.getCurrentTime}
-                videoLength={
-                  props.video.videoLength.hours * 3600 +
-                  props.video.videoLength.minutes * 60 +
-                  props.video.videoLength.seconds
-                }
-                onAnnotationClick={onAnnotationClick}
-                divId={"#video-annotations"}
-                tooltipId={"#ann-tooltip"}
-              >
-                <div id="video-annotations" name="video-annotations"></div>
-              </MainAnnotationsVis>
-            ),
-            [selectedAnnotation]
-          )}
+          <MainAnnotationsVis
+            annotationData={props.formatedAnnotationData}
+            getCurrentTime={props.player.getCurrentTime}
+            videoLength={
+              props.videoLength.hours * 3600 +
+              props.videoLength.minutes * 60 +
+              props.videoLength.seconds
+            }
+            onAnnotationClick={onAnnotationClick}
+            divId={"#video-annotations"}
+            tooltipId={"#ann-tooltip"}
+            key={JSON.stringify(selectedAnnotation)}
+            selectedAnnotation={selectedAnnotation}
+          >
+            <div id="video-annotations" name="video-annotations"></div>
+          </MainAnnotationsVis>
         </div>
         <div
           style={{

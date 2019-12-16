@@ -18,21 +18,23 @@ export default class extends React.Component {
       .flat();
 
     const onMouseClick = (selectedSubAnnotation, subAnnotationVisElement) => {
+      this.props.onSubAnnotationClick(selectedSubAnnotation);
       if (
-        this.selectedElement &&
-        this.selectedElement !== subAnnotationVisElement
-      ) {
-        this.selectCategory.style.opacity = 0.75;
-        this.selectCategory.style.borderStyle = "none";
-      }
+        this.selectedElement !== undefined &&
+        this.selectedElement.id === subAnnotationVisElement.id
+      )
+        return;
+
+      this.selectedElement = subAnnotationVisElement;
+      this.selectCategory.style.opacity = 0.75;
+      this.selectCategory.style.borderStyle = "none";
+
       this.selectCategory = document.getElementById(
         `${selectedSubAnnotation.title}-badge`
       );
-      this.selectedElement = subAnnotationVisElement;
       this.selectCategory.style.border = "3px black solid";
       this.selectCategory.style.opacity = 1;
 
-      this.props.onSubAnnotationClick(selectedSubAnnotation);
       const annotationXStartposition = Number(
         subAnnotationVisElement.getAttribute("x")
       );
@@ -105,19 +107,14 @@ export default class extends React.Component {
       .on("click", function(selectedSubAnnotation) {
         onMouseClick(selectedSubAnnotation, this);
       });
-    if (this.props.subAnnotations.length > 0) {
-      const selectedSubAnnotation = this.props.subAnnotations[0].annotations[0];
-      onMouseClick(
-        selectedSubAnnotation,
-        document.getElementById(selectedSubAnnotation.id)
-      );
-    }
+
     [...document.getElementById("sub-annotations-badges").children].forEach(
       (element, index) => {
         element.style.backgroundColor = document.getElementById(
           `${element.innerText}0`
         ).style.fill;
         if (index === 0) {
+          this.selectCategory = element;
           element.style.border = "3px black solid";
           element.style.color = "white";
         } else {
@@ -126,6 +123,11 @@ export default class extends React.Component {
         }
       }
     );
+    if (this.props.selectedSubAnnotation != null)
+      onMouseClick(
+        this.props.selectedSubAnnotation,
+        document.getElementById(this.props.selectedSubAnnotation.id)
+      );
   }
 
   render() {

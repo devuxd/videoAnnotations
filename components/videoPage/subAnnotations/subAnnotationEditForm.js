@@ -87,7 +87,7 @@ function editSubAnnotation(
   const refStartTime = React.createRef();
   const refEndTime = React.createRef();
   const refDescription = React.createRef();
-
+  // if(selectedSubAnnotation.annotations)
   // getting the current time of the video when the user ask for it
   const getTime = e => {
     const time = moment("2015-01-01")

@@ -13,18 +13,11 @@ export default class extends React.Component {
 
   mouseClick = (selectedAnnotation, annotationVisElement) => {
     this.props.onAnnotationClick(selectedAnnotation);
-    if (this.selectedElement && this.selectedElement !== annotationVisElement) {
-      this.selectedElement.style.opacity = 0.75;
-      this.selectedElement.style.stroke = "none";
-      this.selectCategory.style.opacity = 0.75;
-      this.selectCategory.style.borderStyle = "none";
-    }
-    this.selectCategory = document.getElementById(
+    const selectCategory = document.getElementById(
       `${selectedAnnotation.title}-badge`
     );
-    this.selectedElement = annotationVisElement;
-    this.selectCategory.style.borderStyle = "solid";
-    this.selectCategory.style.opacity = 1;
+    selectCategory.style.borderStyle = "solid";
+    selectCategory.style.opacity = 1;
 
     const annotationXStartposition = Number(
       annotationVisElement.getAttribute("x")
@@ -45,6 +38,9 @@ export default class extends React.Component {
     } else {
       annotationEditForm.style.left = `${annotationXStartposition - 20}px`;
     }
+    document
+      .getElementById(annotationVisElement.getAttribute("id"))
+      .setAttribute("stroke", "black");
   };
   componentDidMount() {
     let videoLength = this.props.videoLength;
@@ -85,32 +81,51 @@ export default class extends React.Component {
       .attr("id", function(d) {
         return d.title + d.id;
       })
-      .attr("title", function(d) {
-        return d.title;
-      })
       .attr("width", function(d) {
         return scale(d.end - d.start);
       })
+      .style("opacity", d => {
+        return 0.5;
+      })
+      .attr("stroke", d => {
+        if (
+          this.props.selectedAnnotation == null ||
+          this.props.selectedAnnotation.id != d.id
+        )
+          return "none";
+        return "black";
+      })
       .attr("height", 15)
-      .style("opacity", 0.75)
       .on("mouseover", function(d) {
-        d3.select(this).style("cursor", "pointer");
+        d3.select(this)
+          .style("cursor", "pointer")
+          .style("opacity", 1);
       })
       .on("mouseleave", function(d) {
-        d3.select(this).style("cursor", "default");
+        d3.select(this)
+          .style("cursor", "default")
+          .style("opacity", 0.5);
       })
       .on("click", function(d) {
         mouseClick(d, this);
-        d3.select(this)
-          .style("opacity", 1)
-          .style("stroke", "black")
-          .style("stroke-width", 1);
       });
+
     [...document.getElementById("annotations-badges").children].forEach(
-      element => {
-        element.style.backgroundColor = document.querySelectorAll(`
-          [title=${element.innerText}]`)[0].style.fill;
-        element.style.opacity = 0.75;
+      (element, index) => {
+        element.style.backgroundColor = document.getElementById(
+          `${element.innerText}${index + 11}` // becuase the spreedsheet start
+        ).style.fill;
+        if (
+          this.props.selectedAnnotation != null &&
+          element.innerText === this.props.selectedAnnotation.title
+        ) {
+          console.log(this.props);
+          element.style.opacity = 1;
+          element.style.borderStyle = "solid";
+        } else {
+          element.style.opacity = 0.75;
+          element.style.borderStyle = "none";
+        }
       }
     );
   }
