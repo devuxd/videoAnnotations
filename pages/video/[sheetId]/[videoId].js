@@ -262,7 +262,6 @@ function MainVideoPage() {
               formatedAnnotationData={videoAnnotations.formatedAnnotation}
               player={{ seekTo, seekTo_subAnnotations, getCurrentTime }}
               updateAnnotations={updateAnnotations}
-              // key= {JSON.stringify(videoAnnotations.annotations)}
             />
           </div>
         </div>

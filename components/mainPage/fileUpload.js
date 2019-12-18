@@ -23,7 +23,7 @@ function FileUpload() {
       />
       <Link href="/dataset/[sheetId]" as={`/dataset/${sheetId}`}>
         <button
-          style={{ width: "48px", "padding-top": "0px" }}
+          style={{ width: "48px" }}
           className="btn btn-outline-secondary"
           data-toggle="tooltip"
           data-placement="top"

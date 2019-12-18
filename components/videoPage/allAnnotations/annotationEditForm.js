@@ -5,9 +5,9 @@ import moment from "moment";
 import { googleLogin } from "../../../API/db";
 
 function AnnotationEditForm({
-  currentTime,
-  expandAnnotation,
-  selectedAnnotation
+  getCurrentTime,
+  selectedAnnotation,
+  updateSelectedAnnotation
 }) {
   //based on the selected annotation, display the sub-annotations related to it.
   //If non is selected or there are no sub-annotations display nothing.
@@ -15,10 +15,9 @@ function AnnotationEditForm({
   return (
     <>
       {editAnnotation(
-        currentTime,
+        getCurrentTime,
         selectedAnnotation,
-        // updatedAnnotation
-        expandAnnotation
+        updateSelectedAnnotation
       )}
       <br />
     </>
@@ -28,8 +27,7 @@ function AnnotationEditForm({
 function editAnnotation(
   currentTime,
   selectedAnnotation,
-  expandAnnotation
-  // updatedAnnotation
+  updateSelectedAnnotation
 ) {
   // getting references
   const refStartTime = React.createRef();
@@ -53,36 +51,25 @@ function editAnnotation(
 
   const handleSubmit = async () => {
     const localNewAnnotation = {
-      startTime: refStartTime.current.value,
-      endTime: refEndTime.current.value,
-      start:
-        moment.duration(refStartTime.current.value).asSeconds() -
-        selectedAnnotation.start,
-      end:
-        moment.duration(refEndTime.current.value).asSeconds() -
-        selectedAnnotation.start,
+      start: moment.duration(refStartTime.current.value).asSeconds(),
+      end: moment.duration(refEndTime.current.value).asSeconds(),
       annotation: refDescription.current.value,
       id: selectedAnnotation.id,
       title: selectedAnnotation.title,
       duration: refStartTime.current.value + " - " + refEndTime.current.value
     };
-
     const start = new moment(localNewAnnotation.start * 1000);
     const end = new moment(localNewAnnotation.end * 1000);
     const diff = moment.duration(end.diff(start));
     localNewAnnotation.totalTime = `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
+
     try {
       await googleLogin();
     } catch (e) {
       return;
     }
-    selectedAnnotation.annotations = [
-      ...selectedAnnotation.annotations.filter(
-        annotation => annotation.id != localNewAnnotation.id
-      ),
-      localNewAnnotation
-    ];
-    addNewSubAnnotations(selectedAnnotation, localNewAnnotation);
+    const { subAnnotations } = selectedAnnotation;
+    updateSelectedAnnotation({ ...localNewAnnotation, subAnnotations });
   };
 
   return (
@@ -101,6 +88,7 @@ function editAnnotation(
           aria-describedby="button-addon2"
           defaultValue={startTime}
           ref={refStartTime}
+          onBlur={handleSubmit}
         />
         <div className="input-group-append">
           <button
@@ -111,6 +99,7 @@ function editAnnotation(
             style={{ width: "42px", paddingTop: "1px" }}
             data-placement="bottom"
             title="Get current time"
+            onBlur={handleSubmit}
           >
             <FontAwesomeIcon icon={faClock} />
           </button>
@@ -129,6 +118,7 @@ function editAnnotation(
           style={{ marginLeft: "10px" }}
           defaultValue={endTime}
           ref={refEndTime}
+          onBlur={handleSubmit}
         />
         <div className="input-group-append">
           <button
@@ -139,6 +129,7 @@ function editAnnotation(
             style={{ width: "42px", paddingTop: "1px" }}
             data-placement="bottom"
             title="Get current time"
+            onBlur={handleSubmit}
           >
             <FontAwesomeIcon icon={faClock} />
           </button>
@@ -149,11 +140,11 @@ function editAnnotation(
         id="description"
         key={selectedAnnotation.id + "textarea"}
         className="form-control"
-        id="exampleFormControlTextarea1"
         placeholder="Annotation description"
         rows="5"
         defaultValue={selectedAnnotation.annotation}
         ref={refDescription}
+        onBlur={handleSubmit}
       ></textarea>
     </>
   );

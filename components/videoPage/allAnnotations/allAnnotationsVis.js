@@ -38,6 +38,7 @@ export default class extends React.Component {
     } else {
       annotationEditForm.style.left = `${annotationXStartposition - 20}px`;
     }
+    // this becuase annotationVisElement.setAttribute does not work 🤦‍♂️
     document
       .getElementById(annotationVisElement.getAttribute("id"))
       .setAttribute("stroke", "black");

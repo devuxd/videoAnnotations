@@ -1,11 +1,11 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState } from "react";
 import MainAnnotationsVis from "./allAnnotations/allAnnotationsVis";
 import AnnotationEditForm from "./allAnnotations/annotationEditForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import SubAnnotationEditForm from "./subAnnotations/subAnnotationEditForm";
 import SubAnnotationsVis from "./subAnnotations/subAnnotationsVis";
-import { isObject } from "util";
+import SubAnnotationAddForm from "./subAnnotations/subAnnotationAddForm";
 
 //    ===  ===  ===== =====     <- these are the annotations.
 //    ^                         <- this this the selected annotation
@@ -20,7 +20,7 @@ function AnnotationsPage(props) {
     selectedAnnotationExpanded,
     changeSelectedAnnotationExpanded
   ] = useState(false);
-
+  const [addSubAnnotationState, changeAddSubAnnotationState] = useState(false);
   // handel the click on annotation and sub-annotation
   const onAnnotationClick = selectedAnnotation => {
     document.getElementById("video-annotations").scrollIntoView();
@@ -59,12 +59,19 @@ function AnnotationsPage(props) {
         }
       }
     );
+
     const newAnnotation = { ...selectedAnnotation, subAnnotations };
     changeSelectedAnnotation(newAnnotation);
     changeSelectedSubAnnotation(newSubAnnotation);
     props.updateAnnotations(newAnnotation);
   };
-
+  const updateSelectedAnnotation = newAnnotation => {
+    changeSelectedAnnotation(newAnnotation);
+    // props.updateAnnotations(newAnnotation);
+  };
+  const addNewSubAnnotation = newSubAnnotation => {
+    // need to add the id first
+  };
   const subAnnotations = () => {
     if (selectedAnnotation != null) {
       if (selectedAnnotationExpanded == false) {
@@ -130,6 +137,7 @@ function AnnotationsPage(props) {
                 selectedAnnotation={selectedAnnotation}
                 expandAnnotation={changeSelectedAnnotationExpanded}
                 getCurrentTime={props.player.getCurrentTime}
+                updateSelectedAnnotation={updateSelectedAnnotation}
               />
               <div
                 style={{
@@ -276,13 +284,22 @@ function AnnotationsPage(props) {
             </SubAnnotationsVis>
           </div>
 
-          <SubAnnotationEditForm
-            getCurrentTime={props.player.getCurrentTime}
-            selectedSubAnnotation={selectedSubAnnotation}
-            key={selectedAnnotation.id}
-            updateSubAnnotations={updateSubAnnotations}
-            selectedAnnotationStart={selectedAnnotation.start}
-          />
+          {!addSubAnnotationState && (
+            <SubAnnotationEditForm
+              getCurrentTime={props.player.getCurrentTime}
+              selectedSubAnnotation={selectedSubAnnotation}
+              key={selectedAnnotation.id}
+              updateSubAnnotations={updateSubAnnotations}
+              selectedAnnotationStart={selectedAnnotation.start}
+            />
+          )}
+          {addSubAnnotationState && (
+            <SubAnnotationAddForm
+              getCurrentTime={props.player.getCurrentTime}
+              addNewSubAnnotation={addNewSubAnnotation}
+              selectedAnnotationStart={selectedAnnotation.start}
+            />
+          )}
         </>
       );
     }
@@ -328,7 +345,6 @@ function AnnotationsPage(props) {
             }
             onAnnotationClick={onAnnotationClick}
             divId={"#video-annotations"}
-            tooltipId={"#ann-tooltip"}
             key={JSON.stringify(selectedAnnotation)}
             selectedAnnotation={selectedAnnotation}
           >
@@ -407,8 +423,7 @@ function AnnotationsPage(props) {
               <button
                 type="button"
                 className="btn btn-outline-info btn-sm"
-
-                // onClick={}
+                onClick={() => changeAddSubAnnotationState(true)}
               >
                 Add sub-annotation
               </button>

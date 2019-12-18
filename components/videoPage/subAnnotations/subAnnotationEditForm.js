@@ -1,10 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClock,
-  faArrowRight,
-  faArrowLeft
-} from "@fortawesome/free-solid-svg-icons";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import { googleLogin } from "../../../API/db";
 
@@ -14,55 +10,6 @@ function SubAnnotationEditForm({
   updateSubAnnotations,
   selectedAnnotationStart
 }) {
-  //based on the selected annotation, display the sub-annotations related to it.
-  //If non is selected or there are no sub-annotations display nothing.
-  // const newTitle = useRef(null);
-
-  // revisit this
-  // const myColor = d3
-  //   .scaleOrdinal()
-  //   .domain(selectedSubAnnotation.map(element => element.annotations).flat(1))
-  //   .range(d3.schemeSet2);
-
-  // const getBackgroundColor = title => {
-  //   return color(myColor(title)).darken(0.5);
-  // };
-
-  // adding new sub-annotation category
-  const handleSubmitSubAnnotationTitle = e => {
-    e.preventDefault();
-    const newSubAnnotations = [
-      ...selectedSubAnnotation,
-      {
-        title: newTitle.current.value,
-        annotations: []
-      }
-    ];
-    addSubAnnotation(newSubAnnotations);
-    // newTitle.current.value = "";
-  };
-  // const updateSubAnnotation
-
-  const addNewSubAnnotations = (newAnnotations, localNewAnnotation) => {
-    //locating under what sub-annotation category the new added subannoation belong
-    // then replace the new sub-annotations with the old one
-    const localSubAnnotations = selectedSubAnnotation.map(annotation =>
-      annotation.title === newAnnotations.title ? newAnnotations : annotation
-    );
-    addSubAnnotation(localSubAnnotations);
-
-    changeActiveSubAnnotationIndex(localNewAnnotation.id);
-    changeActiveSubAnnotation(localNewAnnotation);
-  };
-
-  const editAnnotation = annotation => {
-    changeActiveSubAnnotation(annotation);
-    activateTab(
-      selectedSubAnnotation.findIndex(
-        subAnnotation => subAnnotation.title === annotation.title
-      )
-    );
-  };
   if (selectedSubAnnotation != null)
     return (
       <>
@@ -87,7 +34,7 @@ function editSubAnnotation(
   const refStartTime = React.createRef();
   const refEndTime = React.createRef();
   const refDescription = React.createRef();
-  // if(selectedSubAnnotation.annotations)
+
   // getting the current time of the video when the user ask for it
   const getTime = e => {
     const time = moment("2015-01-01")
