@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import MainAnnotationsVis from "./allAnnotations/allAnnotationsVis";
 import AnnotationEditForm from "./allAnnotations/annotationEditForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faWindowClose
+} from "@fortawesome/free-solid-svg-icons";
 import SubAnnotationEditForm from "./subAnnotations/subAnnotationEditForm";
 import SubAnnotationsVis from "./subAnnotations/subAnnotationsVis";
 import SubAnnotationAddForm from "./subAnnotations/subAnnotationAddForm";
@@ -86,53 +90,54 @@ function AnnotationsPage(props) {
                 max-width: 800px;
                 transition: all 1s;
               }
-              .animation-expand-left {
-                animation: mymove-left 1s infinite ease-in-out;
-              }
-              @keyframes mymove-left {
-                0% {
-                  padding-right: 0px;
-                }
-                25% {
-                  padding-right: 2.5px;
-                }
-                50% {
-                  padding-right: 5px;
-                }
-                75% {
-                  padding-right: 2.5px;
-                }
-                100% {
-                  padding-right: 0px;
-                }
-              }
-              .animation-expand-right {
-                animation: mymove-right 1s infinite ease-in-out;
-              }
-
-              @keyframes mymove-right {
-                0% {
-                  padding-left: 0px;
-                }
-                25% {
-                  padding-left: 2.5px;
-                }
-                50% {
-                  padding-left: 5px;
-                }
-                75% {
-                  padding-left: 2.5px;
-                }
-                100% {
-                  padding-left: 0px;
-                }
+              .arrow-annotation {
+                content: "";
+                position: relative;
+                top: 0;
+                width: 0;
+                height: 0;
+                border: 20px solid transparent;
+                border-top: 0;
+                margin-left: -20px;
+                transition: left 0.5s;
               }
             `}</style>
+            <div className="arrow-annotation" id="arrow-annotation"></div>
+
             <div
               className="box-annotation"
               name="box-annotation"
               id="box-annotation"
             >
+              <div
+                style={{
+                  display: "grid",
+                  justifyContent: "right",
+                  alignContent: "end",
+                  gridTemplateColumns: "20px"
+                }}
+              >
+                <button
+                  style={{
+                    display: "inline-block",
+                    padding: "0px",
+                    width: "0px",
+                    height: "0px",
+                    border: "0px",
+                    color: "darkred",
+                    position: "relative",
+                    bottom: "10px",
+                    left: "10px",
+                    outline: "0px"
+                  }}
+                  onClick={() => changeSelectedAnnotation(null)}
+                >
+                  <FontAwesomeIcon
+                    style={{ width: "15px" }}
+                    icon={faWindowClose}
+                  />
+                </button>
+              </div>
               <AnnotationEditForm
                 selectedAnnotation={selectedAnnotation}
                 expandAnnotation={changeSelectedAnnotationExpanded}
@@ -142,38 +147,38 @@ function AnnotationsPage(props) {
               <div
                 style={{
                   display: "grid",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  gridTemplateColumns: "20px 250px 20px",
-                  height: "15px"
+                  justifyContent: "center"
                 }}
               >
-                <p
-                  className={"animation-expand-left"}
-                  style={{ display: "inline-block", margin: "0 auto" }}
-                >
-                  <FontAwesomeIcon
-                    style={{ width: "15px" }}
-                    icon={faArrowLeft}
-                  />
-                </p>
-                <a
-                  href="#box-annotation"
-                  className="badge badge-light"
-                  type="link"
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary btn-sm"
                   onClick={() => changeSelectedAnnotationExpanded(true)}
                 >
-                  Expand to sub-annotations
-                </a>
-                <p
-                  className={"animation-expand-right"}
-                  style={{ display: "inline-block", margin: "0 auto" }}
-                >
-                  <FontAwesomeIcon
-                    style={{ width: "15px" }}
-                    icon={faArrowRight}
-                  />
-                </p>
+                  <div
+                    style={{
+                      display: "grid",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      gridTemplateColumns: "20px 250px 20px",
+                      height: "15px"
+                    }}
+                  >
+                    <p style={{ display: "inline-block", margin: "0 auto" }}>
+                      <FontAwesomeIcon
+                        style={{ width: "15px" }}
+                        icon={faArrowLeft}
+                      />
+                    </p>
+                    Show sub-annotations
+                    <p style={{ display: "inline-block", margin: "0 auto" }}>
+                      <FontAwesomeIcon
+                        style={{ width: "15px" }}
+                        icon={faArrowRight}
+                      />
+                    </p>
+                  </div>
+                </button>
               </div>
             </div>
           </>
@@ -188,48 +193,19 @@ function AnnotationsPage(props) {
               padding: 5px;
               transition: all 1s;
             }
-            .animation-expand-left {
-              animation: mymove-left 1s infinite ease-in-out;
-            }
-            @keyframes mymove-left {
-              0% {
-                padding-right: 0px;
-              }
-              25% {
-                padding-right: 2.5px;
-              }
-              50% {
-                padding-right: 5px;
-              }
-              75% {
-                padding-right: 2.5px;
-              }
-              100% {
-                padding-right: 0px;
-              }
-            }
-            .animation-expand-right {
-              animation: mymove-right 1s infinite ease-in-out;
-            }
-
-            @keyframes mymove-right {
-              0% {
-                padding-left: 0px;
-              }
-              25% {
-                padding-left: 2.5px;
-              }
-              50% {
-                padding-left: 5px;
-              }
-              75% {
-                padding-left: 2.5px;
-              }
-              100% {
-                padding-left: 0px;
-              }
+            .arrow-annotation {
+              content: "";
+              position: relative;
+              top: 0;
+              width: 0;
+              height: 0;
+              border: 20px solid transparent;
+              border-top: 0;
+              margin-left: -20px;
+              transition: left 0.5s;
             }
           `}</style>
+          <div className="arrow-annotation" id="arrow-annotation"></div>
 
           <div
             className="box-annotation-expanded"
@@ -239,35 +215,30 @@ function AnnotationsPage(props) {
             <div
               style={{
                 display: "grid",
-                justifyContent: "center",
-                alignContent: "center",
-                gridTemplateColumns: "20px 250px 20px",
-                height: "15px"
+                justifyContent: "right",
+                alignContent: "end",
+                gridTemplateColumns: "20px"
               }}
             >
-              <p
-                className={"animation-expand-right"}
-                style={{ display: "inline-block", margin: "0 auto" }}
+              <button
+                style={{
+                  display: "inline-block",
+                  padding: "0px",
+                  width: "0px",
+                  height: "0px",
+                  border: "0px",
+                  color: "darkred",
+                  position: "relative",
+                  bottom: "9px",
+                  outline: "0px"
+                }}
+                onClick={() => changeSelectedAnnotationExpanded(false)}
               >
                 <FontAwesomeIcon
                   style={{ width: "15px" }}
-                  icon={faArrowRight}
+                  icon={faWindowClose}
                 />
-              </p>
-              <a
-                href="#video-annotations"
-                className="badge badge-light"
-                type="link"
-                onClick={() => changeSelectedAnnotationExpanded(false)}
-              >
-                Collapse sub-annotations
-              </a>
-              <p
-                className={"animation-expand-left"}
-                style={{ display: "inline-block", margin: "0 auto" }}
-              >
-                <FontAwesomeIcon style={{ width: "15px" }} icon={faArrowLeft} />
-              </p>
+              </button>
             </div>
             <SubAnnotationsVis
               getCurrentTime={props.player.getCurrentTime}
@@ -280,7 +251,10 @@ function AnnotationsPage(props) {
               onSubAnnotationClick={onSubAnnotationClick}
               selectedSubAnnotation={selectedSubAnnotation}
             >
-              <div id="sub-annotations" style={{ marginBottom: "-5px" }}></div>
+              <div
+                id="sub-annotations"
+                style={{ marginBottom: "-5px", marginTop: "10px" }}
+              ></div>
             </SubAnnotationsVis>
           </div>
 
@@ -307,19 +281,6 @@ function AnnotationsPage(props) {
 
   return (
     <>
-      <style jsx>{`
-        .arrow-annotation {
-          content: "";
-          position: relative;
-          top: 0;
-          width: 0;
-          height: 0;
-          border: 20px solid transparent;
-          border-top: 0;
-          margin-left: -20px;
-          transition: left 0.5s;
-        }
-      `}</style>
       <div
         style={{
           display: "grid",
@@ -378,8 +339,6 @@ function AnnotationsPage(props) {
             gridRowEnd: "2"
           }}
         >
-          <div className="arrow-annotation" id="arrow-annotation"></div>
-
           {subAnnotations()}
         </div>
         {selectedAnnotationExpanded && (
@@ -422,7 +381,7 @@ function AnnotationsPage(props) {
             >
               <button
                 type="button"
-                className="btn btn-outline-info btn-sm"
+                className="btn btn-outline-secondary btn-sm"
                 onClick={() => changeAddSubAnnotationState(true)}
               >
                 Add sub-annotation

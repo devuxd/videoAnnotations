@@ -73,7 +73,7 @@ function editAnnotation(
   };
 
   return (
-    <>
+    <div style={{ paddingTop: "10px" }}>
       <div className="input-group input-group-sm mb-3">
         <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
           Start:
@@ -146,7 +146,7 @@ function editAnnotation(
         ref={refDescription}
         onBlur={handleSubmit}
       ></textarea>
-    </>
+    </div>
   );
 }
 

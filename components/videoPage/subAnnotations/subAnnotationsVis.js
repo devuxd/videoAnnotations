@@ -26,14 +26,12 @@ export default class extends React.Component {
         return;
 
       this.selectedElement = subAnnotationVisElement;
-      this.selectCategory.style.opacity = 0.75;
       this.selectCategory.style.borderStyle = "none";
 
       this.selectCategory = document.getElementById(
         `${selectedSubAnnotation.title}-badge`
       );
-      this.selectCategory.style.border = "3px black solid";
-      this.selectCategory.style.opacity = 1;
+      this.selectCategory.style.border = "2px black solid";
 
       const annotationXStartposition = Number(
         subAnnotationVisElement.getAttribute("x")
@@ -118,7 +116,6 @@ export default class extends React.Component {
           element.style.border = "3px black solid";
           element.style.color = "white";
         } else {
-          element.style.opacity = 0.75;
           element.style.color = "white";
         }
       }

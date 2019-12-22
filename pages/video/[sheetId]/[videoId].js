@@ -224,7 +224,11 @@ function MainVideoPage() {
                 key={index}
                 className="badge badge-pill"
                 id={`${annotation}-badge`}
-                style={{ display: "block", marginBottom: "2px" }}
+                style={{
+                  display: "block",
+                  marginBottom: "2px",
+                  color: "white"
+                }}
               >
                 {annotation}
               </span>

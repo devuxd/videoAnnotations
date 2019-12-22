@@ -16,8 +16,7 @@ export default class extends React.Component {
     const selectCategory = document.getElementById(
       `${selectedAnnotation.title}-badge`
     );
-    selectCategory.style.borderStyle = "solid";
-    selectCategory.style.opacity = 1;
+    selectCategory.style.border = "2px black solid";
 
     const annotationXStartposition = Number(
       annotationVisElement.getAttribute("x")
@@ -85,9 +84,6 @@ export default class extends React.Component {
       .attr("width", function(d) {
         return scale(d.end - d.start);
       })
-      .style("opacity", d => {
-        return 0.5;
-      })
       .attr("stroke", d => {
         if (
           this.props.selectedAnnotation == null ||
@@ -98,14 +94,10 @@ export default class extends React.Component {
       })
       .attr("height", 15)
       .on("mouseover", function(d) {
-        d3.select(this)
-          .style("cursor", "pointer")
-          .style("opacity", 1);
+        d3.select(this).style("cursor", "pointer");
       })
       .on("mouseleave", function(d) {
-        d3.select(this)
-          .style("cursor", "default")
-          .style("opacity", 0.5);
+        d3.select(this).style("cursor", "default");
       })
       .on("click", function(d) {
         mouseClick(d, this);
@@ -121,11 +113,9 @@ export default class extends React.Component {
           element.innerText === this.props.selectedAnnotation.title
         ) {
           console.log(this.props);
-          element.style.opacity = 1;
-          element.style.borderStyle = "solid";
+          element.style.border = "2px black solid";
         } else {
-          element.style.opacity = 0.75;
-          element.style.borderStyle = "none";
+          element.style.border = "none";
         }
       }
     );
