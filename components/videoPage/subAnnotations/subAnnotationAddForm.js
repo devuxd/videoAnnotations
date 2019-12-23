@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
@@ -8,14 +8,16 @@ import { RadioButtonGroup } from "react-rainbow-components";
 function SubAnnotationAddForm({
   getCurrentTime,
   addNewSubAnnotation,
-  selectedAnnotationStart
+  selectedAnnotationStart,
+  subAnnotationTitles
 }) {
   return (
     <>
       {AddSubAnnotation(
         getCurrentTime,
         addNewSubAnnotation,
-        selectedAnnotationStart
+        selectedAnnotationStart,
+        subAnnotationTitles
       )}
     </>
   );
@@ -24,11 +26,12 @@ function SubAnnotationAddForm({
 function AddSubAnnotation(
   getCurrentTime,
   addNewSubAnnotation,
-  selectedAnnotationStart
+  selectedAnnotationStart,
+  subAnnotationTitles
 ) {
   // getting references
   const refStartTime = React.createRef();
-
+  const [title, changeTitle] = useState(subAnnotationTitles[0]);
   // getting the current time of the video when the user ask for it
   const getTime = e => {
     const time = moment("2015-01-01")
@@ -69,6 +72,7 @@ function AddSubAnnotation(
 
   const addTitle = event => {
     console.log(event.target.value);
+    changeTitle(event.target.value);
   };
 
   return (
@@ -90,14 +94,19 @@ function AddSubAnnotation(
         <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
           Annotation:
         </label>
-        <RadioButtonGroup
-          id="radio-button-group-component-1"
-          options={[
-            { value: "test1", lable: "Test1" },
-            { value: "test2", lable: "Test2" }
-          ]}
-          onChange={addTitle}
-        />
+        <div
+          className="rainbow-p-around_x-large rainbow-align-content_center"
+          style={{ display: "grid", justifyContent: "center" }}
+        >
+          <RadioButtonGroup
+            id="radio-button-group-component-1"
+            options={subAnnotationTitles}
+            variant="brand"
+            value={title}
+            onChange={addTitle}
+            required
+          />
+        </div>
         <div className="input-group input-group-sm mb-3">
           <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
             Start:
