@@ -28,6 +28,7 @@ function AnnotationsPage(props) {
   // handel the click on annotation and sub-annotation
   const onAnnotationClick = selectedAnnotation => {
     document.getElementById("video-annotations").scrollIntoView();
+
     changeSelectedAnnotationState("editAnnotation");
     changeSelectedAnnotation({ ...selectedAnnotation });
     props.player.seekTo(selectedAnnotation.start);
@@ -52,6 +53,7 @@ function AnnotationsPage(props) {
       selectedAnnotation.start + newSelectedSubAnnotation.start
     );
     changeSelectedSubAnnotation(newSelectedSubAnnotation);
+    changeSelectedAnnotationState("editSubAnnotation");
   };
 
   // when one of the sub-annotation updated -> propagate this update to local state and the main state maintained by [videoId].js
@@ -85,6 +87,7 @@ function AnnotationsPage(props) {
 
   // adding annotation start with only adding title and start time and then call editSubAnnotation to let the user continue
   const addNewSubAnnotation = newSubAnnotation => {
+    console.log(newSubAnnotation);
     // need to add the id first
   };
 
@@ -141,7 +144,7 @@ function AnnotationsPage(props) {
                 left: "10px",
                 outline: "0px"
               }}
-              onClick={() => changeSelectedAnnotation(null)}
+              onClick={() => changeSelectedAnnotation("ideal")}
             >
               <FontAwesomeIcon style={{ width: "15px" }} icon={faWindowClose} />
             </button>
@@ -352,7 +355,7 @@ function AnnotationsPage(props) {
         >
           {selectedAnnotation && getAnnotationsSection()}
         </div>
-        {selectedAnnotationState === "editSubAnnotation" && (
+        {selectedAnnotationState.includes("SubAnnotation") && (
           <>
             <div
               className="card-text"
@@ -390,10 +393,11 @@ function AnnotationsPage(props) {
             >
               <button
                 type="button"
-                className="btn btn-outline-secondary btn-sm"
+                className="btn btn-outline-secondary btn-sm "
                 onClick={() =>
                   changeSelectedAnnotationState("addSubAnnotation")
                 }
+                disabled={selectedAnnotationState === "addSubAnnotation"}
               >
                 Add sub-annotation
               </button>

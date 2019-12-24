@@ -31,7 +31,8 @@ function AddSubAnnotation(
 ) {
   // getting references
   const refStartTime = React.createRef();
-  const [title, changeTitle] = useState(subAnnotationTitles[0]);
+  const refNewTitle = React.createRef();
+  const [title, changeTitle] = useState("");
   // getting the current time of the video when the user ask for it
   const getTime = e => {
     const time = moment("2015-01-01")
@@ -54,8 +55,8 @@ function AddSubAnnotation(
         1,
       annotation: "",
       id: "", //title + index of the subannotation
-      title: "", // title from the DOM ref
-      duration: refStartTime.current.value + " - " + refEndTime.current.value
+      title: title + refNewTitle.current.value, // only one going to have value
+      duration: ""
     };
 
     const start = new moment(localNewAnnotation.start * 1000);
@@ -71,7 +72,7 @@ function AddSubAnnotation(
   };
 
   const addTitle = event => {
-    console.log(event.target.value);
+    refNewTitle.current.value = "";
     changeTitle(event.target.value);
   };
 
@@ -80,11 +81,11 @@ function AddSubAnnotation(
       <style jsx>
         {`
           .box-sub-annotation {
-            position: relative;
             border-radius: 0.4em;
             border: 3px solid;
             padding: 5px;
             width: 800px;
+            margin: 20px auto;
             transition: left 1s;
           }
         `}
@@ -92,7 +93,7 @@ function AddSubAnnotation(
 
       <div className="box-sub-annotation" id="box-sub-annotation">
         <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
-          Annotation:
+          Selected existing title:
         </label>
         <div
           className="rainbow-p-around_x-large rainbow-align-content_center"
@@ -106,6 +107,22 @@ function AddSubAnnotation(
             onChange={addTitle}
             required
           />
+        </div>
+        <div
+          className="input-group input-group-sm mb-3"
+          style={{ margin: "15px 0px" }}
+        >
+          <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
+            Or create new title:
+          </label>
+          <input
+            type="text"
+            ref={refNewTitle}
+            className="form-control"
+            placeholder="New title"
+            defaultValue={""}
+            onFocus={() => changeTitle("")}
+          ></input>
         </div>
         <div className="input-group input-group-sm mb-3">
           <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
@@ -135,6 +152,16 @@ function AddSubAnnotation(
               <FontAwesomeIcon icon={faClock} />
             </button>
           </div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "80% 20%" }}>
+          <button
+            type="button"
+            className="btn btn-success"
+            style={{ gridColumnStart: "2" }}
+            onClick={handleSubmit}
+          >
+            Save
+          </button>
         </div>
       </div>
     </>
