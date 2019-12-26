@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
@@ -30,10 +30,37 @@ function editSubAnnotation(
   updateSubAnnotations,
   selectedAnnotationStart
 ) {
-  // getting references
+  const refArrowElement = useRef(null);
+  const refSubAnnotationEditForm = useRef(null);
   const refStartTime = React.createRef();
   const refEndTime = React.createRef();
   const refDescription = React.createRef();
+  useEffect(() => {
+    const refSubAnnotationVisElement = document.getElementById(
+      selectedSubAnnotation.id
+    );
+    const annotationXStartposition = Number(
+      refSubAnnotationVisElement.getAttribute("x")
+    );
+
+    const arrowOffset = refSubAnnotationVisElement.getAttribute("width") / 2;
+
+    refArrowElement.current.style.left = `${annotationXStartposition +
+      arrowOffset}px`;
+    const backgroundColor = refSubAnnotationVisElement.style.fill;
+    refArrowElement.current.style.borderBottomColor = backgroundColor;
+    refSubAnnotationEditForm.current.style.borderColor = backgroundColor;
+    const annotationMaxWidth = document.getElementById("sub-annotations")
+      .offsetWidth;
+
+    if (annotationXStartposition + 800 > annotationMaxWidth) {
+      refSubAnnotationEditForm.current.style.left = `${annotationMaxWidth -
+        800}px`;
+    } else {
+      refSubAnnotationEditForm.current.style.left = `${annotationXStartposition -
+        20}px`;
+    }
+  });
 
   // getting the current time of the video when the user ask for it
   const getTime = e => {
@@ -103,8 +130,16 @@ function editSubAnnotation(
         `}
       </style>
 
-      <div className="arrow-sub-annotation" id="arrow-sub-annotation"></div>
-      <div className="box-sub-annotation" id="box-sub-annotation">
+      <div
+        ref={refArrowElement}
+        className="arrow-sub-annotation"
+        id="arrow-sub-annotation"
+      ></div>
+      <div
+        ref={refSubAnnotationEditForm}
+        className="box-sub-annotation"
+        id="box-sub-annotation"
+      >
         <div className="input-group input-group-sm mb-3">
           <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
             Start:

@@ -1,6 +1,6 @@
 import React from "react";
 import * as d3 from "d3";
-
+import { mainColor } from "../../../API/color";
 /**
  * d3.js scatterplot component to visualize annotations
  */
@@ -9,6 +9,7 @@ export default class extends React.Component {
     super(props);
     this.selectedElement;
     this.selectCategory;
+    this.color = mainColor();
   }
 
   mouseClick = (selectedAnnotation, annotationVisElement) => {
@@ -56,10 +57,6 @@ export default class extends React.Component {
       .attr("width", YouTubeIframeWidth)
       .attr("height", 22);
 
-    var myColor = d3
-      .scaleOrdinal()
-      .domain(annotationData)
-      .range(d3.schemeSet2);
     let scale = d3
       .scaleLinear()
       .domain([0, videoLength])
@@ -73,7 +70,7 @@ export default class extends React.Component {
       .enter()
       .append("rect")
       .style("fill", d => {
-        return myColor(d.title);
+        return this.color(d.title);
       })
       .attr("x", d => {
         return scale(d.start);

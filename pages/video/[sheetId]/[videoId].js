@@ -25,22 +25,12 @@ function MainVideoPage() {
   const { videoId, sheetId } = useRouter().query;
   const [YTplaying, changeYTplaying] = useState(false);
 
-  const [uniqueAnnotation, changeUniqueAnnotation] = useState([]);
   const YTplayerRef = useRef(null);
   useEffect(() => {
     const fetchVideo = async () => {
       let localVideoAnnotations = await getVideoAnnotations(videoId, sheetId);
       localVideoAnnotations.formatedAnnotation = localVideoAnnotations.annotations.map(
         getFormatedAnnotationData
-      );
-      changeUniqueAnnotation(
-        Array.from(
-          new Set(
-            localVideoAnnotations.annotations.map(
-              annotation => annotation.title
-            )
-          )
-        )
       );
       updateVideoAnnotations(localVideoAnnotations);
       updateVideoAnnotationIsStillLoading(false);
@@ -206,34 +196,6 @@ function MainVideoPage() {
             gridTemplateRows: "800px 400px"
           }}
         >
-          <div
-            className="card-text"
-            id={`annotations-badges`}
-            disabled
-            style={{
-              gridColumnStart: "1",
-              gridColumnEnd: "1",
-              gridRowStart: "2",
-              gridRowEnd: "2",
-              alignSelf: "flex-start",
-              justifySelf: "center"
-            }}
-          >
-            {uniqueAnnotation.map((annotation, index) => (
-              <span
-                key={index}
-                className="badge badge-pill"
-                id={`${annotation}-badge`}
-                style={{
-                  display: "block",
-                  marginBottom: "2px",
-                  color: "white"
-                }}
-              >
-                {annotation}
-              </span>
-            ))}
-          </div>
           <div
             style={{
               gridColumnStart: "2",

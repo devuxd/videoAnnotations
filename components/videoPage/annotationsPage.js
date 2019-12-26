@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import MainAnnotationsVis from "./allAnnotations/allAnnotationsVis";
 import AnnotationEditForm from "./allAnnotations/annotationEditForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,6 +10,7 @@ import {
 import SubAnnotationEditForm from "./subAnnotations/subAnnotationEditForm";
 import SubAnnotationsVis from "./subAnnotations/subAnnotationsVis";
 import SubAnnotationAddForm from "./subAnnotations/subAnnotationAddForm";
+import AnnotationsTitles from "./shared/annotationsTitles";
 
 //    ===  ===  ===== =====     <- these are the annotations.
 //    ^                         <- this this the selected annotation
@@ -19,11 +20,34 @@ import SubAnnotationAddForm from "./subAnnotations/subAnnotationAddForm";
 function AnnotationsPage(props) {
   // keep track of the selected annotation and sub-annotation.
   const [selectedAnnotation, changeSelectedAnnotation] = useState(null);
+
+  useEffect(() => {
+    changeAnnotationTitles(
+      Array.from(
+        new Set(
+          props.formatedAnnotationData.map(annotation => annotation.title)
+        )
+      )
+    );
+    changesubAnnotationTitles(
+      selectedAnnotation?.subAnnotations.map(({ title }) => title)
+    );
+  }, [selectedAnnotation]);
+
   const [selectedSubAnnotation, changeSelectedSubAnnotation] = useState(null);
+
+  // Stats:
+  // 1: showAnnotations -> show only main annotations.
+  // 2: showAnnotations&Edit -> when one of the main annotations got clicked show edit form.
+  // 3: showAnnotations&Add -> when add annotation button cliked show the add forms.
+  // 4 : showSubAnnotations -> when show sub-annotations button clicked, show all sub annotations for the selected annotations.
+  // 5 : showSubAnnotations&Edit -> when one of the sub-annotation got clicked show edit form for the selected subAnnotation.
+  // 6 : showSubAnnotations&Add -> when the add sub-annotations got clicked, show the add sub-annotation form.
   const [selectedAnnotationState, changeSelectedAnnotationState] = useState(
-    "ideal"
+    "showAnnotations"
   );
-  const [subAnnotationTitles, changesubAnnotationTitles] = useState({});
+  const [subAnnotationTitles, changesubAnnotationTitles] = useState([]);
+  const [annotationTitles, changeAnnotationTitles] = useState([]);
 
   // handel the click on annotation and sub-annotation
   const onAnnotationClick = selectedAnnotation => {
@@ -32,20 +56,6 @@ function AnnotationsPage(props) {
     changeSelectedAnnotationState("editAnnotation");
     changeSelectedAnnotation({ ...selectedAnnotation });
     props.player.seekTo(selectedAnnotation.start);
-
-    if (selectedAnnotation.subAnnotations.length > 0) {
-      changeSelectedSubAnnotation(
-        selectedAnnotation.subAnnotations[0].annotations[0]
-      );
-      changesubAnnotationTitles(
-        selectedAnnotation.subAnnotations.map(({ title }) => ({
-          value: title,
-          label: title
-        }))
-      );
-    } else {
-      changeSelectedSubAnnotation(null);
-    }
   };
   // handel sub-annotation click
   const onSubAnnotationClick = newSelectedSubAnnotation => {
@@ -53,7 +63,7 @@ function AnnotationsPage(props) {
       selectedAnnotation.start + newSelectedSubAnnotation.start
     );
     changeSelectedSubAnnotation(newSelectedSubAnnotation);
-    changeSelectedAnnotationState("editSubAnnotation");
+    changeSelectedAnnotationState("showSubAnnotations&Edit");
   };
 
   // when one of the sub-annotation updated -> propagate this update to local state and the main state maintained by [videoId].js
@@ -72,11 +82,7 @@ function AnnotationsPage(props) {
         }
       }
     );
-
-    const newAnnotation = { ...selectedAnnotation, subAnnotations };
-    changeSelectedAnnotation(newAnnotation);
-    changeSelectedSubAnnotation(newSubAnnotation);
-    props.updateAnnotations(newAnnotation);
+    saveSubAnnotationChange(subAnnotations, newSubAnnotation);
   };
 
   // when one of the annotation updated -> propagate the update to the main state maintained by [videoId].js
@@ -87,8 +93,43 @@ function AnnotationsPage(props) {
 
   // adding annotation start with only adding title and start time and then call editSubAnnotation to let the user continue
   const addNewSubAnnotation = newSubAnnotation => {
-    console.log(newSubAnnotation);
-    // need to add the id first
+    const { subAnnotations } = selectedAnnotation;
+    let hasUpdated = false;
+    let localSubAnnotation;
+    let updatedSubAnnotations = subAnnotations.map(subAnnotation => {
+      if (subAnnotation.title === newSubAnnotation.title) {
+        hasUpdated = true;
+        localSubAnnotation = {
+          ...newSubAnnotation,
+          id: subAnnotation.title + subAnnotation.annotations.length
+        };
+        return {
+          ...subAnnotation,
+          annotations: [...subAnnotation.annotations, localSubAnnotation]
+        };
+      } else {
+        return subAnnotation;
+      }
+    });
+    if (!hasUpdated) {
+      localSubAnnotation = {
+        ...newSubAnnotation,
+        id: newSubAnnotation.title + 0
+      };
+      updatedSubAnnotations = [
+        ...subAnnotations,
+        { title: newSubAnnotation.title, annotations: [localSubAnnotation] }
+      ];
+    }
+    saveSubAnnotationChange(updatedSubAnnotations, localSubAnnotation);
+    changeSelectedAnnotationState("showSubAnnotations&Edit");
+  };
+
+  const saveSubAnnotationChange = (subAnnotations, newSubAnnotation) => {
+    const newAnnotation = { ...selectedAnnotation, subAnnotations };
+    changeSelectedAnnotation(newAnnotation);
+    changeSelectedSubAnnotation(newSubAnnotation);
+    props.updateAnnotations(newAnnotation);
   };
 
   // this show up when an annotation got selected.
@@ -144,7 +185,7 @@ function AnnotationsPage(props) {
                 left: "10px",
                 outline: "0px"
               }}
-              onClick={() => changeSelectedAnnotation("ideal")}
+              onClick={() => changeSelectedAnnotation("showAnnotations")}
             >
               <FontAwesomeIcon style={{ width: "15px" }} icon={faWindowClose} />
             </button>
@@ -163,7 +204,9 @@ function AnnotationsPage(props) {
             <button
               type="button"
               className="btn btn-outline-secondary btn-sm"
-              onClick={() => changeSelectedAnnotationState("editSubAnnotation")}
+              onClick={() =>
+                changeSelectedAnnotationState("showSubAnnotations")
+              }
             >
               <div
                 style={{
@@ -265,7 +308,7 @@ function AnnotationsPage(props) {
           </SubAnnotationsVis>
         </div>
 
-        {selectedAnnotationState === "editSubAnnotation" && (
+        {selectedAnnotationState === "showSubAnnotations&Edit" && (
           <SubAnnotationEditForm
             getCurrentTime={props.player.getCurrentTime}
             selectedSubAnnotation={selectedSubAnnotation}
@@ -274,7 +317,7 @@ function AnnotationsPage(props) {
             selectedAnnotationStart={selectedAnnotation.start}
           />
         )}
-        {selectedAnnotationState === "addSubAnnotation" && (
+        {selectedAnnotationState === "showSubAnnotations&Add" && (
           <SubAnnotationAddForm
             getCurrentTime={props.player.getCurrentTime}
             addNewSubAnnotation={addNewSubAnnotation}
@@ -302,6 +345,25 @@ function AnnotationsPage(props) {
           gridTemplateRows: "30px 350px auto"
         }}
       >
+        <div
+          className="card-text"
+          id={`annotations-badges`}
+          disabled
+          style={{
+            gridColumnStart: "1",
+            gridColumnEnd: "1",
+            gridRowStart: "2",
+            gridRowEnd: "2",
+            alignSelf: "flex-start",
+            justifySelf: "center"
+          }}
+        >
+          <AnnotationsTitles
+            key={selectedAnnotation}
+            titles={annotationTitles}
+            selectedTitle={selectedAnnotation?.title}
+          />
+        </div>
         <div
           style={{
             gridColumnStart: "2",
@@ -355,7 +417,7 @@ function AnnotationsPage(props) {
         >
           {selectedAnnotation && getAnnotationsSection()}
         </div>
-        {selectedAnnotationState.includes("SubAnnotation") && (
+        {selectedAnnotationState.startsWith("showSubAnnotations") && (
           <>
             <div
               className="card-text"
@@ -370,16 +432,11 @@ function AnnotationsPage(props) {
                 justifySelf: "center"
               }}
             >
-              {subAnnotationTitles.map(({ value }, index) => (
-                <span
-                  key={index}
-                  className="badge badge-pill"
-                  id={`${value}-badge`}
-                  style={{ display: "block", marginBottom: "2px" }}
-                >
-                  {value}
-                </span>
-              ))}
+              <AnnotationsTitles
+                key={selectedSubAnnotation}
+                titles={subAnnotationTitles}
+                selectedTitle={selectedSubAnnotation?.title}
+              />
             </div>
             <div
               style={{
@@ -395,9 +452,9 @@ function AnnotationsPage(props) {
                 type="button"
                 className="btn btn-outline-secondary btn-sm "
                 onClick={() =>
-                  changeSelectedAnnotationState("addSubAnnotation")
+                  changeSelectedAnnotationState("showSubAnnotations&Add")
                 }
-                disabled={selectedAnnotationState === "addSubAnnotation"}
+                disabled={selectedAnnotationState === "showSubAnnotations&Add"}
               >
                 Add sub-annotation
               </button>

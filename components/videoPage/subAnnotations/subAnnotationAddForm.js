@@ -63,11 +63,11 @@ function AddSubAnnotation(
     const end = new moment(localNewAnnotation.end * 1000);
     const diff = moment.duration(end.diff(start));
     localNewAnnotation.totalTime = `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
-    try {
-      await googleLogin();
-    } catch (e) {
-      return;
-    }
+    // try {
+    //   await googleLogin();
+    // } catch (e) {
+    //   return;
+    // }
     addNewSubAnnotation(localNewAnnotation);
   };
 
@@ -92,28 +92,38 @@ function AddSubAnnotation(
       </style>
 
       <div className="box-sub-annotation" id="box-sub-annotation">
-        <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
-          Selected existing title:
-        </label>
-        <div
-          className="rainbow-p-around_x-large rainbow-align-content_center"
-          style={{ display: "grid", justifyContent: "center" }}
-        >
-          <RadioButtonGroup
-            id="radio-button-group-component-1"
-            options={subAnnotationTitles}
-            variant="brand"
-            value={title}
-            onChange={addTitle}
-            required
-          />
-        </div>
+        {subAnnotationTitles.length > 0 && (
+          <>
+            <label
+              for="StartTime"
+              style={{ margin: "3px", paddingLeft: "5px" }}
+            >
+              Select an existing title or create new one:
+            </label>
+            <div
+              className="rainbow-p-around_x-large rainbow-align-content_center"
+              style={{ display: "grid", justifyContent: "center" }}
+            >
+              <RadioButtonGroup
+                id="radio-button-group-component-1"
+                options={subAnnotationTitles.map(title => ({
+                  value: title,
+                  label: title
+                }))}
+                variant="brand"
+                value={title}
+                onChange={addTitle}
+                required
+              />
+            </div>
+          </>
+        )}
         <div
           className="input-group input-group-sm mb-3"
           style={{ margin: "15px 0px" }}
         >
           <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
-            Or create new title:
+            Create new title:
           </label>
           <input
             type="text"

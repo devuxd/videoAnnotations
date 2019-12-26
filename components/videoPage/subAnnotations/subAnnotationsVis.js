@@ -1,6 +1,7 @@
 import React from "react";
 import * as d3 from "d3";
 import color from "color";
+import { secondColor } from "./../../../API/color";
 /**
  * d3.js scatterplot component to visualize annotations
  */
@@ -8,7 +9,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
     this.selectedElement;
-    this.selectCategory;
+    this.color = secondColor();
   }
 
   componentDidMount() {
@@ -17,43 +18,8 @@ export default class extends React.Component {
       .map(subAnnotation => subAnnotation.annotations)
       .flat();
 
-    const onMouseClick = (selectedSubAnnotation, subAnnotationVisElement) => {
+    const onMouseClick = selectedSubAnnotation => {
       this.props.onSubAnnotationClick(selectedSubAnnotation);
-      if (
-        this.selectedElement !== undefined &&
-        this.selectedElement.id === subAnnotationVisElement.id
-      )
-        return;
-
-      this.selectedElement = subAnnotationVisElement;
-      this.selectCategory.style.borderStyle = "none";
-
-      this.selectCategory = document.getElementById(
-        `${selectedSubAnnotation.title}-badge`
-      );
-      this.selectCategory.style.border = "2px black solid";
-
-      const annotationXStartposition = Number(
-        subAnnotationVisElement.getAttribute("x")
-      );
-      const arrowOffset = subAnnotationVisElement.getAttribute("width") / 2;
-
-      const arrowElement = document.getElementById("arrow-sub-annotation");
-      const subAnnotationEditForm = document.getElementById(
-        "box-sub-annotation"
-      );
-      arrowElement.style.left = `${annotationXStartposition + arrowOffset}px`;
-      const backgroundColor = subAnnotationVisElement.style.fill;
-      arrowElement.style.borderBottomColor = backgroundColor;
-      subAnnotationEditForm.style.borderColor = backgroundColor;
-      const annotationMaxWidth = document.getElementById("sub-annotations")
-        .offsetWidth;
-
-      if (annotationXStartposition + 800 > annotationMaxWidth) {
-        subAnnotationEditForm.style.left = `${annotationMaxWidth - 800}px`;
-      } else {
-        subAnnotationEditForm.style.left = `${annotationXStartposition - 20}px`;
-      }
     };
     const w = document.getElementById("YTplayer").offsetWidth;
     document.getElementById("box-annotation-expanded").style.width = `${w +
@@ -65,10 +31,6 @@ export default class extends React.Component {
       .attr("height", 22)
       .attr("class", "chart");
 
-    var myColor = d3
-      .scaleOrdinal()
-      .domain(subAnnotations)
-      .range(d3.schemeSet2);
     let scale = d3
       .scaleLinear()
       .domain([0, annotationLength])
@@ -81,8 +43,8 @@ export default class extends React.Component {
       .enter()
       .append("rect")
       .style("fill", selectedSubAnnotation => {
-        const strokeColor = color(myColor(selectedSubAnnotation.title));
-        return strokeColor.darken(0.5);
+        const bgcolor = color(this.color(selectedSubAnnotation.title));
+        return bgcolor.darken(0.2);
       })
       .style("stroke-width", 2.5)
       .style("stroke-linecap", "butt")
@@ -105,26 +67,6 @@ export default class extends React.Component {
       .on("click", function(selectedSubAnnotation) {
         onMouseClick(selectedSubAnnotation, this);
       });
-
-    [...document.getElementById("sub-annotations-badges").children].forEach(
-      (element, index) => {
-        element.style.backgroundColor = document.getElementById(
-          `${element.innerText}0`
-        ).style.fill;
-        if (index === 0) {
-          this.selectCategory = element;
-          element.style.border = "3px black solid";
-          element.style.color = "white";
-        } else {
-          element.style.color = "white";
-        }
-      }
-    );
-    if (this.props.selectedSubAnnotation != null)
-      onMouseClick(
-        this.props.selectedSubAnnotation,
-        document.getElementById(this.props.selectedSubAnnotation.id)
-      );
   }
 
   render() {

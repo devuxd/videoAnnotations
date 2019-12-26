@@ -27,7 +27,7 @@
     "color": "^3.1.2",
     "d3": "^5.9.7",
     "moment": "^2.24.0",
-    "next": "latest",
+    "next": "canary",
     "now": "^16.4.4",
     "react": "16.8.6",
     "react-dom": "16.8.6",
