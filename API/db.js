@@ -42,72 +42,40 @@ const cacheData = (dataset, id) =>
   localStorage.setItem(id, JSON.stringify(dataset));
 
 const parse = rowDataset => {
-  let dataset = rowDataset.sheets.map(({ data }, sheetIndex) => {
-    let videoJSON = {};
-    let video = data[0].rowData[2];
+  const dataset = rowDataset.sheets.map(({ data }, sheetIndex) => {
+    const videoJSON = {};
+    const video = data[0].rowData[2];
     videoJSON.id = `Video${sheetIndex + 1}`;
     videoJSON.videoTitle = video.values[0].userEnteredValue.stringValue;
     videoJSON.videoURL = video.values[1].userEnteredValue.stringValue;
-    videoJSON.videoLength = { hours: "", minutes: "", seconds: "" };
-    videoJSON.videoLength.hours = video.values[2].userEnteredValue.numberValue;
-    videoJSON.videoLength.minutes =
-      video.values[3].userEnteredValue.numberValue;
-    videoJSON.videoLength.seconds =
+    videoJSON.videoLength =
+      video.values[2].userEnteredValue.numberValue * 3600 +
+      video.values[3].userEnteredValue.numberValue * 60 +
       video.values[4].userEnteredValue.numberValue;
 
-    videoJSON.programmingLanguage = video.values[5].userEnteredValue
-      ? video.values[5].userEnteredValue.stringValue
-      : "";
-    videoJSON.programmingTools = video.values[6].userEnteredValue
-      ? video.values[6].userEnteredValue.stringValue
-      : "";
-    videoJSON.githubURL = video.values[7].userEnteredValue
-      ? video.values[7].userEnteredValue.stringValue
-      : "";
+    videoJSON.programmingLanguage =
+      video.values[5].userEnteredValue?.stringValue;
 
-    videoJSON.projectSize = video.values[8].userEnteredValue
-      ? video.values[8].userEnteredValue.numberValue
-      : "";
+    videoJSON.programmingTools = video.values[6].userEnteredValue?.stringValue;
 
-    videoJSON.developerGithubURL = video.values[9].userEnteredValue
-      ? video.values[9].userEnteredValue.stringValue
-      : "";
+    videoJSON.githubURL = video.values[7].userEnteredValue?.stringValue;
+
+    videoJSON.projectSize = video.values[8].userEnteredValue?.numberValue;
+
+    videoJSON.developerGithubURL =
+      video.values[9].userEnteredValue?.stringValue;
 
     let annotationsData = data[0].rowData.splice(10, data[0].rowData.length);
     videoJSON.annotations = [];
-    let annotationIndex = 11;
     //remove empty cells from the spreedsheet
     const filteredAnnotationsData = annotationsData.filter(
-      annotation =>
-        annotation.values != undefined &&
-        annotation.values[0].userEnteredValue != undefined
+      annotation => annotation.values?.[0].userEnteredValue != undefined
     );
-    videoJSON.annotations = filteredAnnotationsData.map(annotation => {
-      let annotationJSON = {};
-      annotationJSON.duration = { start: {}, end: {} };
-      annotationJSON.duration.start.hours =
-        annotation.values[0].userEnteredValue.numberValue;
-      annotationJSON.duration.start.minutes =
-        annotation.values[1].userEnteredValue.numberValue;
-      annotationJSON.duration.start.seconds =
-        annotation.values[2].userEnteredValue.numberValue;
-      annotationJSON.duration.end.hours =
-        annotation.values[3].userEnteredValue.numberValue;
-      annotationJSON.duration.end.minutes =
-        annotation.values[4].userEnteredValue.numberValue;
-      annotationJSON.duration.end.seconds =
-        annotation.values[5].userEnteredValue.numberValue;
-      annotationJSON.title = annotation.values[6].userEnteredValue.stringValue;
-      annotationJSON.description =
-        annotation.values[7].userEnteredValue.stringValue;
-      annotationJSON.id = annotationIndex;
-      annotationJSON.subAnnotations = annotation.values[8]
-        ? JSON.parse(annotation.values[8].userEnteredValue.stringValue)
-        : [];
-      annotationIndex++;
-      return annotationJSON;
-    });
 
+    videoJSON.annotations = filteredAnnotationsData.map(annotation =>
+      JSON.parse(annotation.values[0].userEnteredValue.stringValue)
+    );
+    debugger;
     return videoJSON;
   });
   return dataset;

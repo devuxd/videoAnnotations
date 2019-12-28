@@ -29,39 +29,13 @@ function MainVideoPage() {
   useEffect(() => {
     const fetchVideo = async () => {
       let localVideoAnnotations = await getVideoAnnotations(videoId, sheetId);
-      localVideoAnnotations.formatedAnnotation = localVideoAnnotations.annotations.map(
-        getFormatedAnnotationData
-      );
       updateVideoAnnotations(localVideoAnnotations);
       updateVideoAnnotationIsStillLoading(false);
     };
-
     if (sheetId !== undefined) {
       fetchVideo();
     }
   }, [sheetId]);
-  const getFormatedAnnotationData = annotation => {
-    const obj = {
-      start:
-        Number(annotation.duration.start.hours) * 60 * 60 +
-        Number(annotation.duration.start.minutes) * 60 +
-        Number(annotation.duration.start.seconds),
-      end:
-        Number(annotation.duration.end.hours) * 60 * 60 +
-        Number(annotation.duration.end.minutes) * 60 +
-        Number(annotation.duration.end.seconds),
-      id: annotation.id,
-      title: annotation.title,
-      annotation: annotation.description,
-      duration: `${annotation.duration.start.hours}:${annotation.duration.start.minutes}:${annotation.duration.start.seconds} - ${annotation.duration.end.hours}:${annotation.duration.end.minutes}:${annotation.duration.end.seconds}`,
-      subAnnotations: annotation.subAnnotations || []
-    };
-    const start = new moment(obj.start * 1000);
-    const end = new moment(obj.end * 1000);
-    const diff = moment.duration(end.diff(start));
-    obj.totalTime = `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
-    return obj;
-  };
 
   const seekTo = seconds => {
     YTplayerRef.current.seekTo(seconds);
@@ -77,36 +51,23 @@ function MainVideoPage() {
     // update the annotation with the newSubAnnotations
     const annotations = videoAnnotations.annotations.map(currentAnnotation => {
       if (currentAnnotation.id == newAnnotation.id) {
-        currentAnnotation.subAnnotations = newAnnotation.subAnnotations;
+        return newAnnotation;
       }
       return currentAnnotation;
     });
+
     let localVideoAnnotations = { ...videoAnnotations, annotations };
-
-    //Also update the formated Annotation
-    localVideoAnnotations.formatedAnnotation = videoAnnotations.formatedAnnotation.map(
-      (annotation, index) => ({
-        ...annotation,
-        subAnnotations: annotations[index].subAnnotations
-      })
-    );
-
+    // update local copy, localStorage copy and then save it in the spreedseet
     updateVideoAnnotations(localVideoAnnotations);
-    //remove the formated data before caching and saving.
-    const {
-      formatedAnnotation,
-      ...newLocalVideoAnnotations
-    } = localVideoAnnotations;
     cacheVideoAnnotation(
-      newLocalVideoAnnotations,
-      newLocalVideoAnnotations.id,
+      localVideoAnnotations,
+      localVideoAnnotations.id,
       localStorage.key(0)
     );
-
     saveVideoAnnotations(
       localStorage.key(0),
-      `${newLocalVideoAnnotations.id}!I${newAnnotation.id}`,
-      newAnnotation.subAnnotations
+      `${localVideoAnnotations.id}!A${newAnnotation.id}`,
+      newAnnotation
     );
   };
 
@@ -225,7 +186,7 @@ function MainVideoPage() {
           >
             <AnnotationsPage
               videoLength={videoAnnotations.videoLength}
-              formatedAnnotationData={videoAnnotations.formatedAnnotation}
+              annotations={videoAnnotations.annotations}
               player={{ seekTo, seekTo_subAnnotations, getCurrentTime }}
               updateAnnotations={updateAnnotations}
             />

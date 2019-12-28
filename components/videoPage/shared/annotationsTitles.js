@@ -1,8 +1,7 @@
 import React from "react";
-import { secondColor } from "../../../API/color";
 
-function AnnotationsTitles({ titles, selectedTitle }) {
-  const color = secondColor();
+function AnnotationsTitles({ titles, selectedTitle, colorScheme }) {
+  const color = colorScheme();
   return (
     <>
       {titles.map((title, index) => (

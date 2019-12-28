@@ -73,20 +73,16 @@ export default class extends React.Component {
         return this.color(d.title);
       })
       .attr("x", d => {
-        return scale(d.start);
+        return scale(d.duration.start.inSeconds);
       })
       .attr("id", function(d) {
         return d.title + d.id;
       })
       .attr("width", function(d) {
-        return scale(d.end - d.start);
+        return scale(d.duration.end.inSeconds - d.duration.start.inSeconds);
       })
       .attr("stroke", d => {
-        if (
-          this.props.selectedAnnotation == null ||
-          this.props.selectedAnnotation.id != d.id
-        )
-          return "none";
+        if (this.props.selectedAnnotation?.id != d.id) return "none";
         return "black";
       })
       .attr("height", 15)
@@ -99,23 +95,6 @@ export default class extends React.Component {
       .on("click", function(d) {
         mouseClick(d, this);
       });
-
-    [...document.getElementById("annotations-badges").children].forEach(
-      (element, index) => {
-        element.style.backgroundColor = document.getElementById(
-          `${element.innerText}${index + 11}` // becuase the spreedsheet start
-        ).style.fill;
-        if (
-          this.props.selectedAnnotation != null &&
-          element.innerText === this.props.selectedAnnotation.title
-        ) {
-          console.log(this.props);
-          element.style.border = "2px black solid";
-        } else {
-          element.style.border = "none";
-        }
-      }
-    );
   }
 
   render() {

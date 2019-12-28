@@ -77,20 +77,24 @@ function editSubAnnotation(
 
   const handleSubmit = async () => {
     const localNewAnnotation = {
-      startTime: refStartTime.current.value,
-      endTime: refEndTime.current.value,
-      start:
-        moment.duration(refStartTime.current.value).asSeconds() -
-        selectedAnnotationStart,
-      end:
-        moment.duration(refEndTime.current.value).asSeconds() -
-        selectedAnnotationStart,
-      annotation: refDescription.current.value,
+      duration: {
+        start: {
+          time: refStartTime.current.value,
+          inSeconds:
+            moment.duration(refStartTime.current.value).asSeconds() -
+            selectedAnnotationStart
+        },
+        end: {
+          time: refEndTime.current.value,
+          inSeconds:
+            moment.duration(refEndTime.current.value).asSeconds() -
+            selectedAnnotationStart
+        }
+      },
       id: selectedSubAnnotation.id,
       title: selectedSubAnnotation.title,
-      duration: refStartTime.current.value + " - " + refEndTime.current.value
+      description: refDescription.current.value
     };
-
     const start = new moment(localNewAnnotation.start * 1000);
     const end = new moment(localNewAnnotation.end * 1000);
     const diff = moment.duration(end.diff(start));

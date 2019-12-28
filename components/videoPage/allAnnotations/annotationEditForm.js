@@ -33,9 +33,7 @@ function editAnnotation(
   const refStartTime = React.createRef();
   const refEndTime = React.createRef();
   const refDescription = React.createRef();
-  const timeStartAndEnd = selectedAnnotation.duration.split(" ");
-  const startTime = timeStartAndEnd[0];
-  const endTime = timeStartAndEnd[2];
+
   // getting the current time of the video when the user ask for it
   const getCurrentTime = e => {
     const time = moment("2015-01-01")
@@ -51,18 +49,20 @@ function editAnnotation(
 
   const handleSubmit = async () => {
     const localNewAnnotation = {
-      start: moment.duration(refStartTime.current.value).asSeconds(),
-      end: moment.duration(refEndTime.current.value).asSeconds(),
-      annotation: refDescription.current.value,
-      id: selectedAnnotation.id,
+      duration: {
+        start: {
+          inSeconds: moment.duration(refStartTime.current.value).asSeconds(),
+          time: refStartTime.current.value
+        },
+        end: {
+          inSeconds: moment.duration(refEndTime.current.value).asSeconds(),
+          time: refEndTime.current.value
+        }
+      },
       title: selectedAnnotation.title,
-      duration: refStartTime.current.value + " - " + refEndTime.current.value
+      description: refDescription.current.value,
+      id: selectedAnnotation.id
     };
-    const start = new moment(localNewAnnotation.start * 1000);
-    const end = new moment(localNewAnnotation.end * 1000);
-    const diff = moment.duration(end.diff(start));
-    localNewAnnotation.totalTime = `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
-
     try {
       await googleLogin();
     } catch (e) {
@@ -86,7 +86,7 @@ function editAnnotation(
           placeholder="Start time"
           aria-label="Start time"
           aria-describedby="button-addon2"
-          defaultValue={startTime}
+          defaultValue={selectedAnnotation.duration.start.time}
           ref={refStartTime}
           onBlur={handleSubmit}
         />
@@ -116,7 +116,7 @@ function editAnnotation(
           aria-label="Start time"
           aria-described="button-addon2"
           style={{ marginLeft: "10px" }}
-          defaultValue={endTime}
+          defaultValue={selectedAnnotation.duration.end.time}
           ref={refEndTime}
           onBlur={handleSubmit}
         />
@@ -142,7 +142,7 @@ function editAnnotation(
         className="form-control"
         placeholder="Annotation description"
         rows="5"
-        defaultValue={selectedAnnotation.annotation}
+        defaultValue={selectedAnnotation.description}
         ref={refDescription}
         onBlur={handleSubmit}
       ></textarea>

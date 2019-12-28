@@ -63,11 +63,11 @@ function AddSubAnnotation(
     const end = new moment(localNewAnnotation.end * 1000);
     const diff = moment.duration(end.diff(start));
     localNewAnnotation.totalTime = `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
-    // try {
-    //   await googleLogin();
-    // } catch (e) {
-    //   return;
-    // }
+    try {
+      await googleLogin();
+    } catch (e) {
+      return;
+    }
     addNewSubAnnotation(localNewAnnotation);
   };
 
