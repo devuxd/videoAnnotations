@@ -14,34 +14,6 @@ export default class extends React.Component {
 
   mouseClick = (selectedAnnotation, annotationVisElement) => {
     this.props.onAnnotationClick(selectedAnnotation);
-    const selectCategory = document.getElementById(
-      `${selectedAnnotation.title}-badge`
-    );
-    selectCategory.style.border = "2px black solid";
-
-    const annotationXStartposition = Number(
-      annotationVisElement.getAttribute("x")
-    );
-    const arrowOffset = annotationVisElement.getAttribute("width") / 2;
-
-    const arrowElement = document.getElementById("arrow-annotation");
-    const annotationEditForm = document.getElementById("box-annotation");
-    arrowElement.style.left = `${annotationXStartposition + arrowOffset}px`;
-    annotationEditForm.style.display = "block";
-    const backgroundColor = annotationVisElement.style.fill;
-    arrowElement.style.borderBottomColor = backgroundColor;
-    annotationEditForm.style.borderColor = backgroundColor;
-    const annotationMaxWidth = document.getElementById("video-annotations")
-      .offsetWidth;
-    if (annotationXStartposition + 800 > annotationMaxWidth) {
-      annotationEditForm.style.left = `${annotationMaxWidth - 800}px`;
-    } else {
-      annotationEditForm.style.left = `${annotationXStartposition - 20}px`;
-    }
-    // this becuase annotationVisElement.setAttribute does not work 🤦‍♂️
-    document
-      .getElementById(annotationVisElement.getAttribute("id"))
-      .setAttribute("stroke", "black");
   };
   componentDidMount() {
     let videoLength = this.props.videoLength;
@@ -80,10 +52,6 @@ export default class extends React.Component {
       })
       .attr("width", function(d) {
         return scale(d.duration.end.inSeconds - d.duration.start.inSeconds);
-      })
-      .attr("stroke", d => {
-        if (this.props.selectedAnnotation?.id != d.id) return "none";
-        return "black";
       })
       .attr("height", 15)
       .on("mouseover", function(d) {

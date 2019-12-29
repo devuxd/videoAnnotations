@@ -1,44 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import { googleLogin } from "../../../API/db";
 
 function AnnotationEditForm({
+  selectedAnnotation,
   getCurrentTime,
-  selectedAnnotation,
-  updateSelectedAnnotation
+  update,
+  selectedAnnotationStart
 }) {
-  //based on the selected annotation, display the sub-annotations related to it.
-  //If non is selected or there are no sub-annotations display nothing.
-
-  return (
-    <>
-      {editAnnotation(
-        getCurrentTime,
-        selectedAnnotation,
-        updateSelectedAnnotation
-      )}
-      <br />
-    </>
-  );
-}
-
-function editAnnotation(
-  currentTime,
-  selectedAnnotation,
-  updateSelectedAnnotation
-) {
-  // getting references
   const refStartTime = React.createRef();
   const refEndTime = React.createRef();
   const refDescription = React.createRef();
 
   // getting the current time of the video when the user ask for it
-  const getCurrentTime = e => {
+  const getTime = e => {
     const time = moment("2015-01-01")
       .startOf("day")
-      .seconds(currentTime())
+      .seconds(getCurrentTime())
       .format("H:mm:ss");
     if (e.currentTarget.id === "start") {
       refStartTime.current.value = time;
@@ -51,29 +31,32 @@ function editAnnotation(
     const localNewAnnotation = {
       duration: {
         start: {
-          inSeconds: moment.duration(refStartTime.current.value).asSeconds(),
-          time: refStartTime.current.value
+          time: refStartTime.current.value,
+          inSeconds:
+            moment.duration(refStartTime.current.value).asSeconds() -
+            selectedAnnotationStart
         },
         end: {
-          inSeconds: moment.duration(refEndTime.current.value).asSeconds(),
-          time: refEndTime.current.value
+          time: refEndTime.current.value,
+          inSeconds:
+            moment.duration(refEndTime.current.value).asSeconds() -
+            selectedAnnotationStart
         }
       },
+      id: selectedAnnotation.id,
       title: selectedAnnotation.title,
-      description: refDescription.current.value,
-      id: selectedAnnotation.id
+      description: refDescription.current.value
     };
     try {
       await googleLogin();
     } catch (e) {
       return;
     }
-    const { subAnnotations } = selectedAnnotation;
-    updateSelectedAnnotation({ ...localNewAnnotation, subAnnotations });
+    update(localNewAnnotation);
   };
 
   return (
-    <div style={{ paddingTop: "10px" }}>
+    <>
       <div className="input-group input-group-sm mb-3">
         <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
           Start:
@@ -92,7 +75,7 @@ function editAnnotation(
         />
         <div className="input-group-append">
           <button
-            onClick={getCurrentTime}
+            onClick={getTime}
             className="btn btn-outline-secondary"
             type="button"
             id="start"
@@ -122,7 +105,7 @@ function editAnnotation(
         />
         <div className="input-group-append">
           <button
-            onClick={getCurrentTime}
+            onClick={getTime}
             className="btn btn-outline-secondary"
             type="button"
             id="end"
@@ -135,18 +118,19 @@ function editAnnotation(
           </button>
         </div>
       </div>
-      <label for="description"> General description: </label>
+      <label for="description">Description: </label>
       <textarea
         id="description"
         key={selectedAnnotation.id + "textarea"}
         className="form-control"
+        id="exampleFormControlTextarea1"
         placeholder="Annotation description"
         rows="5"
         defaultValue={selectedAnnotation.description}
         ref={refDescription}
         onBlur={handleSubmit}
       ></textarea>
-    </div>
+    </>
   );
 }
 

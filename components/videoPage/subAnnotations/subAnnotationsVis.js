@@ -22,8 +22,7 @@ export default class extends React.Component {
       this.props.onSubAnnotationClick(selectedSubAnnotation);
     };
     const w = document.getElementById("YTplayer").offsetWidth;
-    document.getElementById("box-annotation-expanded").style.width = `${w +
-      10}px`;
+    document.getElementById("box-annotation").style.width = `${w + 10}px`;
     var mini = d3
       .select(this.props.divId)
       .append("svg")

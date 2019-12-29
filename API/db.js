@@ -75,7 +75,6 @@ const parse = rowDataset => {
     videoJSON.annotations = filteredAnnotationsData.map(annotation =>
       JSON.parse(annotation.values[0].userEnteredValue.stringValue)
     );
-    debugger;
     return videoJSON;
   });
   return dataset;
