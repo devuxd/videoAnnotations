@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
-import MainAnnotationsVis from "./allAnnotations/allAnnotationsVis";
+import AnnotationsVis from "./components/annotationsVis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
   faArrowRight,
   faWindowClose
 } from "@fortawesome/free-solid-svg-icons";
-import AnnotationEditForm from "./shared/annotationEditForm";
-import SubAnnotationsVis from "./subAnnotations/subAnnotationsVis";
-import SubAnnotationAddForm from "./subAnnotations/subAnnotationAddForm";
-import AnnotationsTitles from "./shared/annotationsTitles";
-import { secondColor, mainColor } from "../../API/color";
-import AnnotationBox from "./shared/annotationsBox";
-
+import AnnotationEditForm from "./components/annotationEditForm";
+import SubAnnotationAddForm from "./components/annotationAddForm";
+import AnnotationsTitles from "./components/annotationsTitles";
+import AnnotationBox from "./components/annotationsBox";
+import { mainColor, secondColor } from "../../API/color";
 //    ===  ===  ===== =====     <- these are the annotations.
 //    ^                         <- this this the selected annotation
 //    ==== ====== ===== =====   <- these are the sub-annotations related to the selected annotation.
@@ -27,7 +25,9 @@ function AnnotationsPage(props) {
       Array.from(new Set(props.annotations.map(annotation => annotation.title)))
     );
     changesubAnnotationTitles(
-      selectedAnnotation?.subAnnotations.map(({ title }) => title)
+      Array.from(
+        new Set(selectedAnnotation?.subAnnotations.map(({ title }) => title))
+      )
     );
   }, [selectedAnnotation]);
 
@@ -45,6 +45,17 @@ function AnnotationsPage(props) {
   );
   const [annotationTitles, changeAnnotationTitles] = useState([]);
   const [subAnnotationTitles, changesubAnnotationTitles] = useState([]);
+  const [windowWidth, changeWindowWidth] = useState(0);
+  useEffect(() => {
+    changeWindowWidth(document.getElementById("YTplayer").offsetWidth);
+    window.addEventListener("resize", () =>
+      changeWindowWidth(document.getElementById("YTplayer").offsetWidth)
+    );
+    return () =>
+      window.removeEventListener("resize", () =>
+        changeWindowWidth(document.getElementById("YTplayer").offsetWidth)
+      );
+  });
   // ***
 
   // *** Click handlers
@@ -71,13 +82,8 @@ function AnnotationsPage(props) {
   const updateSubAnnotations = newSubAnnotation => {
     const subAnnotations = selectedAnnotation.subAnnotations.map(
       subAnnotation => {
-        if (subAnnotation.title === newSubAnnotation.title) {
-          const annotations = subAnnotation.annotations.map(subAnnotation =>
-            subAnnotation.id === newSubAnnotation.id
-              ? newSubAnnotation
-              : subAnnotation
-          );
-          return { ...subAnnotation, annotations };
+        if (subAnnotation.id === newSubAnnotation.id) {
+          return newSubAnnotation;
         } else {
           return subAnnotation;
         }
@@ -130,7 +136,6 @@ function AnnotationsPage(props) {
   const saveSubAnnotationChange = (subAnnotations, newSubAnnotation) => {
     const newAnnotation = { ...selectedAnnotation, subAnnotations };
     changeSelectedAnnotation(newAnnotation);
-    changeSelectedSubAnnotation(newSubAnnotation);
     props.updateAnnotations(newAnnotation);
   };
   // show the annotation or the sub-annotation and never both
@@ -232,12 +237,6 @@ function AnnotationsPage(props) {
   };
 
   const getSubAnnotations = () => {
-    const boxElement = document.getElementById("box-annotation");
-    debugger;
-    boxElement.style.borderBottom = "0px";
-    boxElement.style.borderRight = "0px";
-    boxElement.style.borderLeft = "0px";
-
     return (
       <>
         <div
@@ -267,34 +266,39 @@ function AnnotationsPage(props) {
             <FontAwesomeIcon style={{ width: "15px" }} icon={faWindowClose} />
           </button>
         </div>
-        <SubAnnotationsVis
-          getCurrentTime={props.player.getCurrentTime}
+        <AnnotationsVis
+          annotationData={selectedAnnotation.subAnnotations}
           annotationLength={
             selectedAnnotation.duration.end.inSeconds -
             selectedAnnotation.duration.start.inSeconds
           }
+          onAnnotationClick={onSubAnnotationClick}
           divId={"#sub-annotations"}
-          key={JSON.stringify(selectedAnnotation.subAnnotations)}
-          subAnnotations={selectedAnnotation.subAnnotations}
-          onSubAnnotationClick={onSubAnnotationClick}
-          selectedSubAnnotation={selectedSubAnnotation}
+          key={JSON.stringify(selectedAnnotation.subAnnotations) + windowWidth}
+          windowWidth={windowWidth}
+          colorScheme={secondColor}
         >
           <div
             id="sub-annotations"
             style={{ marginBottom: "-5px", marginTop: "10px" }}
           ></div>
-        </SubAnnotationsVis>
-
+        </AnnotationsVis>
         {selectedAnnotationState === "showSubAnnotations&Edit" && (
-          <AnnotationEditForm
-            getCurrentTime={props.player.getCurrentTime}
-            selectedSubAnnotation={selectedSubAnnotation}
-            key={selectedAnnotation.id}
-            updateSubAnnotations={updateSubAnnotations}
-            selectedAnnotationStart={
-              selectedAnnotation.duration.start.inSeconds
-            }
-          />
+          <AnnotationBox
+            selectedAnnotationId={selectedSubAnnotation.id}
+            boxStyle={{ border: "3px solid", maxWidth: "815px" }}
+            windowWidth={windowWidth}
+          >
+            <AnnotationEditForm
+              getCurrentTime={props.player.getCurrentTime}
+              selectedAnnotation={selectedSubAnnotation}
+              key={selectedAnnotation.id}
+              update={updateSubAnnotations}
+              selectedAnnotationStart={
+                selectedAnnotation.duration.start.inSeconds
+              }
+            />
+          </AnnotationBox>
         )}
         {selectedAnnotationState === "showSubAnnotations&Add" && (
           <SubAnnotationAddForm
@@ -347,17 +351,17 @@ function AnnotationsPage(props) {
             gridRowEnd: "1"
           }}
         >
-          <MainAnnotationsVis
+          <AnnotationsVis
             annotationData={props.annotations}
-            getCurrentTime={props.player.getCurrentTime}
-            videoLength={props.videoLength}
+            annotationLength={props.videoLength}
             onAnnotationClick={onAnnotationClick}
             divId={"#video-annotations"}
-            key={JSON.stringify(props.annotations)}
-            selectedAnnotation={selectedAnnotation}
+            key={JSON.stringify(props.annotations) + windowWidth}
+            windowWidth={windowWidth}
+            colorScheme={mainColor}
           >
             <div id="video-annotations" name="video-annotations"></div>
-          </MainAnnotationsVis>
+          </AnnotationsVis>
         </div>
         <div
           style={{
@@ -387,62 +391,64 @@ function AnnotationsPage(props) {
         >
           {selectedAnnotation && (
             <AnnotationBox
-              selectedAnnotationId={
-                selectedAnnotation.title + selectedAnnotation.id
+              selectedAnnotationId={selectedAnnotation.id}
+              boxStyle={
+                selectedAnnotationState.startsWith("showAnnotations")
+                  ? { border: "3px solid", maxWidth: "815px" }
+                  : { borderTop: "3px solid", left: "0px" }
               }
+              windowWidth={windowWidth}
             >
               {getAnnotationsSection()}
             </AnnotationBox>
           )}
-
-          {selectedAnnotationState.startsWith("showSubAnnotations") && (
-            <>
-              <div
-                className="card-text"
-                id={`sub-annotations-badges`}
-                disabled
-                style={{
-                  gridColumnStart: "1",
-                  gridColumnEnd: "1",
-                  gridRowStart: "2",
-                  gridRowEnd: "2",
-                  alignSelf: "center",
-                  justifySelf: "center"
-                }}
-              >
-                <AnnotationsTitles
-                  key={selectedSubAnnotation}
-                  titles={subAnnotationTitles}
-                  selectedTitle={selectedSubAnnotation?.title}
-                  colorScheme={secondColor}
-                />
-              </div>
-              <div
-                style={{
-                  gridColumnStart: "3",
-                  gridColumnEnd: "3",
-                  gridRowStart: "2",
-                  gridRowEnd: "2",
-                  justifySelf: "center",
-                  alignSelf: "center"
-                }}
-              >
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary btn-sm "
-                  onClick={() =>
-                    changeSelectedAnnotationState("showSubAnnotations&Add")
-                  }
-                  disabled={
-                    selectedAnnotationState === "showSubAnnotations&Add"
-                  }
-                >
-                  Add sub-annotation
-                </button>
-              </div>
-            </>
-          )}
         </div>
+
+        {selectedAnnotationState.startsWith("showSubAnnotations") && (
+          <>
+            <div
+              className="card-text"
+              id={`sub-annotations-badges`}
+              disabled
+              style={{
+                gridColumnStart: "1",
+                gridColumnEnd: "1",
+                gridRowStart: "2",
+                gridRowEnd: "2",
+                alignSelf: "center",
+                justifySelf: "center"
+              }}
+            >
+              <AnnotationsTitles
+                key={selectedSubAnnotation}
+                titles={subAnnotationTitles}
+                selectedTitle={selectedSubAnnotation?.title}
+                colorScheme={secondColor}
+              />
+            </div>
+            <div
+              style={{
+                gridColumnStart: "3",
+                gridColumnEnd: "3",
+                gridRowStart: "2",
+                gridRowEnd: "2",
+                justifySelf: "center",
+                alignSelf: "center"
+              }}
+            >
+              <button
+                type="button"
+                className="btn btn-outline-secondary btn-sm "
+                onClick={() =>
+                  changeSelectedAnnotationState("showSubAnnotations&Add")
+                }
+                disabled={selectedAnnotationState === "showSubAnnotations&Add"}
+              >
+                Add sub-annotation
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </>
   );

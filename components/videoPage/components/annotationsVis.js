@@ -1,38 +1,33 @@
 import React from "react";
 import * as d3 from "d3";
-import { mainColor } from "../../../API/color";
 /**
  * d3.js scatterplot component to visualize annotations
  */
 export default class extends React.Component {
   constructor(props) {
     super(props);
-    this.selectedElement;
-    this.selectCategory;
-    this.color = mainColor();
+    this.color = this.props.colorScheme();
   }
 
   mouseClick = (selectedAnnotation, annotationVisElement) => {
     this.props.onAnnotationClick(selectedAnnotation);
   };
   componentDidMount() {
-    let videoLength = this.props.videoLength;
+    let annotationLength = this.props.annotationLength;
     let annotationData = this.props.annotationData;
-
     const mouseClick = this.mouseClick;
-    const YouTubeIframeWidth = document.getElementById("YTplayer").offsetWidth;
     const h = 100;
 
     var mini = d3
       .select(this.props.divId)
       .append("svg")
-      .attr("width", YouTubeIframeWidth)
+      .attr("width", this.props.windowWidth)
       .attr("height", 22);
 
     let scale = d3
       .scaleLinear()
-      .domain([0, videoLength])
-      .range([0, YouTubeIframeWidth]);
+      .domain([0, annotationLength])
+      .range([0, this.props.windowWidth]);
 
     mini
       .append("g")
@@ -48,7 +43,7 @@ export default class extends React.Component {
         return scale(d.duration.start.inSeconds);
       })
       .attr("id", function(d) {
-        return d.title + d.id;
+        return d.id;
       })
       .attr("width", function(d) {
         return scale(d.duration.end.inSeconds - d.duration.start.inSeconds);

@@ -1,6 +1,11 @@
 import React, { useEffect, useRef } from "react";
 
-function AnnotationBox({ selectedAnnotationId, children }) {
+function AnnotationBox({
+  selectedAnnotationId,
+  boxStyle,
+  windowWidth,
+  children
+}) {
   const refArrowElement = useRef(null);
   const refAnnotationEditForm = useRef(null);
 
@@ -16,11 +21,10 @@ function AnnotationBox({ selectedAnnotationId, children }) {
     const backgroundColor = refElement.style.fill;
     refArrowElement.current.style.borderBottomColor = backgroundColor;
     refAnnotationEditForm.current.style.borderColor = backgroundColor;
-    const annotationMaxWidth = document.getElementById("YTplayer").offsetWidth;
+    if (boxStyle.left !== undefined) return; // this means that the left property is overwritten by the parent
 
-    if (annotationXStartposition + 800 > annotationMaxWidth) {
-      refAnnotationEditForm.current.style.left = `${annotationMaxWidth -
-        800}px`;
+    if (annotationXStartposition + 800 > windowWidth) {
+      refAnnotationEditForm.current.style.left = `${windowWidth - 800}px`;
     } else {
       refAnnotationEditForm.current.style.left = `${annotationXStartposition -
         20}px`;
@@ -34,10 +38,8 @@ function AnnotationBox({ selectedAnnotationId, children }) {
           .box-annotation {
             position: relative;
             border-radius: 0.4em;
-            border: 3px solid;
             padding: 5px;
-            width: 800px;
-            transition: left 1s;
+            transition: all 1s;
           }
 
           .arrow-annotation {
@@ -49,7 +51,7 @@ function AnnotationBox({ selectedAnnotationId, children }) {
             border: 20px solid transparent;
             border-top: 0;
             margin-left: -20px;
-            transition: left 0.5s;
+            transition: all 0.5s;
           }
         `}
       </style>
@@ -63,6 +65,7 @@ function AnnotationBox({ selectedAnnotationId, children }) {
         ref={refAnnotationEditForm}
         className="box-annotation"
         id="box-annotation"
+        style={boxStyle}
       >
         {children}
       </div>
