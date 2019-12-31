@@ -71,6 +71,7 @@ function MainVideoPage() {
       localVideoAnnotations.id,
       localStorage.key(0)
     );
+    debugger;
     saveVideoAnnotations(
       localStorage.key(0),
       `${localVideoAnnotations.id}!A${newAnnotation.id}`,

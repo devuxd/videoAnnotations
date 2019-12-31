@@ -395,7 +395,7 @@ function AnnotationsPage(props) {
               offsetTime={0}
               annotationTitles={annotationTitles}
               newAnnotationId={
-                props.annotations[props.annotations.length - 1].id + 1
+                props.annotations[props.annotations.length - 1]?.id + 1
               }
               defaultStartTime={secondsToStringFormat(
                 props.player.getCurrentTime()
