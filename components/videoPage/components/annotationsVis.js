@@ -17,7 +17,6 @@ export default class extends React.Component {
     let annotationData = this.props.annotationData;
     const mouseClick = this.mouseClick;
     const h = 100;
-    debugger;
     var mini = d3
       .select(this.props.divId)
       .append("svg")
