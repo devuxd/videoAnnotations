@@ -55,9 +55,16 @@ function MainVideoPage() {
       }
       return currentAnnotation;
     });
+    saveAnnotations(annotations, newAnnotation);
+  };
+  const addAnnotation = newAnnotation => {
+    const annotations = [...videoAnnotations.annotations, newAnnotation];
+    saveAnnotations(annotations, newAnnotation);
+  };
 
+  // update local copy, localStorage copy and then save it in the spreedseet
+  const saveAnnotations = (annotations, newAnnotation) => {
     let localVideoAnnotations = { ...videoAnnotations, annotations };
-    // update local copy, localStorage copy and then save it in the spreedseet
     updateVideoAnnotations(localVideoAnnotations);
     cacheVideoAnnotation(
       localVideoAnnotations,
@@ -189,6 +196,7 @@ function MainVideoPage() {
               annotations={videoAnnotations.annotations}
               player={{ seekTo, seekTo_subAnnotations, getCurrentTime }}
               updateAnnotations={updateAnnotations}
+              addAnnotation={addAnnotation}
             />
           </div>
         </div>

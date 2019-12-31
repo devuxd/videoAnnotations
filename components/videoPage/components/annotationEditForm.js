@@ -1,8 +1,11 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
-import moment from "moment";
 import { googleLogin } from "../../../API/db";
+import {
+  stringToSecondsFormat,
+  secondsToStringFormat
+} from "../../../API/time";
 
 function AnnotationEditForm({
   selectedAnnotation,
@@ -16,10 +19,7 @@ function AnnotationEditForm({
 
   // getting the current time of the video when the user ask for it
   const getTime = e => {
-    const time = moment("2015-01-01")
-      .startOf("day")
-      .seconds(getCurrentTime())
-      .format("H:mm:ss");
+    const time = secondsToStringFormat(getCurrentTime());
     if (e.currentTarget.id === "start") {
       refStartTime.current.value = time;
     } else if (e.currentTarget.id === "end") {
@@ -33,13 +33,13 @@ function AnnotationEditForm({
         start: {
           time: refStartTime.current.value,
           inSeconds:
-            moment.duration(refStartTime.current.value).asSeconds() -
+            stringToSecondsFormat(refStartTime.current.value) -
             selectedAnnotationStart
         },
         end: {
           time: refEndTime.current.value,
           inSeconds:
-            moment.duration(refEndTime.current.value).asSeconds() -
+            stringToSecondsFormat(refEndTime.current.value) -
             selectedAnnotationStart
         }
       },

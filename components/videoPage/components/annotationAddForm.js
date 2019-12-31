@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
-import moment from "moment";
 import { googleLogin } from "../../../API/db";
+import {
+  stringToSecondsFormat,
+  secondsToStringFormat
+} from "../../../API/time";
 import { RadioButtonGroup } from "react-rainbow-components";
 
 function AnnotationAddForm({
   getCurrentTime,
   addNewSubAnnotation,
-  selectedAnnotationStart,
+  offsetTime,
   annotationTitles,
   newAnnotationId,
   defaultStartTime
@@ -19,10 +22,7 @@ function AnnotationAddForm({
   const [title, changeTitle] = useState("");
   // getting the current time of the video when the user ask for it
   const getTime = e => {
-    const time = moment("2015-01-01")
-      .startOf("day")
-      .seconds(getCurrentTime())
-      .format("H:mm:ss");
+    const time = secondsToStringFormat(getCurrentTime());
     refStartTime.current.value = time;
   };
 
@@ -32,15 +32,12 @@ function AnnotationAddForm({
         start: {
           time: refStartTime.current.value,
           inSeconds:
-            moment.duration(refStartTime.current.value).asSeconds() -
-            selectedAnnotationStart
+            stringToSecondsFormat(refStartTime.current.value) - offsetTime
         },
         end: {
           time: "",
           inSeconds:
-            moment.duration(refStartTime.current.value).asSeconds() -
-            selectedAnnotationStart +
-            1
+            stringToSecondsFormat(refStartTime.current.value) - offsetTime + 10
         }
       },
       id: newAnnotationId,
@@ -130,7 +127,7 @@ function AnnotationAddForm({
             placeholder="Start time"
             aria-label="Start time"
             aria-describedby="button-addon2"
-            defaultValue={defaultStartTime}
+            defaultValue={defaultStartTime ?? ""}
             ref={refStartTime}
           />
           <div className="input-group-append">

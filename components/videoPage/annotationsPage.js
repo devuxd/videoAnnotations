@@ -11,6 +11,7 @@ import AnnotationAddForm from "./components/annotationAddForm";
 import AnnotationsTitles from "./components/annotationsTitles";
 import AnnotationBox from "./components/annotationsBox";
 import { mainColor, secondColor } from "../../API/color";
+import { secondsToStringFormat } from "../../API/time";
 //    ===  ===  ===== =====     <- these are the annotations.
 //    ^                         <- this this the selected annotation
 //    ==== ====== ===== =====   <- these are the sub-annotations related to the selected annotation.
@@ -94,7 +95,12 @@ function AnnotationsPage(props) {
     const { subAnnotations } = selectedAnnotation;
     saveAnnotationChange({ ...newAnnotation, subAnnotations });
   };
-
+  const addNewAnnotation = newAnnotation => {
+    const annotation = { ...newAnnotation, subAnnotations: [] };
+    props.addAnnotation(annotation);
+    changeSelectedAnnotation(annotation);
+    changeSelectedAnnotationState("showAnnotations&Edit");
+  };
   // adding annotation start with only adding title and start time and then call editSubAnnotation to let the user continue
   const addNewSubAnnotation = newSubAnnotation => {
     changeSelectedSubAnnotation(newSubAnnotation);
@@ -112,7 +118,7 @@ function AnnotationsPage(props) {
   };
   // show the annotation or the sub-annotation and never both
   const getAnnotationsSection = () => {
-    if (selectedAnnotationState.startsWith("showAnnotations"))
+    if (selectedAnnotationState == "showAnnotations&Edit")
       return getEditAnnotation();
 
     if (selectedAnnotationState.startsWith("showSubAnnotations"))
@@ -276,15 +282,13 @@ function AnnotationsPage(props) {
           <AnnotationAddForm
             getCurrentTime={props.player.getCurrentTime}
             addNewSubAnnotation={addNewSubAnnotation}
-            selectedAnnotationStart={
-              selectedAnnotation.duration.start.inSeconds
-            }
+            offsetTime={selectedAnnotation.duration.start.inSeconds}
             annotationTitles={subAnnotationTitles}
             newAnnotationId={selectedAnnotation.subAnnotations.length}
             defaultStartTime={
               selectedAnnotation.subAnnotations[
                 selectedAnnotation.subAnnotations.length - 1
-              ].duration.end.time
+              ]?.duration.end.time
             }
           />
         )}
@@ -354,7 +358,10 @@ function AnnotationsPage(props) {
           <button
             type="button"
             className="btn btn btn-outline-secondary btn-sm"
-            // onClick={}
+            onClick={() => {
+              changeSelectedAnnotationState("showAnnotations&Add");
+              changeSelectedAnnotation(null);
+            }}
           >
             Add annotation
           </button>
@@ -379,6 +386,21 @@ function AnnotationsPage(props) {
             >
               {getAnnotationsSection()}
             </AnnotationBox>
+          )}
+
+          {selectedAnnotationState === "showAnnotations&Add" && (
+            <AnnotationAddForm
+              getCurrentTime={props.player.getCurrentTime}
+              addNewSubAnnotation={addNewAnnotation}
+              offsetTime={0}
+              annotationTitles={annotationTitles}
+              newAnnotationId={
+                props.annotations[props.annotations.length - 1].id + 1
+              }
+              defaultStartTime={secondsToStringFormat(
+                props.player.getCurrentTime()
+              )}
+            />
           )}
         </div>
 

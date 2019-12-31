@@ -9,7 +9,7 @@ export default class extends React.Component {
     this.color = this.props.colorScheme();
   }
 
-  mouseClick = (selectedAnnotation, annotationVisElement) => {
+  mouseClick = selectedAnnotation => {
     this.props.onAnnotationClick(selectedAnnotation);
   };
   componentDidMount() {
@@ -56,7 +56,7 @@ export default class extends React.Component {
         d3.select(this).style("cursor", "default");
       })
       .on("click", function(d) {
-        mouseClick(d, this);
+        mouseClick(d);
       });
   }
 
