@@ -19,8 +19,6 @@ const getDataset = sheetId =>
 const getVideoAnnotations = (videoId, sheetId) =>
   new Promise((res, rej) => {
     let dataset = JSON.parse(localStorage.getItem(sheetId));
-    // dataset =  fomrate(dataset)
-    // cacheData(dataset, "100D6X_VVDrl5wQ9rOkstjCdcU8r5nSZomYiLtkxXdxI")
     if (dataset) {
       return res(findVideo(dataset, videoId));
     } else {
@@ -29,20 +27,7 @@ const getVideoAnnotations = (videoId, sheetId) =>
       );
     }
   });
-// const fomrate = (dataset) => {
-//   let { annotations } = dataset[0];
-//   annotations = annotations.map((annotation, i) => {
-//     const subAnnotations = annotation.subAnnotations.reduce((accumulator, currentValue, currentIndex, array) => {
-//       if (accumulator.find(e => e.description === currentValue.description))
-//         return accumulator
-//       return  accumulator.concat({ ...currentValue, id: currentIndex })
-//     }, []);
-//     return { ...annotation, subAnnotations }
-//   })
 
-//   debugger
-//   return [{ ...dataset[0], annotations }];
-// }
 const cacheVideoAnnotation = (videoAnnotations, videoId, sheetId) => {
   const dataset = JSON.parse(localStorage.getItem(sheetId));
   const newDataset = dataset.map(video =>
