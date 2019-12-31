@@ -5,30 +5,14 @@ import moment from "moment";
 import { googleLogin } from "../../../API/db";
 import { RadioButtonGroup } from "react-rainbow-components";
 
-function SubAnnotationAddForm({
+function AnnotationAddForm({
   getCurrentTime,
   addNewSubAnnotation,
   selectedAnnotationStart,
-  subAnnotationTitles
+  annotationTitles,
+  newAnnotationId,
+  defaultStartTime
 }) {
-  return (
-    <>
-      {AddSubAnnotation(
-        getCurrentTime,
-        addNewSubAnnotation,
-        selectedAnnotationStart,
-        subAnnotationTitles
-      )}
-    </>
-  );
-}
-
-function AddSubAnnotation(
-  getCurrentTime,
-  addNewSubAnnotation,
-  selectedAnnotationStart,
-  subAnnotationTitles
-) {
   // getting references
   const refStartTime = React.createRef();
   const refNewTitle = React.createRef();
@@ -44,25 +28,25 @@ function AddSubAnnotation(
 
   const handleSubmit = async () => {
     const localNewAnnotation = {
-      startTime: refStartTime.current.value,
-      endTime: "",
-      start:
-        moment.duration(refStartTime.current.value).asSeconds() -
-        selectedAnnotationStart,
-      end:
-        moment.duration(refStartTime.current.value).asSeconds() -
-        selectedAnnotationStart +
-        1,
-      annotation: "",
-      id: "", //title + index of the subannotation
-      title: title + refNewTitle.current.value, // only one going to have value
-      duration: ""
+      duration: {
+        start: {
+          time: refStartTime.current.value,
+          inSeconds:
+            moment.duration(refStartTime.current.value).asSeconds() -
+            selectedAnnotationStart
+        },
+        end: {
+          time: "",
+          inSeconds:
+            moment.duration(refStartTime.current.value).asSeconds() -
+            selectedAnnotationStart +
+            1
+        }
+      },
+      id: newAnnotationId,
+      title: title + refNewTitle.current.value,
+      description: ""
     };
-
-    const start = new moment(localNewAnnotation.start * 1000);
-    const end = new moment(localNewAnnotation.end * 1000);
-    const diff = moment.duration(end.diff(start));
-    localNewAnnotation.totalTime = `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
     try {
       await googleLogin();
     } catch (e) {
@@ -92,7 +76,7 @@ function AddSubAnnotation(
       </style>
 
       <div className="box-sub-annotation" id="box-sub-annotation">
-        {subAnnotationTitles.length > 0 && (
+        {annotationTitles.length > 0 && (
           <>
             <label
               for="StartTime"
@@ -106,7 +90,7 @@ function AddSubAnnotation(
             >
               <RadioButtonGroup
                 id="radio-button-group-component-1"
-                options={subAnnotationTitles.map(title => ({
+                options={annotationTitles.map(title => ({
                   value: title,
                   label: title
                 }))}
@@ -146,7 +130,7 @@ function AddSubAnnotation(
             placeholder="Start time"
             aria-label="Start time"
             aria-describedby="button-addon2"
-            defaultValue={""}
+            defaultValue={defaultStartTime}
             ref={refStartTime}
           />
           <div className="input-group-append">
@@ -178,4 +162,4 @@ function AddSubAnnotation(
   );
 }
 
-export default SubAnnotationAddForm;
+export default AnnotationAddForm;

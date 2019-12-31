@@ -57,7 +57,10 @@ function AnnotationEditForm({
 
   return (
     <>
-      <div className="input-group input-group-sm mb-3">
+      <div
+        className="input-group input-group-sm mb-3"
+        style={{ padding: "10px" }}
+      >
         <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
           Start:
         </label>

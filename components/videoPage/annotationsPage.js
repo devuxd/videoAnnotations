@@ -7,7 +7,7 @@ import {
   faWindowClose
 } from "@fortawesome/free-solid-svg-icons";
 import AnnotationEditForm from "./components/annotationEditForm";
-import SubAnnotationAddForm from "./components/annotationAddForm";
+import AnnotationAddForm from "./components/annotationAddForm";
 import AnnotationsTitles from "./components/annotationsTitles";
 import AnnotationBox from "./components/annotationsBox";
 import { mainColor, secondColor } from "../../API/color";
@@ -62,16 +62,16 @@ function AnnotationsPage(props) {
   // handel the click on annotation and sub-annotation
   const onAnnotationClick = selectedAnnotation => {
     document.getElementById("video-annotations").scrollIntoView();
-
     changeSelectedAnnotationState("showAnnotations&Edit");
     changeSelectedAnnotation(selectedAnnotation);
-    props.player.seekTo(selectedAnnotation.start);
+    props.player.seekTo(selectedAnnotation.duration.start.inSeconds);
   };
 
   // handel sub-annotation click
   const onSubAnnotationClick = newSelectedSubAnnotation => {
     props.player.seekTo(
-      selectedAnnotation.start + newSelectedSubAnnotation.start
+      selectedAnnotation.duration.start.inSeconds +
+        newSelectedSubAnnotation.duration.start.inSeconds
     );
     changeSelectedSubAnnotation(newSelectedSubAnnotation);
     changeSelectedAnnotationState("showSubAnnotations&Edit");
@@ -81,60 +81,32 @@ function AnnotationsPage(props) {
   // when one of the sub-annotation updated -> propagate this update to local state and the main state maintained by [videoId].js
   const updateSubAnnotations = newSubAnnotation => {
     const subAnnotations = selectedAnnotation.subAnnotations.map(
-      subAnnotation => {
-        if (subAnnotation.id === newSubAnnotation.id) {
-          return newSubAnnotation;
-        } else {
-          return subAnnotation;
-        }
-      }
+      subAnnotation =>
+        subAnnotation.id === newSubAnnotation.id
+          ? newSubAnnotation
+          : subAnnotation
     );
-    saveSubAnnotationChange(subAnnotations, newSubAnnotation);
+    saveAnnotationChange({ ...selectedAnnotation, subAnnotations });
   };
 
   // when one of the annotation updated -> propagate the update to the main state maintained by [videoId].js
   const updateSelectedAnnotation = newAnnotation => {
     const { subAnnotations } = selectedAnnotation;
-
-    props.updateAnnotations({ ...newAnnotation, subAnnotations });
+    saveAnnotationChange({ ...newAnnotation, subAnnotations });
   };
 
   // adding annotation start with only adding title and start time and then call editSubAnnotation to let the user continue
   const addNewSubAnnotation = newSubAnnotation => {
-    const { subAnnotations } = selectedAnnotation;
-    let hasUpdated = false;
-    let localSubAnnotation;
-    let updatedSubAnnotations = subAnnotations.map(subAnnotation => {
-      if (subAnnotation.title === newSubAnnotation.title) {
-        hasUpdated = true;
-        localSubAnnotation = {
-          ...newSubAnnotation,
-          id: subAnnotation.title + subAnnotation.annotations.length
-        };
-        return {
-          ...subAnnotation,
-          annotations: [...subAnnotation.annotations, localSubAnnotation]
-        };
-      } else {
-        return subAnnotation;
-      }
-    });
-    if (!hasUpdated) {
-      localSubAnnotation = {
-        ...newSubAnnotation,
-        id: newSubAnnotation.title + 0
-      };
-      updatedSubAnnotations = [
-        ...subAnnotations,
-        { title: newSubAnnotation.title, annotations: [localSubAnnotation] }
-      ];
-    }
-    saveSubAnnotationChange(updatedSubAnnotations, localSubAnnotation);
+    changeSelectedSubAnnotation(newSubAnnotation);
+    const newAnnotation = {
+      ...selectedAnnotation,
+      subAnnotations: [...selectedAnnotation.subAnnotations, newSubAnnotation]
+    };
+    saveAnnotationChange(newAnnotation);
     changeSelectedAnnotationState("showSubAnnotations&Edit");
   };
 
-  const saveSubAnnotationChange = (subAnnotations, newSubAnnotation) => {
-    const newAnnotation = { ...selectedAnnotation, subAnnotations };
+  const saveAnnotationChange = newAnnotation => {
     changeSelectedAnnotation(newAnnotation);
     props.updateAnnotations(newAnnotation);
   };
@@ -301,13 +273,19 @@ function AnnotationsPage(props) {
           </AnnotationBox>
         )}
         {selectedAnnotationState === "showSubAnnotations&Add" && (
-          <SubAnnotationAddForm
+          <AnnotationAddForm
             getCurrentTime={props.player.getCurrentTime}
             addNewSubAnnotation={addNewSubAnnotation}
             selectedAnnotationStart={
               selectedAnnotation.duration.start.inSeconds
             }
-            subAnnotationTitles={subAnnotationTitles}
+            annotationTitles={subAnnotationTitles}
+            newAnnotationId={selectedAnnotation.subAnnotations.length}
+            defaultStartTime={
+              selectedAnnotation.subAnnotations[
+                selectedAnnotation.subAnnotations.length - 1
+              ].duration.end.time
+            }
           />
         )}
       </>
