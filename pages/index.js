@@ -1,5 +1,5 @@
-import Layouts from "../components/layouts";
-import Main from "../components/main";
+import Layouts from "../components/shared/layouts";
+import Main from "../components/mainPage/main";
 const Index = () => (
   <div style={{ fontFamily: "Lato" }}>
     <Layouts>

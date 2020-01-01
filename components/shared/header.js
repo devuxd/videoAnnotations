@@ -2,6 +2,8 @@ import Head from "next/head";
 const Header = () => (
   <div>
     <Head>
+      <script async defer src="https://apis.google.com/js/api.js" />
+      <script src="https://apis.google.com/js/api.js" />
       <link
         rel="stylesheet"
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -13,7 +15,20 @@ const Header = () => (
         rel="stylesheet"
         type="text/css"
       />
+      <link
+        href="https://unpkg.com/react-tabs/style/react-tabs.css"
+        rel="stylesheet"
+        type="text/css"
+      />
     </Head>
+    <style jsx global>{`
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        overflow-y: scroll;
+      }
+    `}</style>
   </div>
 );
 
