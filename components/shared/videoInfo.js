@@ -1,21 +1,8 @@
 import React from "react";
-
+import { secondsToStringFormat } from "../../API/time";
 export default class VideoInfo extends React.Component {
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * numberFormatter: function to style single digits number with a preceding 0
-   *
-   * @param {*} num : number to style
-   */
-  numberFormatter(num) {
-    if (num < 10) {
-      return "0" + num;
-    } else {
-      return num;
-    }
   }
 
   /**
@@ -40,10 +27,7 @@ export default class VideoInfo extends React.Component {
   render() {
     return (
       <h6>
-        {/* Instances: 2 <br /> */}
-        Total Time: {this.numberFormatter(this.props.vidElem.videoLength.hours)}
-        :{this.numberFormatter(this.props.vidElem.videoLength.minutes)}:
-        {this.numberFormatter(this.props.vidElem.videoLength.seconds)} <br />{" "}
+        Total Time: {secondsToStringFormat(this.props.vidElem.videoLength)}
         <br />
         Programming Language: {this.props.vidElem.programmingLanguage} <br />
         Programming Tools : {this.props.vidElem.programmingTools} <br />

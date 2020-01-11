@@ -8,6 +8,7 @@ import Link from "next/link";
 function Video(props) {
   const video = props.video;
   const videoId = video.videoURL.replace("https://youtu.be/", "");
+  debugger;
   let uniqueAnnotation = Array.from(
     new Set(video.annotations.map(annotation => annotation.title))
   );
@@ -19,7 +20,7 @@ function Video(props) {
       >
         <a>
           <img
-            src={"https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"}
+            src={"https://img.youtube.com/vi/" + videoId + "/hqdefault.jpg"}
             class="card-img-top "
             onMouseEnter={e => {
               e.target.style.cursor = "pointer";

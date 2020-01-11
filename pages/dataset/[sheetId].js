@@ -3,6 +3,7 @@ import Layouts from "../../components/shared/layouts";
 import { getDataset } from "../../API/db";
 import Videos from "../../components/datasetePage/videos";
 import { useRouter } from "next/router";
+import { secondsToStringFormat } from "../../API/time";
 
 function Dataset() {
   const [dataset, updateDataset] = useState([]);
@@ -111,6 +112,16 @@ function Dataset() {
           </nav>
           <br />
         </div>
+        <h3>
+          Total Time:
+          {secondsToStringFormat(
+            dataset.reduce(
+              (prevoiusValue, currentValue) =>
+                prevoiusValue + currentValue.videoLength,
+              0
+            )
+          )}
+        </h3>
         <br />
         <div className="card-deck" style={{ margin: "0px;!import" }}>
           <div className="container">

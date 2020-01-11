@@ -144,7 +144,7 @@ function AnnotationsPage(props) {
                   display: "inline-block",
                   padding: "0px",
                   width: "0px",
-                  height: "0px",
+                  height: "5px",
                   border: "0px",
                   color: "darkred",
                   position: "relative",
@@ -152,6 +152,7 @@ function AnnotationsPage(props) {
                   left: "10px",
                   outline: "0px"
                 }}
+                title="close annotation"
                 onClick={() => {
                   changeSelectedAnnotationState("showAnnotations");
                   changeSelectedAnnotation(null);
@@ -230,7 +231,7 @@ function AnnotationsPage(props) {
               display: "inline-block",
               padding: "0px",
               width: "0px",
-              height: "0px",
+              height: "5px",
               border: "0px",
               color: "darkred",
               position: "relative",

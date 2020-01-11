@@ -45,7 +45,7 @@ const cacheData = (dataset, id) =>
 const parse = rowDataset => {
   const dataset = rowDataset.sheets.map(({ data }, sheetIndex) => {
     const videoJSON = {};
-    const video = data[0].rowData[2];
+    const video = data[0].rowData[1];
     videoJSON.id = `Video${sheetIndex + 1}`;
     videoJSON.videoTitle = video.values[0].userEnteredValue.stringValue;
     videoJSON.videoURL = video.values[1].userEnteredValue.stringValue;
@@ -55,13 +55,14 @@ const parse = rowDataset => {
       video.values[4].userEnteredValue.numberValue;
 
     videoJSON.programmingLanguage =
-      video.values[5].userEnteredValue?.stringValue;
+      video.values[5].userEnteredValue?.stringValue || "";
 
-    videoJSON.programmingTools = video.values[6].userEnteredValue?.stringValue;
+    videoJSON.programmingTools =
+      video.values[6].userEnteredValue?.stringValue || "";
 
-    videoJSON.githubURL = video.values[7].userEnteredValue?.stringValue;
+    videoJSON.githubURL = video.values[7].userEnteredValue?.stringValue || "";
 
-    videoJSON.projectSize = video.values[8].userEnteredValue?.numberValue;
+    videoJSON.projectSize = video.values[8].userEnteredValue?.numberValue || "";
 
     videoJSON.developerGithubURL =
       video.values[9].userEnteredValue?.stringValue;
