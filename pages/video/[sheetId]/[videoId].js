@@ -55,7 +55,7 @@ function MainVideoPage() {
       }
       return currentAnnotation;
     });
-    saveAnnotations(annotations, newAnnotation);
+    saveAnnotations(annotations, newAnnotation, newAnnotation.id);
   };
   const addAnnotation = newAnnotation => {
     const annotations = [...videoAnnotations.annotations, newAnnotation];

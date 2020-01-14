@@ -1611,7 +1611,7 @@ browserify-zlib@^0.2.0:
   dependencies:
     pako "~1.0.5"
 
-browserslist@^4.6.0, browserslist@^4.6.4, browserslist@^4.8.0, browserslist@^4.8.3:
+browserslist@4.8.3, browserslist@^4.6.0, browserslist@^4.6.4, browserslist@^4.8.0, browserslist@^4.8.3:
   version "4.8.3"
   resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.8.3.tgz#65802fcd77177c878e015f0e3189f2c4f627ba44"
   integrity sha512-iU43cMMknxG1ClEZ2MDKeonKE1CCrFVkQK2AqO2YWFmvIrx4JWrvQ4w4hQez6EpVI8rHTtqh/ruHHDHSOKxvUg==
@@ -4144,10 +4144,10 @@ next-server@*:
     styled-jsx "3.2.1"
     url "0.11.0"
 
-next@9.1.7:
-  version "9.1.7"
-  resolved "https://registry.yarnpkg.com/next/-/next-9.1.7.tgz#d813ab3a21a98aac3713f6c1934a8533b6162eb0"
-  integrity sha512-qG6TsPl7ANuNPFhKq/1Pd4pAf24QCmUAjc0P8qYrSSsbwNIco1KNNXOyZajV/YlqBjBy/fCrZoErKK3zEUVz6w==
+next@^9.1.8-canary.13:
+  version "9.1.8-canary.13"
+  resolved "https://registry.yarnpkg.com/next/-/next-9.1.8-canary.13.tgz#980bb48c7a483821ba4b034ace1ccdbe75fd11e7"
+  integrity sha512-nfPXztjLdSaDQ7F5t6mRuBa19Oja+OfLIRQT29xafv4vPUJ0IOIWI8ITI6+jLNxyguc+bSSU7x1KC7jbU4se9Q==
   dependencies:
     "@ampproject/toolbox-optimizer" "1.1.1"
     "@babel/core" "7.7.2"
@@ -4173,6 +4173,7 @@ next@9.1.7:
     babel-plugin-syntax-jsx "6.18.0"
     babel-plugin-transform-define "2.0.0"
     babel-plugin-transform-react-remove-prop-types "0.4.24"
+    browserslist "4.8.3"
     cache-loader "4.1.0"
     chalk "2.4.2"
     ci-info "2.0.0"
@@ -5298,7 +5299,7 @@ react-player@^1.13.0:
     load-script "^1.0.0"
     prop-types "^15.7.2"
 
-react-rainbow-components@^1.11.0:
+react-rainbow-components@^1.10.0:
   version "1.12.0"
   resolved "https://registry.yarnpkg.com/react-rainbow-components/-/react-rainbow-components-1.12.0.tgz#6f734c9816f744fe38c44b413c1fa2634f36b8a3"
   integrity sha512-L7t8hZiW0MrlpejZAwspnSpE1BoneY3ZJ0wTlrEAGF9IGNYlGmRGJAsdYx+llszFaRj0V0oCpMfU5noAxgN/Tw==

@@ -296,6 +296,7 @@ function AnnotationsPage(props) {
                 selectedAnnotation.subAnnotations.length - 1
               ]?.duration.end.time
             }
+            colorScheme={secondColor}
           />
         )}
       </>
@@ -406,6 +407,7 @@ function AnnotationsPage(props) {
               defaultStartTime={secondsToStringFormat(
                 props.player.getCurrentTime()
               )}
+              colorScheme={mainColor}
             />
           )}
         </div>

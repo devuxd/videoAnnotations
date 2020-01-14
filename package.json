@@ -31,8 +31,7 @@
     "now": "^16.4.4",
     "react": "16.8.6",
     "react-dom": "16.8.6",
-    "react-player": "^1.13.0",
-    "react-rainbow-components": "^1.11.0"
+    "react-player": "^1.13.0"
   },
   "husky": {
     "hooks": {
