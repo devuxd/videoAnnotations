@@ -8,7 +8,6 @@ import Link from "next/link";
 function Video(props) {
   const video = props.video;
   const videoId = video.videoURL.replace("https://youtu.be/", "");
-  debugger;
   let uniqueAnnotation = Array.from(
     new Set(video.annotations.map(annotation => annotation.title))
   );

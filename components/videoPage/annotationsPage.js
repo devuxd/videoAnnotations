@@ -112,10 +112,17 @@ function AnnotationsPage(props) {
     changeSelectedAnnotationState("showSubAnnotations&Edit");
   };
 
+  const deleteAnotation = (annotation = selectedAnnotation) => {
+    changeSelectedAnnotation(null);
+    changeSelectedAnnotationState("showAnnotations");
+    props.deleteAnotation(annotation);
+  };
+
   const saveAnnotationChange = newAnnotation => {
     changeSelectedAnnotation(newAnnotation);
     props.updateAnnotations(newAnnotation);
   };
+
   // show the annotation or the sub-annotation and never both
   const getAnnotationsSection = () => {
     if (selectedAnnotationState == "showAnnotations&Edit")
@@ -144,7 +151,7 @@ function AnnotationsPage(props) {
                   display: "inline-block",
                   padding: "0px",
                   width: "0px",
-                  height: "5px",
+                  height: "7px",
                   border: "0px",
                   color: "darkred",
                   position: "relative",
@@ -174,40 +181,65 @@ function AnnotationsPage(props) {
             <div
               style={{
                 display: "grid",
-                justifyContent: "center"
+                gridTemplateColumns: "40% 30%"
               }}
             >
-              <button
-                type="button"
-                className="btn btn-outline-secondary btn-sm"
-                onClick={() =>
-                  changeSelectedAnnotationState("showSubAnnotations")
-                }
+              <div
+                style={{
+                  gridColumnStart: "2",
+                  gridColumnEnd: "2",
+                  alignSelf: "flex-start",
+                  justifySelf: "end"
+                }}
               >
-                <div
-                  style={{
-                    display: "grid",
-                    justifyContent: "center",
-                    alignContent: "center",
-                    gridTemplateColumns: "20px 250px 20px",
-                    height: "15px"
-                  }}
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary btn-sm"
+                  onClick={() =>
+                    changeSelectedAnnotationState("showSubAnnotations")
+                  }
                 >
-                  <p style={{ display: "inline-block", margin: "0 auto" }}>
-                    <FontAwesomeIcon
-                      style={{ width: "15px" }}
-                      icon={faArrowLeft}
-                    />
-                  </p>
-                  Show sub-annotations
-                  <p style={{ display: "inline-block", margin: "0 auto" }}>
-                    <FontAwesomeIcon
-                      style={{ width: "15px" }}
-                      icon={faArrowRight}
-                    />
-                  </p>
-                </div>
-              </button>
+                  <div
+                    style={{
+                      display: "grid",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      gridTemplateColumns: "20px 250px 20px",
+                      height: "15px"
+                    }}
+                  >
+                    <p style={{ display: "inline-block", margin: "0 auto" }}>
+                      <FontAwesomeIcon
+                        style={{ width: "15px" }}
+                        icon={faArrowLeft}
+                      />
+                    </p>
+                    Show sub-annotations
+                    <p style={{ display: "inline-block", margin: "0 auto" }}>
+                      <FontAwesomeIcon
+                        style={{ width: "15px" }}
+                        icon={faArrowRight}
+                      />
+                    </p>
+                  </div>
+                </button>
+              </div>
+              <div
+                style={{
+                  gridColumnStart: "3",
+                  gridColumnEnd: "3",
+                  alignSelf: "flex-start",
+                  justifySelf: "end"
+                }}
+              >
+                <button
+                  type="button"
+                  className="btn btn-danger btn-sm"
+                  onClick={() => deleteAnotation()}
+                >
+                  Delete annotation
+                </button>
+              </div>
             </div>
           </>
         )}
@@ -218,33 +250,6 @@ function AnnotationsPage(props) {
   const getSubAnnotations = () => {
     return (
       <>
-        <div
-          style={{
-            display: "grid",
-            justifyContent: "right",
-            alignContent: "end",
-            gridTemplateColumns: "20px"
-          }}
-        >
-          <button
-            style={{
-              display: "inline-block",
-              padding: "0px",
-              width: "0px",
-              height: "5px",
-              border: "0px",
-              color: "darkred",
-              position: "relative",
-              bottom: "12px",
-              outline: "0px"
-            }}
-            onClick={() =>
-              changeSelectedAnnotationState("showAnnotations&Edit")
-            }
-          >
-            <FontAwesomeIcon style={{ width: "15px" }} icon={faWindowClose} />
-          </button>
-        </div>
         <AnnotationsVis
           annotationData={selectedAnnotation.subAnnotations}
           annotationLength={
@@ -446,6 +451,17 @@ function AnnotationsPage(props) {
                 disabled={selectedAnnotationState === "showSubAnnotations&Add"}
               >
                 Add sub-annotation
+              </button>
+              <br />
+              <br />
+              <button
+                type="button"
+                className="btn btn-outline-secondary btn-sm "
+                onClick={() =>
+                  changeSelectedAnnotationState("showAnnotations&Edit")
+                }
+              >
+                Close sub-annotations
               </button>
             </div>
           </>

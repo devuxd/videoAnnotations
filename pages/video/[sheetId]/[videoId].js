@@ -59,11 +59,11 @@ function MainVideoPage() {
   };
   const addAnnotation = newAnnotation => {
     const annotations = [...videoAnnotations.annotations, newAnnotation];
-    saveAnnotations(annotations, newAnnotation);
+    saveAnnotations(annotations, newAnnotation, newAnnotation.id);
   };
 
   // update local copy, localStorage copy and then save it in the spreedseet
-  const saveAnnotations = (annotations, newAnnotation) => {
+  const saveAnnotations = (annotations, newAnnotation, newAnnotationId) => {
     let localVideoAnnotations = { ...videoAnnotations, annotations };
     updateVideoAnnotations(localVideoAnnotations);
     cacheVideoAnnotation(
@@ -73,9 +73,16 @@ function MainVideoPage() {
     );
     saveVideoAnnotations(
       localStorage.key(0),
-      `${localVideoAnnotations.id}!A${newAnnotation.id}`,
+      `${localVideoAnnotations.id}!A${newAnnotationId}`,
       newAnnotation
     );
+  };
+  const deleteAnotation = annotation => {
+    const annotations = videoAnnotations.annotations.filter(
+      currentAnnotation => currentAnnotation.id !== annotation.id
+    );
+    debugger;
+    saveAnnotations(annotations, {}, annotation.id);
   };
 
   if (videoAnnotationIsStillLoading) {
@@ -197,6 +204,7 @@ function MainVideoPage() {
               player={{ seekTo, seekTo_subAnnotations, getCurrentTime }}
               updateAnnotations={updateAnnotations}
               addAnnotation={addAnnotation}
+              deleteAnotation={deleteAnotation}
             />
           </div>
         </div>
