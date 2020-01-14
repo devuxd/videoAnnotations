@@ -81,7 +81,6 @@ function MainVideoPage() {
     const annotations = videoAnnotations.annotations.filter(
       currentAnnotation => currentAnnotation.id !== annotation.id
     );
-    debugger;
     saveAnnotations(annotations, {}, annotation.id);
   };
 
