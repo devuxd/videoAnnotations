@@ -27,13 +27,11 @@
     "color": "^3.1.2",
     "d3": "^5.9.7",
     "moment": "^2.24.0",
-    "next": "canary",
+    "next": "^9.1.8-canary.13",
     "now": "^16.4.4",
     "react": "16.8.6",
     "react-dom": "16.8.6",
-    "react-player": "^1.13.0",
-    "react-rainbow-components": "^1.11.0",
-    "react-tabs": "^3.0.0"
+    "react-player": "^1.13.0"
   },
   "husky": {
     "hooks": {
@@ -46,6 +44,7 @@
     "@types/react": "^16.8.18",
     "@types/react-dom": "^16.8.4",
     "cross-env": "^5.2.0",
+    "file-loader": "^5.0.2",
     "husky": "^2.3.0",
     "prettier": "^1.17.1",
     "pretty-quick": "^1.11.0",

@@ -45,7 +45,7 @@ const cacheData = (dataset, id) =>
 const parse = rowDataset => {
   const dataset = rowDataset.sheets.map(({ data }, sheetIndex) => {
     const videoJSON = {};
-    const video = data[0].rowData[2];
+    const video = data[0].rowData[1];
     videoJSON.id = `Video${sheetIndex + 1}`;
     videoJSON.videoTitle = video.values[0].userEnteredValue.stringValue;
     videoJSON.videoURL = video.values[1].userEnteredValue.stringValue;
@@ -68,9 +68,11 @@ const parse = rowDataset => {
 
     let annotationsData = data[0].rowData.splice(10, data[0].rowData.length);
     videoJSON.annotations = [];
-    //remove empty cells from the spreedsheet
+    //remove empty cells or deleted item
     const filteredAnnotationsData = annotationsData.filter(
-      annotation => annotation.values?.[0].userEnteredValue != undefined
+      annotation =>
+        annotation.values?.[0].userEnteredValue != undefined &&
+        annotation.values?.[0].userEnteredValue.stringValue != "{}"
     );
 
     videoJSON.annotations = filteredAnnotationsData.map(annotation =>

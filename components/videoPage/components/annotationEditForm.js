@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { googleLogin } from "../../../API/db";
 import {
   stringToSecondsFormat,
@@ -11,7 +11,8 @@ function AnnotationEditForm({
   selectedAnnotation,
   getCurrentTime,
   update,
-  selectedAnnotationStart
+  selectedAnnotationStart,
+  seekTo
 }) {
   const refStartTime = React.createRef();
   const refEndTime = React.createRef();
@@ -54,7 +55,9 @@ function AnnotationEditForm({
     }
     update(localNewAnnotation);
   };
-
+  const SeekToEnd = () => {
+    seekTo(selectedAnnotation.duration.end.inSeconds + selectedAnnotationStart);
+  };
   return (
     <>
       <div
@@ -118,6 +121,17 @@ function AnnotationEditForm({
             onBlur={handleSubmit}
           >
             <FontAwesomeIcon icon={faClock} />
+          </button>
+          <button
+            onClick={SeekToEnd}
+            className="btn btn-outline-secondary"
+            type="button"
+            id="end"
+            style={{ width: "37px", paddingTop: "1px" }}
+            data-placement="bottom"
+            title="Seek to end"
+          >
+            <FontAwesomeIcon icon={faArrowRight} />
           </button>
         </div>
       </div>

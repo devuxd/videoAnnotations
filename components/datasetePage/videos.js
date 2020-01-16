@@ -19,7 +19,7 @@ function Video(props) {
       >
         <a>
           <img
-            src={"https://img.youtube.com/vi/" + videoId + "/maxresdefault.jpg"}
+            src={"https://img.youtube.com/vi/" + videoId + "/hqdefault.jpg"}
             class="card-img-top "
             onMouseEnter={e => {
               e.target.style.cursor = "pointer";

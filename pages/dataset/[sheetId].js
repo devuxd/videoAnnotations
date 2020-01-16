@@ -3,6 +3,7 @@ import Layouts from "../../components/shared/layouts";
 import { getDataset } from "../../API/db";
 import Videos from "../../components/datasetePage/videos";
 import { useRouter } from "next/router";
+import { secondsToStringFormat } from "../../API/time";
 
 function Dataset() {
   const [dataset, updateDataset] = useState([]);
@@ -42,51 +43,14 @@ function Dataset() {
             </nav>
             <br />
           </div>{" "}
-          <div className="container">
-            <div className="loader"></div>
+          <div class="d-flex justify-content-center">
+            <div
+              className="spinner-border"
+              style={{ width: "3rem; height: 3rem;", role: "status" }}
+            >
+              <span class="sr-only">Loading...</span>
+            </div>
           </div>
-          <div className="container">
-            Loading dataset...
-            <br />
-          </div>
-          <style jsx>
-            {`
-              .container {
-                height: 10em;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              }
-              .loader {
-                border: 16px solid #f3f3f3;
-                border-radius: 50%;
-                border-top: 16px solid gray;
-                width: 120px;
-                height: 120px;
-                -webkit-animation: spin 2s linear infinite; /* Safari */
-                animation: spin 2s linear infinite;
-              }
-
-              /* Safari */
-              @-webkit-keyframes spin {
-                0% {
-                  -webkit-transform: rotate(0deg);
-                }
-                100% {
-                  -webkit-transform: rotate(360deg);
-                }
-              }
-
-              @keyframes spin {
-                0% {
-                  transform: rotate(0deg);
-                }
-                100% {
-                  transform: rotate(360deg);
-                }
-              }
-            `}
-          </style>
         </Layouts>
       </div>
     );
@@ -111,6 +75,16 @@ function Dataset() {
           </nav>
           <br />
         </div>
+        <h3>
+          Total Time:
+          {secondsToStringFormat(
+            dataset.reduce(
+              (prevoiusValue, currentValue) =>
+                prevoiusValue + currentValue.videoLength,
+              0
+            )
+          )}
+        </h3>
         <br />
         <div className="card-deck" style={{ margin: "0px;!import" }}>
           <div className="container">

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { googleLogin } from "../../../API/db";
+import RadioButtonGroup from "../../shared/radioButtonGroup";
 import {
   stringToSecondsFormat,
   secondsToStringFormat
 } from "../../../API/time";
-import { RadioButtonGroup } from "react-rainbow-components";
 
 function AnnotationAddForm({
   getCurrentTime,
@@ -14,7 +14,8 @@ function AnnotationAddForm({
   offsetTime,
   annotationTitles,
   newAnnotationId,
-  defaultStartTime
+  defaultStartTime,
+  colorScheme
 }) {
   // getting references
   const refStartTime = React.createRef();
@@ -40,7 +41,7 @@ function AnnotationAddForm({
             stringToSecondsFormat(refStartTime.current.value) - offsetTime + 10
         }
       },
-      id: isNaN(newAnnotationId) ? 11 : newAnnotationId,
+      id: newAnnotationId,
       title: title + refNewTitle.current.value,
       description: ""
     };
@@ -86,15 +87,10 @@ function AnnotationAddForm({
               style={{ display: "grid", justifyContent: "center" }}
             >
               <RadioButtonGroup
-                id="radio-button-group-component-1"
-                options={annotationTitles.map(title => ({
-                  value: title,
-                  label: title
-                }))}
-                variant="brand"
-                value={title}
+                options={annotationTitles}
+                selected={title}
                 onChange={addTitle}
-                required
+                colorScheme={colorScheme}
               />
             </div>
           </>

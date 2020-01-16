@@ -33,7 +33,6 @@ function AnnotationsPage(props) {
   }, [selectedAnnotation]);
 
   const [selectedSubAnnotation, changeSelectedSubAnnotation] = useState(null);
-
   // Stats:
   // 1: showAnnotations -> show only main annotations.
   // 2: showAnnotations&Edit -> when one of the main annotations got clicked show edit form.
@@ -57,6 +56,7 @@ function AnnotationsPage(props) {
         changeWindowWidth(document.getElementById("YTplayer").offsetWidth)
       );
   });
+
   // ***
 
   // *** Click handlers
@@ -112,6 +112,21 @@ function AnnotationsPage(props) {
     changeSelectedAnnotationState("showSubAnnotations&Edit");
   };
 
+  const deleteAnotation = (annotation = selectedAnnotation) => {
+    changeSelectedAnnotation(null);
+    changeSelectedAnnotationState("showAnnotations");
+    props.deleteAnotation(annotation);
+  };
+  const deleteSubAnotation = (annotation = selectedSubAnnotation) => {
+    changeSelectedSubAnnotation(null);
+    changeSelectedAnnotationState("showSubAnnotations");
+    const subAnnotations = selectedAnnotation.subAnnotations.filter(
+      subAnnotation => subAnnotation.id !== annotation.id
+    );
+    changeSelectedAnnotation({ ...selectedAnnotation, subAnnotations });
+    props.updateAnnotations({ ...selectedAnnotation, subAnnotations });
+  };
+
   const saveAnnotationChange = newAnnotation => {
     changeSelectedAnnotation(newAnnotation);
     props.updateAnnotations(newAnnotation);
@@ -144,7 +159,7 @@ function AnnotationsPage(props) {
                   display: "inline-block",
                   padding: "0px",
                   width: "0px",
-                  height: "0px",
+                  height: "7px",
                   border: "0px",
                   color: "darkred",
                   position: "relative",
@@ -152,6 +167,7 @@ function AnnotationsPage(props) {
                   left: "10px",
                   outline: "0px"
                 }}
+                title="close annotation"
                 onClick={() => {
                   changeSelectedAnnotationState("showAnnotations");
                   changeSelectedAnnotation(null);
@@ -169,44 +185,70 @@ function AnnotationsPage(props) {
               update={updateSelectedAnnotation}
               selectedAnnotationStart={0}
               key={JSON.stringify(selectedAnnotation)}
+              seekTo={props.player.seekTo}
             />
             <div
               style={{
                 display: "grid",
-                justifyContent: "center"
+                gridTemplateColumns: "40% 30%"
               }}
             >
-              <button
-                type="button"
-                className="btn btn-outline-secondary btn-sm"
-                onClick={() =>
-                  changeSelectedAnnotationState("showSubAnnotations")
-                }
+              <div
+                style={{
+                  gridColumnStart: "2",
+                  gridColumnEnd: "2",
+                  alignSelf: "flex-start",
+                  justifySelf: "end"
+                }}
               >
-                <div
-                  style={{
-                    display: "grid",
-                    justifyContent: "center",
-                    alignContent: "center",
-                    gridTemplateColumns: "20px 250px 20px",
-                    height: "15px"
-                  }}
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary btn-sm"
+                  onClick={() =>
+                    changeSelectedAnnotationState("showSubAnnotations")
+                  }
                 >
-                  <p style={{ display: "inline-block", margin: "0 auto" }}>
-                    <FontAwesomeIcon
-                      style={{ width: "15px" }}
-                      icon={faArrowLeft}
-                    />
-                  </p>
-                  Show sub-annotations
-                  <p style={{ display: "inline-block", margin: "0 auto" }}>
-                    <FontAwesomeIcon
-                      style={{ width: "15px" }}
-                      icon={faArrowRight}
-                    />
-                  </p>
-                </div>
-              </button>
+                  <div
+                    style={{
+                      display: "grid",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      gridTemplateColumns: "20px 250px 20px",
+                      height: "15px"
+                    }}
+                  >
+                    <p style={{ display: "inline-block", margin: "0 auto" }}>
+                      <FontAwesomeIcon
+                        style={{ width: "15px" }}
+                        icon={faArrowLeft}
+                      />
+                    </p>
+                    Show sub-annotations
+                    <p style={{ display: "inline-block", margin: "0 auto" }}>
+                      <FontAwesomeIcon
+                        style={{ width: "15px" }}
+                        icon={faArrowRight}
+                      />
+                    </p>
+                  </div>
+                </button>
+              </div>
+              <div
+                style={{
+                  gridColumnStart: "3",
+                  gridColumnEnd: "3",
+                  alignSelf: "end",
+                  justifySelf: "end"
+                }}
+              >
+                <button
+                  type="button"
+                  className="btn btn-danger btn-sm"
+                  onClick={() => deleteAnotation()}
+                >
+                  Delete annotation
+                </button>
+              </div>
             </div>
           </>
         )}
@@ -218,31 +260,23 @@ function AnnotationsPage(props) {
     return (
       <>
         <div
+          className="progress"
           style={{
-            display: "grid",
-            justifyContent: "right",
-            alignContent: "end",
-            gridTemplateColumns: "20px"
+            height: "4px",
+            display:
+              props.subAnnotationProgressState === "hide" ? "table" : "flex"
           }}
         >
-          <button
+          <div
+            className="progress-bar bg-danger"
             style={{
-              display: "inline-block",
-              padding: "0px",
-              width: "0px",
-              height: "0px",
-              border: "0px",
-              color: "darkred",
-              position: "relative",
-              bottom: "12px",
-              outline: "0px"
+              width: `${((props.videoProgress -
+                selectedAnnotation.duration.start.inSeconds) /
+                (selectedAnnotation.duration.end.inSeconds -
+                  selectedAnnotation.duration.start.inSeconds)) *
+                100}%`
             }}
-            onClick={() =>
-              changeSelectedAnnotationState("showAnnotations&Edit")
-            }
-          >
-            <FontAwesomeIcon style={{ width: "15px" }} icon={faWindowClose} />
-          </button>
+          ></div>
         </div>
         <AnnotationsVis
           annotationData={selectedAnnotation.subAnnotations}
@@ -256,10 +290,7 @@ function AnnotationsPage(props) {
           windowWidth={windowWidth}
           colorScheme={secondColor}
         >
-          <div
-            id="sub-annotations"
-            style={{ marginBottom: "-5px", marginTop: "10px" }}
-          ></div>
+          <div id="sub-annotations"></div>
         </AnnotationsVis>
         {selectedAnnotationState === "showSubAnnotations&Edit" && (
           <AnnotationBox
@@ -275,7 +306,24 @@ function AnnotationsPage(props) {
               selectedAnnotationStart={
                 selectedAnnotation.duration.start.inSeconds
               }
+              seekTo={props.player.seekTo}
             />
+            <div
+              style={{
+                display: "grid",
+                justifyContent: "end",
+                alignContent: "end",
+                height: "40px"
+              }}
+            >
+              <button
+                type="button"
+                className="btn btn-danger btn-sm"
+                onClick={() => deleteSubAnotation()}
+              >
+                Delete sub-annotation
+              </button>
+            </div>
           </AnnotationBox>
         )}
         {selectedAnnotationState === "showSubAnnotations&Add" && (
@@ -284,12 +332,13 @@ function AnnotationsPage(props) {
             addNewSubAnnotation={addNewSubAnnotation}
             offsetTime={selectedAnnotation.duration.start.inSeconds}
             annotationTitles={subAnnotationTitles}
-            newAnnotationId={selectedAnnotation.subAnnotations.length}
+            newAnnotationId={`${selectedAnnotation.id}_${selectedAnnotation.subAnnotations.length}`}
             defaultStartTime={
               selectedAnnotation.subAnnotations[
                 selectedAnnotation.subAnnotations.length - 1
               ]?.duration.end.time
             }
+            colorScheme={secondColor}
           />
         )}
       </>
@@ -342,7 +391,11 @@ function AnnotationsPage(props) {
             windowWidth={windowWidth}
             colorScheme={mainColor}
           >
-            <div id="video-annotations" name="video-annotations"></div>
+            <div
+              id="video-annotations"
+              name="video-annotations"
+              style={{ marginLeft: "10px", marginRight: "10px" }}
+            ></div>
           </AnnotationsVis>
         </div>
         <div
@@ -395,11 +448,12 @@ function AnnotationsPage(props) {
               offsetTime={0}
               annotationTitles={annotationTitles}
               newAnnotationId={
-                props.annotations[props.annotations.length - 1]?.id + 1
+                (props.annotations[props.annotations.length - 1]?.id ?? 10) + 1
               }
               defaultStartTime={secondsToStringFormat(
                 props.player.getCurrentTime()
               )}
+              colorScheme={mainColor}
             />
           )}
         </div>
@@ -445,6 +499,17 @@ function AnnotationsPage(props) {
                 disabled={selectedAnnotationState === "showSubAnnotations&Add"}
               >
                 Add sub-annotation
+              </button>
+              <br />
+              <br />
+              <button
+                type="button"
+                className="btn btn-outline-secondary btn-sm "
+                onClick={() =>
+                  changeSelectedAnnotationState("showAnnotations&Edit")
+                }
+              >
+                Close sub-annotations
               </button>
             </div>
           </>
