@@ -24,7 +24,7 @@ function MainVideoPage() {
   ] = useState(true);
   const { videoId, sheetId } = useRouter().query;
   const [YTplaying, changeYTplaying] = useState(false);
-
+  const [videoProgress, changeVideoProgress] = useState(0);
   const YTplayerRef = useRef(null);
   useEffect(() => {
     const fetchVideo = async () => {
@@ -36,6 +36,29 @@ function MainVideoPage() {
       fetchVideo();
     }
   }, [sheetId]);
+
+  const [
+    subAnnotationProgressState,
+    changeSubAnnotationProgressState
+  ] = useState("hide");
+
+  useEffect(() => {
+    if (YTplayerRef.current) {
+      YTplayerRef.current.wrapper.onmouseover = () =>
+        changeSubAnnotationProgressState("show");
+
+      YTplayerRef.current.wrapper.onmouseout = () => {
+        if (subAnnotationProgressState == "pause") return;
+        changeSubAnnotationProgressState("hide");
+      };
+    }
+    return () => {
+      if (YTplayerRef.current) {
+        YTplayerRef.current.wrapper.onmouseover = undefined;
+        YTplayerRef.current.wrapper.onmouseout = undefined;
+      }
+    };
+  });
 
   const seekTo = seconds => {
     YTplayerRef.current.seekTo(seconds);
@@ -104,41 +127,15 @@ function MainVideoPage() {
               </a>
             </nav>
             <br />
-          </div>{" "}
-          <div className="container">
-            <div className="loader"></div>
           </div>
-          <div className="container">
-            Loading video...
-            <br />
+          <div class="d-flex justify-content-center">
+            <div
+              className="spinner-border"
+              style={{ width: "3rem; height: 3rem;", role: "status" }}
+            >
+              <span class="sr-only">Loading...</span>
+            </div>
           </div>
-          <style jsx>
-            {`
-              .container {
-                height: 10em;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              }
-              .loader {
-                border: 16px solid #f3f3f3;
-                border-radius: 50%;
-                border-top: 16px solid gray;
-                width: 120px;
-                height: 120px;
-                -webkit-animation: spin 2s linear infinite; /* Safari */
-                animation: spin 2s linear infinite;
-              }
-              @keyframes spin {
-                0% {
-                  transform: rotate(0deg);
-                }
-                100% {
-                  transform: rotate(360deg);
-                }
-              }
-            `}
-          </style>
         </Layouts>
       </div>
     );
@@ -186,6 +183,11 @@ function MainVideoPage() {
               width="100%"
               height="100%"
               playing={YTplaying}
+              onProgress={({ playedSeconds }) =>
+                changeVideoProgress(playedSeconds)
+              }
+              onPause={() => changeSubAnnotationProgressState("pause")}
+              onPlay={() => changeSubAnnotationProgressState("hide")}
             />
           </div>
 
@@ -204,6 +206,8 @@ function MainVideoPage() {
               updateAnnotations={updateAnnotations}
               addAnnotation={addAnnotation}
               deleteAnotation={deleteAnotation}
+              videoProgress={videoProgress}
+              subAnnotationProgressState={subAnnotationProgressState}
             />
           </div>
         </div>

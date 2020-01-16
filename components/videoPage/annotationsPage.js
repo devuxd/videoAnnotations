@@ -33,7 +33,6 @@ function AnnotationsPage(props) {
   }, [selectedAnnotation]);
 
   const [selectedSubAnnotation, changeSelectedSubAnnotation] = useState(null);
-
   // Stats:
   // 1: showAnnotations -> show only main annotations.
   // 2: showAnnotations&Edit -> when one of the main annotations got clicked show edit form.
@@ -57,6 +56,7 @@ function AnnotationsPage(props) {
         changeWindowWidth(document.getElementById("YTplayer").offsetWidth)
       );
   });
+
   // ***
 
   // *** Click handlers
@@ -131,7 +131,6 @@ function AnnotationsPage(props) {
     changeSelectedAnnotation(newAnnotation);
     props.updateAnnotations(newAnnotation);
   };
-
   // show the annotation or the sub-annotation and never both
   const getAnnotationsSection = () => {
     if (selectedAnnotationState == "showAnnotations&Edit")
@@ -260,6 +259,25 @@ function AnnotationsPage(props) {
   const getSubAnnotations = () => {
     return (
       <>
+        <div
+          className="progress"
+          style={{
+            height: "4px",
+            display:
+              props.subAnnotationProgressState === "hide" ? "table" : "flex"
+          }}
+        >
+          <div
+            className="progress-bar bg-danger"
+            style={{
+              width: `${((props.videoProgress -
+                selectedAnnotation.duration.start.inSeconds) /
+                (selectedAnnotation.duration.end.inSeconds -
+                  selectedAnnotation.duration.start.inSeconds)) *
+                100}%`
+            }}
+          ></div>
+        </div>
         <AnnotationsVis
           annotationData={selectedAnnotation.subAnnotations}
           annotationLength={
