@@ -117,6 +117,15 @@ function AnnotationsPage(props) {
     changeSelectedAnnotationState("showAnnotations");
     props.deleteAnotation(annotation);
   };
+  const deleteSubAnotation = (annotation = selectedSubAnnotation) => {
+    changeSelectedSubAnnotation(null);
+    changeSelectedAnnotationState("showSubAnnotations");
+    const subAnnotations = selectedAnnotation.subAnnotations.filter(
+      subAnnotation => subAnnotation.id !== annotation.id
+    );
+    changeSelectedAnnotation({ ...selectedAnnotation, subAnnotations });
+    props.updateAnnotations({ ...selectedAnnotation, subAnnotations });
+  };
 
   const saveAnnotationChange = newAnnotation => {
     changeSelectedAnnotation(newAnnotation);
@@ -177,6 +186,7 @@ function AnnotationsPage(props) {
               update={updateSelectedAnnotation}
               selectedAnnotationStart={0}
               key={JSON.stringify(selectedAnnotation)}
+              seekTo={props.player.seekTo}
             />
             <div
               style={{
@@ -228,7 +238,7 @@ function AnnotationsPage(props) {
                 style={{
                   gridColumnStart: "3",
                   gridColumnEnd: "3",
-                  alignSelf: "flex-start",
+                  alignSelf: "end",
                   justifySelf: "end"
                 }}
               >
@@ -262,10 +272,7 @@ function AnnotationsPage(props) {
           windowWidth={windowWidth}
           colorScheme={secondColor}
         >
-          <div
-            id="sub-annotations"
-            style={{ marginBottom: "-5px", marginTop: "10px" }}
-          ></div>
+          <div id="sub-annotations"></div>
         </AnnotationsVis>
         {selectedAnnotationState === "showSubAnnotations&Edit" && (
           <AnnotationBox
@@ -281,7 +288,24 @@ function AnnotationsPage(props) {
               selectedAnnotationStart={
                 selectedAnnotation.duration.start.inSeconds
               }
+              seekTo={props.player.seekTo}
             />
+            <div
+              style={{
+                display: "grid",
+                justifyContent: "end",
+                alignContent: "end",
+                height: "40px"
+              }}
+            >
+              <button
+                type="button"
+                className="btn btn-danger btn-sm"
+                onClick={() => deleteSubAnotation()}
+              >
+                Delete sub-annotation
+              </button>
+            </div>
           </AnnotationBox>
         )}
         {selectedAnnotationState === "showSubAnnotations&Add" && (
@@ -290,7 +314,7 @@ function AnnotationsPage(props) {
             addNewSubAnnotation={addNewSubAnnotation}
             offsetTime={selectedAnnotation.duration.start.inSeconds}
             annotationTitles={subAnnotationTitles}
-            newAnnotationId={selectedAnnotation.subAnnotations.length}
+            newAnnotationId={`${selectedAnnotation.id}_${selectedAnnotation.subAnnotations.length}`}
             defaultStartTime={
               selectedAnnotation.subAnnotations[
                 selectedAnnotation.subAnnotations.length - 1
@@ -349,7 +373,11 @@ function AnnotationsPage(props) {
             windowWidth={windowWidth}
             colorScheme={mainColor}
           >
-            <div id="video-annotations" name="video-annotations"></div>
+            <div
+              id="video-annotations"
+              name="video-annotations"
+              style={{ marginLeft: "10px", marginRight: "10px" }}
+            ></div>
           </AnnotationsVis>
         </div>
         <div
@@ -402,7 +430,7 @@ function AnnotationsPage(props) {
               offsetTime={0}
               annotationTitles={annotationTitles}
               newAnnotationId={
-                props.annotations[props.annotations.length - 1]?.id + 1
+                (props.annotations[props.annotations.length - 1]?.id ?? 10) + 1
               }
               defaultStartTime={secondsToStringFormat(
                 props.player.getCurrentTime()

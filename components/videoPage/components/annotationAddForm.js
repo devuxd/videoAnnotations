@@ -41,7 +41,7 @@ function AnnotationAddForm({
             stringToSecondsFormat(refStartTime.current.value) - offsetTime + 10
         }
       },
-      id: isNaN(newAnnotationId) ? 11 : newAnnotationId,
+      id: newAnnotationId,
       title: title + refNewTitle.current.value,
       description: ""
     };

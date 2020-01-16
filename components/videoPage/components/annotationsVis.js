@@ -16,17 +16,16 @@ export default class extends React.Component {
     let annotationLength = this.props.annotationLength;
     let annotationData = this.props.annotationData;
     const mouseClick = this.mouseClick;
-    const h = 100;
     var mini = d3
       .select(this.props.divId)
       .append("svg")
-      .attr("width", this.props.windowWidth)
+      .attr("width", this.props.windowWidth - 20) // this is to adjust the annotation bar with youtube video progress.
       .attr("height", 22);
 
     let scale = d3
       .scaleLinear()
       .domain([0, annotationLength])
-      .range([0, this.props.windowWidth]);
+      .range([0, this.props.windowWidth - 20]);
 
     mini
       .append("g")
