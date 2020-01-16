@@ -24,7 +24,7 @@ function MainVideoPage() {
   ] = useState(true);
   const { videoId, sheetId } = useRouter().query;
   const [YTplaying, changeYTplaying] = useState(false);
-  const [videoProgress, changeVideoProgress] = useState(0);
+  const videoProgress = useRef(null);
   const YTplayerRef = useRef(null);
   useEffect(() => {
     const fetchVideo = async () => {
@@ -44,11 +44,11 @@ function MainVideoPage() {
 
   useEffect(() => {
     if (YTplayerRef.current) {
-      YTplayerRef.current.wrapper.onmouseover = () =>
+      YTplayerRef.current.wrapper.onmouseover = () => {
         changeSubAnnotationProgressState("show");
+      };
 
       YTplayerRef.current.wrapper.onmouseout = () => {
-        if (subAnnotationProgressState == "pause") return;
         changeSubAnnotationProgressState("hide");
       };
     }
@@ -106,6 +106,7 @@ function MainVideoPage() {
     );
     saveAnnotations(annotations, {}, annotation.id);
   };
+  const getVideoProgress = () => videoProgress.current;
 
   if (videoAnnotationIsStillLoading) {
     return (
@@ -184,10 +185,8 @@ function MainVideoPage() {
               height="100%"
               playing={YTplaying}
               onProgress={({ playedSeconds }) =>
-                changeVideoProgress(playedSeconds)
+                (videoProgress.current = playedSeconds)
               }
-              onPause={() => changeSubAnnotationProgressState("pause")}
-              onPlay={() => changeSubAnnotationProgressState("hide")}
             />
           </div>
 
@@ -206,7 +205,7 @@ function MainVideoPage() {
               updateAnnotations={updateAnnotations}
               addAnnotation={addAnnotation}
               deleteAnotation={deleteAnotation}
-              videoProgress={videoProgress}
+              getVideoProgress={getVideoProgress}
               subAnnotationProgressState={subAnnotationProgressState}
             />
           </div>

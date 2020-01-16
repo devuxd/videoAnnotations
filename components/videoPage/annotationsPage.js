@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import AnnotationsVis from "./components/annotationsVis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -56,7 +56,18 @@ function AnnotationsPage(props) {
         changeWindowWidth(document.getElementById("YTplayer").offsetWidth)
       );
   });
-
+  const trackingTime = useRef(null);
+  const [videoProgress, changeVideoProgress] = useState(0);
+  useEffect(() => {
+    if (props.subAnnotationProgressState === "show") {
+      trackingTime.current = setInterval(
+        () => changeVideoProgress(props.getVideoProgress()),
+        1000
+      );
+    } else {
+      clearInterval(trackingTime.current);
+    }
+  }, [props.subAnnotationProgressState]);
   // ***
 
   // *** Click handlers
@@ -270,7 +281,7 @@ function AnnotationsPage(props) {
           <div
             className="progress-bar bg-danger"
             style={{
-              width: `${((props.videoProgress -
+              width: `${((videoProgress -
                 selectedAnnotation.duration.start.inSeconds) /
                 (selectedAnnotation.duration.end.inSeconds -
                   selectedAnnotation.duration.start.inSeconds)) *
@@ -450,9 +461,10 @@ function AnnotationsPage(props) {
               newAnnotationId={
                 (props.annotations[props.annotations.length - 1]?.id ?? 10) + 1
               }
-              defaultStartTime={secondsToStringFormat(
-                props.player.getCurrentTime()
-              )}
+              defaultStartTime={
+                props.annotations[props.annotations.length - 1]?.duration.end
+                  .time
+              }
               colorScheme={mainColor}
             />
           )}
@@ -493,9 +505,9 @@ function AnnotationsPage(props) {
               <button
                 type="button"
                 className="btn btn-outline-secondary btn-sm "
-                onClick={() =>
-                  changeSelectedAnnotationState("showSubAnnotations&Add")
-                }
+                onClick={() => {
+                  changeSelectedAnnotationState("showSubAnnotations&Add");
+                }}
                 disabled={selectedAnnotationState === "showSubAnnotations&Add"}
               >
                 Add sub-annotation
