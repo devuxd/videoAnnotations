@@ -347,7 +347,7 @@ function AnnotationsPage(props) {
             defaultStartTime={
               selectedAnnotation.subAnnotations[
                 selectedAnnotation.subAnnotations.length - 1
-              ]?.duration.end.time
+              ]?.duration.end.time ?? selectedAnnotation.duration.start.time
             }
             colorScheme={secondColor}
           />

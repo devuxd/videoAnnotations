@@ -36,7 +36,9 @@ function AnnotationAddForm({
             stringToSecondsFormat(refStartTime.current.value) - offsetTime
         },
         end: {
-          time: "",
+          time: secondsToStringFormat(
+            stringToSecondsFormat(refStartTime.current.value) + 10
+          ),
           inSeconds:
             stringToSecondsFormat(refStartTime.current.value) - offsetTime + 10
         }
