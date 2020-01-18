@@ -23,7 +23,7 @@ function MainVideoPage() {
     updateVideoAnnotationIsStillLoading
   ] = useState(true);
   const { videoId, sheetId } = useRouter().query;
-  const [YTplaying, changeYTplaying] = useState(false);
+  const [YTplaying, changeYTplaying] = useState(true);
   const videoProgress = useRef(null);
   const YTplayerRef = useRef(null);
   useEffect(() => {
@@ -59,13 +59,52 @@ function MainVideoPage() {
       }
     };
   });
+  useEffect(() => {
+    document.addEventListener("keyup", ({ code }) => {
+      switch (code) {
+        case "ArrowRight":
+          seekTo(getCurrentTime() + 1);
+          break;
+        case "ArrowLeft":
+          seekTo(getCurrentTime() - 1);
+          break;
+        case "Escape":
+          if (YTplaying) playVideo(false);
+          else playVideo(true);
 
+          break;
+        default:
+          break;
+      }
+    });
+    return () =>
+      document.removeEventListener("keyup", ({ code }) => {
+        document.addEventListener("keyup", ({ code }) => {
+          switch (code) {
+            case "ArrowRight":
+              seekTo(getCurrentTime() + 1);
+              break;
+            case "ArrowLeft":
+              seekTo(getCurrentTime() - 1);
+              break;
+            case "Escape":
+              if (YTplaying) playVideo(false);
+              else playVideo(true);
+
+              break;
+            default:
+              break;
+          }
+        });
+      });
+  }, [YTplaying]);
   const seekTo = seconds => {
     YTplayerRef.current.seekTo(seconds);
     changeYTplaying(true);
   };
 
   const playVideo = flag => {
+    console.log(flag);
     changeYTplaying(flag);
   };
   const getCurrentTime = () => YTplayerRef.current.getCurrentTime();
