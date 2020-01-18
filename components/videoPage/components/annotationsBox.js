@@ -23,8 +23,8 @@ function AnnotationBox({
     refAnnotationEditForm.current.style.borderColor = backgroundColor;
     if (boxStyle.left !== undefined) return; // this means that the left property is overwritten by the parent
 
-    if (annotationXStartposition + 800 > windowWidth) {
-      refAnnotationEditForm.current.style.left = `${windowWidth - 800}px`;
+    if (annotationXStartposition + 500 > windowWidth) {
+      refAnnotationEditForm.current.style.left = `${windowWidth - 500}px`;
     } else {
       refAnnotationEditForm.current.style.left = `${annotationXStartposition -
         20}px`;

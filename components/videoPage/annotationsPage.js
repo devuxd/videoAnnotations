@@ -270,25 +270,6 @@ function AnnotationsPage(props) {
   const getSubAnnotations = () => {
     return (
       <>
-        <div
-          className="progress"
-          style={{
-            height: "4px",
-            display:
-              props.subAnnotationProgressState === "hide" ? "table" : "flex"
-          }}
-        >
-          <div
-            className="progress-bar bg-danger"
-            style={{
-              width: `${((videoProgress -
-                selectedAnnotation.duration.start.inSeconds) /
-                (selectedAnnotation.duration.end.inSeconds -
-                  selectedAnnotation.duration.start.inSeconds)) *
-                100}%`
-            }}
-          ></div>
-        </div>
         <AnnotationsVis
           annotationData={selectedAnnotation.subAnnotations}
           annotationLength={
@@ -301,12 +282,31 @@ function AnnotationsPage(props) {
           windowWidth={windowWidth}
           colorScheme={secondColor}
         >
+          <div
+            className="progress"
+            style={{
+              height: "4px",
+              display:
+                props.subAnnotationProgressState === "hide" ? "table" : "flex"
+            }}
+          >
+            <div
+              className="progress-bar bg-danger"
+              style={{
+                width: `${((videoProgress -
+                  selectedAnnotation.duration.start.inSeconds) /
+                  (selectedAnnotation.duration.end.inSeconds -
+                    selectedAnnotation.duration.start.inSeconds)) *
+                  100}%`
+              }}
+            ></div>
+          </div>
           <div id="sub-annotations"></div>
         </AnnotationsVis>
         {selectedAnnotationState === "showSubAnnotations&Edit" && (
           <AnnotationBox
             selectedAnnotationId={selectedSubAnnotation.id}
-            boxStyle={{ border: "3px solid", maxWidth: "815px" }}
+            boxStyle={{ border: "3px solid", maxWidth: "500px" }}
             windowWidth={windowWidth}
           >
             <AnnotationEditForm
@@ -443,7 +443,7 @@ function AnnotationsPage(props) {
               selectedAnnotationId={selectedAnnotation.id}
               boxStyle={
                 selectedAnnotationState.startsWith("showAnnotations")
-                  ? { border: "3px solid", maxWidth: "815px" }
+                  ? { border: "3px solid", maxWidth: "500px" }
                   : { borderTop: "3px solid", left: "0px" }
               }
               windowWidth={windowWidth}

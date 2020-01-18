@@ -54,7 +54,7 @@ function AnnotationAddForm({
       return;
     }
     addNewSubAnnotation(localNewAnnotation);
-    seekTo(localNewAnnotation.duration.start.inSeconds);
+    seekTo(localNewAnnotation.duration.start.inSeconds + offsetTime);
     playVideo(true);
   };
 
