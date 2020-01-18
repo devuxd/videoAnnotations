@@ -64,9 +64,9 @@ function MainVideoPage() {
     YTplayerRef.current.seekTo(seconds);
     changeYTplaying(true);
   };
-  const seekTo_subAnnotations = seconds => {
-    YTplayerRef.current.seekTo(moment.duration(seconds).asSeconds());
-    changeYTplaying(true);
+
+  const playVideo = flag => {
+    changeYTplaying(flag);
   };
   const getCurrentTime = () => YTplayerRef.current.getCurrentTime();
 
@@ -184,6 +184,7 @@ function MainVideoPage() {
               onProgress={({ playedSeconds }) =>
                 (videoProgress.current = playedSeconds)
               }
+              progressInterval={100}
             />
           </div>
 
@@ -198,7 +199,7 @@ function MainVideoPage() {
             <AnnotationsPage
               videoLength={videoAnnotations.videoLength}
               annotations={videoAnnotations.annotations}
-              player={{ seekTo, seekTo_subAnnotations, getCurrentTime }}
+              player={{ seekTo, getCurrentTime, playVideo }}
               updateAnnotations={updateAnnotations}
               addAnnotation={addAnnotation}
               deleteAnotation={deleteAnotation}

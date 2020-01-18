@@ -62,7 +62,7 @@ function AnnotationsPage(props) {
     if (props.subAnnotationProgressState === "show") {
       trackingTime.current = setInterval(
         () => changeVideoProgress(props.getVideoProgress()),
-        1000
+        100
       );
     } else {
       clearInterval(trackingTime.current);
@@ -339,7 +339,7 @@ function AnnotationsPage(props) {
         )}
         {selectedAnnotationState === "showSubAnnotations&Add" && (
           <AnnotationAddForm
-            getCurrentTime={props.player.getCurrentTime}
+            player={props.player}
             addNewSubAnnotation={addNewSubAnnotation}
             offsetTime={selectedAnnotation.duration.start.inSeconds}
             annotationTitles={subAnnotationTitles}
@@ -454,7 +454,7 @@ function AnnotationsPage(props) {
 
           {selectedAnnotationState === "showAnnotations&Add" && (
             <AnnotationAddForm
-              getCurrentTime={props.player.getCurrentTime}
+              player={props.player}
               addNewSubAnnotation={addNewAnnotation}
               offsetTime={0}
               annotationTitles={annotationTitles}
