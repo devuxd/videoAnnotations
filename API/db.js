@@ -18,7 +18,7 @@ const getDataset = sheetId =>
 
 const getVideoAnnotations = (videoId, sheetId) =>
   new Promise((res, rej) => {
-    let dataset = JSON.parse(localStorage.getItem(sheetId));
+    let dataset = false; //JSON.parse(localStorage.getItem(sheetId));
     if (dataset) {
       return res(findVideo(dataset, videoId));
     } else {

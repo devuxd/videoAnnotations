@@ -4,12 +4,12 @@ const mainColor = () =>
   d3
     .scaleOrdinal()
     .domain(1)
-    .range(d3.schemeSet1);
+    .range(d3.schemeSet2);
 const secondColor = () =>
   d3
     .scaleOrdinal()
     .domain(1)
-    .range(d3.schemeSet2);
+    .range(d3.schemeCategory10);
 
 module.exports = {
   mainColor,

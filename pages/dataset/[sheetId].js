@@ -44,10 +44,7 @@ function Dataset() {
             <br />
           </div>{" "}
           <div class="d-flex justify-content-center">
-            <div
-              className="spinner-border"
-              style={{ width: "3rem; height: 3rem;", role: "status" }}
-            >
+            <div className="spinner-border" style={{ role: "status" }}>
               <span class="sr-only">Loading...</span>
             </div>
           </div>

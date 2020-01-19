@@ -9,7 +9,7 @@ import {
 } from "../../../API/time";
 
 function AnnotationAddForm({
-  getCurrentTime,
+  player: { getCurrentTime, playVideo, seekTo },
   addNewSubAnnotation,
   offsetTime,
   annotationTitles,
@@ -26,8 +26,9 @@ function AnnotationAddForm({
     const time = secondsToStringFormat(getCurrentTime());
     refStartTime.current.value = time;
   };
-
-  const handleSubmit = async () => {
+  playVideo(false);
+  const handleSubmit = async e => {
+    e.preventDefault();
     const localNewAnnotation = {
       duration: {
         start: {
@@ -36,7 +37,9 @@ function AnnotationAddForm({
             stringToSecondsFormat(refStartTime.current.value) - offsetTime
         },
         end: {
-          time: "",
+          time: secondsToStringFormat(
+            stringToSecondsFormat(refStartTime.current.value) + 10
+          ),
           inSeconds:
             stringToSecondsFormat(refStartTime.current.value) - offsetTime + 10
         }
@@ -51,6 +54,8 @@ function AnnotationAddForm({
       return;
     }
     addNewSubAnnotation(localNewAnnotation);
+    seekTo(localNewAnnotation.duration.start.inSeconds + offsetTime);
+    playVideo(true);
   };
 
   const addTitle = event => {
@@ -66,90 +71,96 @@ function AnnotationAddForm({
             border-radius: 0.4em;
             border: 3px solid;
             padding: 5px;
-            width: 800px;
             margin: 20px auto;
             transition: left 1s;
           }
         `}
       </style>
 
-      <div className="box-sub-annotation" id="box-sub-annotation">
-        {annotationTitles.length > 0 && (
-          <>
+      <div style={{ display: "grid" }}>
+        <form className="box-sub-annotation" id="box-sub-annotation">
+          {annotationTitles.length > 0 && (
+            <>
+              <label
+                for="StartTime"
+                style={{ margin: "3px", paddingLeft: "5px" }}
+              >
+                Select an existing title or create new one:
+              </label>
+              <div
+                className="rainbow-p-around_x-large rainbow-align-content_center"
+                style={{ display: "grid", justifyContent: "center" }}
+              >
+                <RadioButtonGroup
+                  options={annotationTitles}
+                  selected={title}
+                  onChange={addTitle}
+                  colorScheme={colorScheme}
+                />
+              </div>
+            </>
+          )}
+          <div
+            className="input-group input-group-sm mb-3"
+            style={{ margin: "15px 0px" }}
+          >
+            <label for="NewTitle" style={{ margin: "3px", paddingLeft: "5px" }}>
+              Create new title:
+            </label>
+            <input
+              id="NewTitle"
+              name="NewTitle"
+              autocomplete="on"
+              aria-label="New title"
+              type="text"
+              ref={refNewTitle}
+              className="form-control"
+              placeholder="New title"
+              defaultValue={""}
+              onFocus={() => changeTitle("")}
+            ></input>
+          </div>
+          <div className="input-group input-group-sm mb-3">
             <label
               for="StartTime"
               style={{ margin: "3px", paddingLeft: "5px" }}
             >
-              Select an existing title or create new one:
+              Start:
             </label>
-            <div
-              className="rainbow-p-around_x-large rainbow-align-content_center"
-              style={{ display: "grid", justifyContent: "center" }}
-            >
-              <RadioButtonGroup
-                options={annotationTitles}
-                selected={title}
-                onChange={addTitle}
-                colorScheme={colorScheme}
-              />
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Start time"
+              aria-label="Start time"
+              aria-describedby="button-addon2"
+              defaultValue={defaultStartTime ?? ""}
+              ref={refStartTime}
+            />
+            <div className="input-group-append">
+              <button
+                onClick={getTime}
+                className="btn btn-outline-secondary"
+                type="button"
+                id="start"
+                style={{ width: "42px", paddingTop: "1px" }}
+                data-placement="button"
+                title="Get current time"
+              >
+                <FontAwesomeIcon icon={faClock} />
+              </button>
             </div>
-          </>
-        )}
-        <div
-          className="input-group input-group-sm mb-3"
-          style={{ margin: "15px 0px" }}
-        >
-          <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
-            Create new title:
-          </label>
-          <input
-            type="text"
-            ref={refNewTitle}
-            className="form-control"
-            placeholder="New title"
-            defaultValue={""}
-            onFocus={() => changeTitle("")}
-          ></input>
-        </div>
-        <div className="input-group input-group-sm mb-3">
-          <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
-            Start:
-          </label>
-          <input
-            id="StartTime"
-            key={"startTime"}
-            type="text"
-            className="form-control"
-            placeholder="Start time"
-            aria-label="Start time"
-            aria-describedby="button-addon2"
-            defaultValue={defaultStartTime ?? ""}
-            ref={refStartTime}
-          />
-          <div className="input-group-append">
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "80% 20%" }}>
             <button
-              onClick={getTime}
-              className="btn btn-outline-secondary"
-              type="button"
-              id="start"
-              style={{ width: "42px", paddingTop: "1px" }}
-              data-placement="bottom"
-              title="Get current time"
+              type="submit"
+              className="btn btn-success"
+              style={{ gridColumnStart: "2" }}
+              onClick={handleSubmit}
             >
-              <FontAwesomeIcon icon={faClock} />
+              Save
             </button>
           </div>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "80% 20%" }}>
-          <button
-            type="button"
-            className="btn btn-success"
-            style={{ gridColumnStart: "2" }}
-            onClick={handleSubmit}
-          >
-            Save
-          </button>
-        </div>
+        </form>
       </div>
     </>
   );

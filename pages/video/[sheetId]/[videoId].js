@@ -23,8 +23,8 @@ function MainVideoPage() {
     updateVideoAnnotationIsStillLoading
   ] = useState(true);
   const { videoId, sheetId } = useRouter().query;
-  const [YTplaying, changeYTplaying] = useState(false);
-  const [videoProgress, changeVideoProgress] = useState(0);
+  const [YTplaying, changeYTplaying] = useState(true);
+  const videoProgress = useRef(null);
   const YTplayerRef = useRef(null);
   useEffect(() => {
     const fetchVideo = async () => {
@@ -44,11 +44,11 @@ function MainVideoPage() {
 
   useEffect(() => {
     if (YTplayerRef.current) {
-      YTplayerRef.current.wrapper.onmouseover = () =>
+      YTplayerRef.current.wrapper.onmouseover = () => {
         changeSubAnnotationProgressState("show");
+      };
 
       YTplayerRef.current.wrapper.onmouseout = () => {
-        if (subAnnotationProgressState == "pause") return;
         changeSubAnnotationProgressState("hide");
       };
     }
@@ -59,14 +59,53 @@ function MainVideoPage() {
       }
     };
   });
+  useEffect(() => {
+    document.addEventListener("keyup", ({ code }) => {
+      switch (code) {
+        case "ArrowRight":
+          seekTo(getCurrentTime() + 1);
+          break;
+        case "ArrowLeft":
+          seekTo(getCurrentTime() - 1);
+          break;
+        case "Escape":
+          if (YTplaying) playVideo(false);
+          else playVideo(true);
 
+          break;
+        default:
+          break;
+      }
+    });
+    return () =>
+      document.removeEventListener("keyup", ({ code }) => {
+        document.addEventListener("keyup", ({ code }) => {
+          switch (code) {
+            case "ArrowRight":
+              seekTo(getCurrentTime() + 1);
+              break;
+            case "ArrowLeft":
+              seekTo(getCurrentTime() - 1);
+              break;
+            case "Escape":
+              if (YTplaying) playVideo(false);
+              else playVideo(true);
+
+              break;
+            default:
+              break;
+          }
+        });
+      });
+  }, [YTplaying]);
   const seekTo = seconds => {
     YTplayerRef.current.seekTo(seconds);
     changeYTplaying(true);
   };
-  const seekTo_subAnnotations = seconds => {
-    YTplayerRef.current.seekTo(moment.duration(seconds).asSeconds());
-    changeYTplaying(true);
+
+  const playVideo = flag => {
+    console.log(flag);
+    changeYTplaying(flag);
   };
   const getCurrentTime = () => YTplayerRef.current.getCurrentTime();
 
@@ -106,6 +145,7 @@ function MainVideoPage() {
     );
     saveAnnotations(annotations, {}, annotation.id);
   };
+  const getVideoProgress = () => videoProgress.current;
 
   if (videoAnnotationIsStillLoading) {
     return (
@@ -129,10 +169,7 @@ function MainVideoPage() {
             <br />
           </div>
           <div class="d-flex justify-content-center">
-            <div
-              className="spinner-border"
-              style={{ width: "3rem; height: 3rem;", role: "status" }}
-            >
+            <div className="spinner-border" style={{ role: "status" }}>
               <span class="sr-only">Loading...</span>
             </div>
           </div>
@@ -184,10 +221,9 @@ function MainVideoPage() {
               height="100%"
               playing={YTplaying}
               onProgress={({ playedSeconds }) =>
-                changeVideoProgress(playedSeconds)
+                (videoProgress.current = playedSeconds)
               }
-              onPause={() => changeSubAnnotationProgressState("pause")}
-              onPlay={() => changeSubAnnotationProgressState("hide")}
+              progressInterval={100}
             />
           </div>
 
@@ -202,11 +238,11 @@ function MainVideoPage() {
             <AnnotationsPage
               videoLength={videoAnnotations.videoLength}
               annotations={videoAnnotations.annotations}
-              player={{ seekTo, seekTo_subAnnotations, getCurrentTime }}
+              player={{ seekTo, getCurrentTime, playVideo }}
               updateAnnotations={updateAnnotations}
               addAnnotation={addAnnotation}
               deleteAnotation={deleteAnotation}
-              videoProgress={videoProgress}
+              getVideoProgress={getVideoProgress}
               subAnnotationProgressState={subAnnotationProgressState}
             />
           </div>
