@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
 import { useRouter } from "next/router";
-import moment from "moment";
 import Layouts from "../../../components/shared/layouts";
 import AnnotationsPage from "../../../components/videoPage/annotationsPage";
 import {
@@ -59,8 +58,11 @@ function MainVideoPage() {
       }
     };
   });
+
   useEffect(() => {
     document.addEventListener("keyup", ({ code }) => {
+      console.log(code);
+
       switch (code) {
         case "ArrowRight":
           seekTo(getCurrentTime() + 1);
@@ -69,9 +71,7 @@ function MainVideoPage() {
           seekTo(getCurrentTime() - 1);
           break;
         case "Escape":
-          if (YTplaying) playVideo(false);
-          else playVideo(true);
-
+          playVideo(false);
           break;
         default:
           break;
@@ -79,32 +79,27 @@ function MainVideoPage() {
     });
     return () =>
       document.removeEventListener("keyup", ({ code }) => {
-        document.addEventListener("keyup", ({ code }) => {
-          switch (code) {
-            case "ArrowRight":
-              seekTo(getCurrentTime() + 1);
-              break;
-            case "ArrowLeft":
-              seekTo(getCurrentTime() - 1);
-              break;
-            case "Escape":
-              if (YTplaying) playVideo(false);
-              else playVideo(true);
-
-              break;
-            default:
-              break;
-          }
-        });
+        switch (code) {
+          case "ArrowRight":
+            seekTo(getCurrentTime() + 1);
+            break;
+          case "ArrowLeft":
+            seekTo(getCurrentTime() - 1);
+            break;
+          case "Escape":
+            playVideo(false);
+            break;
+          default:
+            break;
+        }
       });
-  }, [YTplaying]);
+  }, [videoId]);
   const seekTo = seconds => {
     YTplayerRef.current.seekTo(seconds);
     changeYTplaying(true);
   };
 
   const playVideo = flag => {
-    console.log(flag);
     changeYTplaying(flag);
   };
   const getCurrentTime = () => YTplayerRef.current.getCurrentTime();

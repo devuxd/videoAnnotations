@@ -5,17 +5,18 @@ import Link from "next/link";
 /**
  * Videos: component for each video for search result page
  */
-function Video(props) {
-  const video = props.video;
-  const videoId = video.videoURL.replace("https://youtu.be/", "");
+function Video({
+  video: { videoId, videoTitle, annotations, ...otherProperties },
+  sheetId
+}) {
   let uniqueAnnotation = Array.from(
-    new Set(video.annotations.map(annotation => annotation.title))
+    new Set(annotations.map(annotation => annotation.title))
   );
   return (
     <div class="card">
       <Link
         href="/video/[sheetId]/[videoId]"
-        as={`/video/${props.sheetId}/${videoId}`}
+        as={`/video/${sheetId}/${videoId}`}
       >
         <a>
           <img
@@ -35,14 +36,14 @@ function Video(props) {
       <div class="card-body bg-light text-dark">
         <Link
           href="/video/[sheetId]/[videoId]"
-          as={`/video/${props.sheetId}/${videoId}`}
+          as={`/video/${sheetId}/${videoId}`}
         >
           <a>
-            <h5 class="card-title">{video.videoTitle}</h5>
+            <h5 class="card-title">{videoTitle}</h5>
           </a>
         </Link>
         <p class="card-text">
-          <VideoInfo vidElem={video} />
+          <VideoInfo video={otherProperties} />
         </p>
         <b>Annotations:</b>
         <p class="card-text">

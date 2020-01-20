@@ -343,7 +343,9 @@ function AnnotationsPage(props) {
             addNewSubAnnotation={addNewSubAnnotation}
             offsetTime={selectedAnnotation.duration.start.inSeconds}
             annotationTitles={subAnnotationTitles}
-            newAnnotationId={`${selectedAnnotation.id}_${selectedAnnotation.subAnnotations.length}`}
+            newAnnotationId={`${selectedAnnotation.id}_${
+              selectedAnnotation.subAnnotations.length
+            }_${Math.floor(Math.random(10) * 10000)}`}
             defaultStartTime={
               selectedAnnotation.subAnnotations[
                 selectedAnnotation.subAnnotations.length - 1
