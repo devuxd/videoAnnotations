@@ -19,7 +19,6 @@ function AnnotationAddForm({
 }) {
   // getting references
   const refStartTime = React.createRef();
-  const refNewTitle = React.createRef();
   const [title, changeTitle] = useState("");
   // getting the current time of the video when the user ask for it
   const getTime = e => {
@@ -45,7 +44,7 @@ function AnnotationAddForm({
         }
       },
       id: newAnnotationId,
-      title: title + refNewTitle.current.value,
+      title: title,
       description: ""
     };
     try {
@@ -79,47 +78,20 @@ function AnnotationAddForm({
 
       <div style={{ display: "grid" }}>
         <form className="box-sub-annotation" id="box-sub-annotation">
-          {annotationTitles.length > 0 && (
-            <>
-              <label
-                for="StartTime"
-                style={{ margin: "3px", paddingLeft: "5px" }}
-              >
-                Select an existing title or create new one:
-              </label>
-              <div
-                className="rainbow-p-around_x-large rainbow-align-content_center"
-                style={{ display: "grid", justifyContent: "center" }}
-              >
-                <RadioButtonGroup
-                  options={annotationTitles}
-                  selected={title}
-                  onChange={addTitle}
-                  colorScheme={colorScheme}
-                />
-              </div>
-            </>
-          )}
+          <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
+            Select an existing title or create new one:
+          </label>
           <div
-            className="input-group input-group-sm mb-3"
-            style={{ margin: "15px 0px" }}
+            className="rainbow-p-around_x-large rainbow-align-content_center"
+            style={{ display: "grid", justifyContent: "center" }}
           >
-            <label for="NewTitle" style={{ margin: "3px", paddingLeft: "5px" }}>
-              Create new title:
-            </label>
-            <input
-              id="NewTitle"
-              name="NewTitle"
-              autocomplete="on"
-              aria-label="New title"
-              type="text"
-              ref={refNewTitle}
-              className="form-control"
-              placeholder="New title"
-              defaultValue={""}
-              onFocus={() => changeTitle("")}
-            ></input>
+            <RadioButtonGroup
+              options={annotationTitles}
+              selected={title}
+              onChange={addTitle}
+            />
           </div>
+
           <div className="input-group input-group-sm mb-3">
             <label
               for="StartTime"

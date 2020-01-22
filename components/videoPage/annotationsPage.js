@@ -197,6 +197,7 @@ function AnnotationsPage(props) {
               selectedAnnotationStart={0}
               key={JSON.stringify(selectedAnnotation)}
               seekTo={props.player.seekTo}
+              annotationTitles={annotationTitles}
             />
             <div
               style={{
@@ -318,6 +319,7 @@ function AnnotationsPage(props) {
                 selectedAnnotation.duration.start.inSeconds
               }
               seekTo={props.player.seekTo}
+              annotationTitles={subAnnotationTitles}
             />
             <div
               style={{

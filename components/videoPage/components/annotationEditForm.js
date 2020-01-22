@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import RadioButtonGroup from "../../shared/radioButtonGroup";
 import { googleLogin } from "../../../API/db";
 import {
   stringToSecondsFormat,
@@ -12,11 +13,13 @@ function AnnotationEditForm({
   getCurrentTime,
   update,
   selectedAnnotationStart,
-  seekTo
+  seekTo,
+  annotationTitles
 }) {
   const refStartTime = React.createRef();
   const refEndTime = React.createRef();
   const refDescription = React.createRef();
+  const [title, changeTitle] = useState(selectedAnnotation.title);
 
   // getting the current time of the video when the user ask for it
   const getTime = e => {
@@ -45,7 +48,7 @@ function AnnotationEditForm({
         }
       },
       id: selectedAnnotation.id,
-      title: selectedAnnotation.title,
+      title: title,
       description: refDescription.current.value
     };
     try {
@@ -58,8 +61,23 @@ function AnnotationEditForm({
   const SeekToEnd = () => {
     seekTo(selectedAnnotation.duration.end.inSeconds + selectedAnnotationStart);
   };
+  const addTitle = ([newTitle, ...rest]) => {
+    const title = newTitle?.label ?? "";
+    changeTitle(title);
+  };
+
   return (
     <>
+      <div
+        className="rainbow-p-around_x-large rainbow-align-content_center"
+        style={{ display: "grid", justifyContent: "center" }}
+      >
+        <RadioButtonGroup
+          options={annotationTitles}
+          selected={title}
+          onChange={addTitle}
+        />
+      </div>
       <div
         className="input-group input-group-sm mb-3"
         style={{ padding: "10px" }}
