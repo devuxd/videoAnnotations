@@ -30,6 +30,7 @@
     "next": "^9.1.8-canary.13",
     "now": "^16.4.4",
     "react": "16.8.6",
+    "react-bootstrap-typeahead": "^3.4.7",
     "react-dom": "16.8.6",
     "react-player": "^1.13.0"
   },
@@ -44,7 +45,6 @@
     "@types/react": "^16.8.18",
     "@types/react-dom": "^16.8.4",
     "cross-env": "^5.2.0",
-    "file-loader": "^5.0.2",
     "husky": "^2.3.0",
     "prettier": "^1.17.1",
     "pretty-quick": "^1.11.0",

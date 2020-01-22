@@ -10,16 +10,6 @@ const Header = () => (
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         crossOrigin="anonymous"
       />
-      <link
-        href="http://fonts.googleapis.com/css?family=Lato:400,700"
-        rel="stylesheet"
-        type="text/css"
-      />
-      <link
-        href="https://unpkg.com/react-tabs/style/react-tabs.css"
-        rel="stylesheet"
-        type="text/css"
-      />
     </Head>
     <style jsx global>{`
       html {

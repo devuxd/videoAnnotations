@@ -483,8 +483,9 @@ function AnnotationsPage(props) {
                 gridColumnEnd: "1",
                 gridRowStart: "2",
                 gridRowEnd: "2",
-                alignSelf: "center",
-                justifySelf: "center"
+                alignSelf: "end",
+                justifySelf: "start",
+                fontSize: ".71em"
               }}
             >
               <AnnotationsTitles

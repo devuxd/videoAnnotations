@@ -58,9 +58,9 @@ function AnnotationAddForm({
     playVideo(true);
   };
 
-  const addTitle = event => {
-    refNewTitle.current.value = "";
-    changeTitle(event.target.value);
+  const addTitle = ([newTitle, ...rest]) => {
+    const title = newTitle?.label ?? "";
+    changeTitle(title);
   };
 
   return (
