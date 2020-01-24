@@ -8,6 +8,7 @@ import {
   saveVideoAnnotations,
   cacheVideoAnnotation
 } from "../../../API/db";
+import { mainColor, secondColor } from "../../../API/color";
 
 /**
  * Dynamic page for each individual video post page
@@ -41,6 +42,11 @@ function MainVideoPage() {
     changeSubAnnotationProgressState
   ] = useState("hide");
 
+  const levelOneColor = useRef(null);
+  const levelTowColor = useRef(null);
+  levelOneColor.current = mainColor();
+  levelTowColor.current = secondColor();
+
   useEffect(() => {
     if (YTplayerRef.current) {
       YTplayerRef.current.wrapper.onmouseover = () => {
@@ -61,24 +67,7 @@ function MainVideoPage() {
 
   useEffect(() => {
     document.addEventListener("keyup", ({ code }) => {
-      console.log(code);
-
-      switch (code) {
-        case "ArrowRight":
-          seekTo(getCurrentTime() + 1);
-          break;
-        case "ArrowLeft":
-          seekTo(getCurrentTime() - 1);
-          break;
-        case "Escape":
-          playVideo(false);
-          break;
-        default:
-          break;
-      }
-    });
-    return () =>
-      document.removeEventListener("keyup", ({ code }) => {
+      if (videoId !== null)
         switch (code) {
           case "ArrowRight":
             seekTo(getCurrentTime() + 1);
@@ -92,7 +81,8 @@ function MainVideoPage() {
           default:
             break;
         }
-      });
+    });
+    return () => document.removeEventListener("keyup", ({ code }) => {});
   }, [videoId]);
   const seekTo = seconds => {
     YTplayerRef.current.seekTo(seconds);
@@ -102,7 +92,10 @@ function MainVideoPage() {
   const playVideo = flag => {
     changeYTplaying(flag);
   };
-  const getCurrentTime = () => YTplayerRef.current.getCurrentTime();
+  const getCurrentTime = () => {
+    console.log(YTplayerRef.current);
+    return YTplayerRef.current.getCurrentTime();
+  };
 
   const updateAnnotations = newAnnotation => {
     // update the annotation with the newSubAnnotations
@@ -239,6 +232,10 @@ function MainVideoPage() {
               deleteAnotation={deleteAnotation}
               getVideoProgress={getVideoProgress}
               subAnnotationProgressState={subAnnotationProgressState}
+              colorScheme={{
+                mainColor: levelOneColor.current,
+                secondColor: levelTowColor.current
+              }}
             />
           </div>
         </div>

@@ -13,7 +13,8 @@ function RadioButtonGroup({ options, onChange, selected, colorScheme }) {
         onBlur={e => {
           onChange([{ label: e.target.value }]);
         }}
-        selected={[selected]}
+        defaultSelected={[selected]}
+        id="title-annotation"
       />
     </>
   );

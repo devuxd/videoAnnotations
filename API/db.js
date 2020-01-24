@@ -41,7 +41,10 @@ const cacheData = (dataset, id) =>
   localStorage.setItem(id, JSON.stringify(dataset));
 
 const parse = rowDataset => {
-  const dataset = rowDataset.sheets.map(({ data }, sheetIndex) => {
+  const filteredRowDataset = rowDataset.sheets.filter(
+    ({ data }) => data[0].rowData[1].values[2] !== undefined
+  );
+  const dataset = filteredRowDataset.map(({ data }, sheetIndex) => {
     const videoJSON = {};
     const video = data[0].rowData[1];
     videoJSON.id = `Video${sheetIndex + 1}`;
@@ -56,14 +59,16 @@ const parse = rowDataset => {
     videoJSON.programmingLanguage =
       video.values[6].userEnteredValue?.stringValue;
 
-    videoJSON.programmingTools = video.values[7].userEnteredValue?.stringValue;
+    videoJSON.programmingTools =
+      video.values[7]?.userEnteredValue?.stringValue ?? "";
 
-    videoJSON.githubURL = video.values[8].userEnteredValue?.stringValue;
+    videoJSON.githubURL = video.values[8]?.userEnteredValue?.stringValue ?? "";
 
-    videoJSON.projectSize = video.values[9].userEnteredValue?.numberValue;
+    videoJSON.projectSize =
+      video.values[9]?.userEnteredValue?.numberValue ?? "";
 
     videoJSON.developerGithubURL =
-      video.values[10].userEnteredValue?.stringValue;
+      video.values[10]?.userEnteredValue?.stringValue ?? "";
 
     let annotationsData = data[0].rowData.splice(10, data[0].rowData.length);
     videoJSON.annotations = [];

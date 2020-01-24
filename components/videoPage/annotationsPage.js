@@ -10,8 +10,6 @@ import AnnotationEditForm from "./components/annotationEditForm";
 import AnnotationAddForm from "./components/annotationAddForm";
 import AnnotationsTitles from "./components/annotationsTitles";
 import AnnotationBox from "./components/annotationsBox";
-import { mainColor, secondColor } from "../../API/color";
-import { secondsToStringFormat } from "../../API/time";
 //    ===  ===  ===== =====     <- these are the annotations.
 //    ^                         <- this this the selected annotation
 //    ==== ====== ===== =====   <- these are the sub-annotations related to the selected annotation.
@@ -25,9 +23,13 @@ function AnnotationsPage(props) {
     changeAnnotationTitles(
       Array.from(new Set(props.annotations.map(annotation => annotation.title)))
     );
+    const titles = props.annotations
+      .map(annotation => annotation.subAnnotations.map(({ title }) => title))
+      .flat();
     changesubAnnotationTitles(
       Array.from(
-        new Set(selectedAnnotation?.subAnnotations.map(({ title }) => title))
+        new Set(titles)
+        // new Set(selectedAnnotation?.subAnnotations.map(({ title }) => title))
       )
     );
   }, [selectedAnnotation]);
@@ -281,7 +283,7 @@ function AnnotationsPage(props) {
           divId={"#sub-annotations"}
           key={JSON.stringify(selectedAnnotation.subAnnotations) + windowWidth}
           windowWidth={windowWidth}
-          colorScheme={secondColor}
+          colorScheme={props.colorScheme.secondColor}
         >
           <div
             className="progress"
@@ -313,7 +315,7 @@ function AnnotationsPage(props) {
             <AnnotationEditForm
               getCurrentTime={props.player.getCurrentTime}
               selectedAnnotation={selectedSubAnnotation}
-              key={selectedAnnotation.id}
+              key={JSON.stringify(selectedSubAnnotation)}
               update={updateSubAnnotations}
               selectedAnnotationStart={
                 selectedAnnotation.duration.start.inSeconds
@@ -353,7 +355,7 @@ function AnnotationsPage(props) {
                 selectedAnnotation.subAnnotations.length - 1
               ]?.duration.end.time ?? selectedAnnotation.duration.start.time
             }
-            colorScheme={secondColor}
+            colorScheme={props.colorScheme.secondColor}
           />
         )}
       </>
@@ -386,7 +388,7 @@ function AnnotationsPage(props) {
             key={selectedAnnotation}
             titles={annotationTitles}
             selectedTitle={selectedAnnotation?.title}
-            colorScheme={mainColor}
+            colorScheme={props.colorScheme.mainColor}
           />
         </div>
         <div
@@ -404,7 +406,7 @@ function AnnotationsPage(props) {
             divId={"#video-annotations"}
             key={JSON.stringify(props.annotations) + windowWidth}
             windowWidth={windowWidth}
-            colorScheme={mainColor}
+            colorScheme={props.colorScheme.mainColor}
           >
             <div
               id="video-annotations"
@@ -469,7 +471,7 @@ function AnnotationsPage(props) {
                 props.annotations[props.annotations.length - 1]?.duration.end
                   .time
               }
-              colorScheme={mainColor}
+              colorScheme={props.colorScheme.mainColor}
             />
           )}
         </div>
@@ -494,7 +496,7 @@ function AnnotationsPage(props) {
                 key={selectedSubAnnotation}
                 titles={subAnnotationTitles}
                 selectedTitle={selectedSubAnnotation?.title}
-                colorScheme={secondColor}
+                colorScheme={props.colorScheme.secondColor}
               />
             </div>
             <div

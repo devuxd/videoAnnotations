@@ -20,7 +20,6 @@ function AnnotationEditForm({
   const refEndTime = React.createRef();
   const refDescription = React.createRef();
   const [title, changeTitle] = useState(selectedAnnotation.title);
-
   // getting the current time of the video when the user ask for it
   const getTime = e => {
     const time = secondsToStringFormat(getCurrentTime());

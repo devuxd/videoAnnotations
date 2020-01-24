@@ -6,7 +6,6 @@ import * as d3 from "d3";
 export default class extends React.Component {
   constructor(props) {
     super(props);
-    this.color = this.props.colorScheme();
   }
 
   mouseClick = selectedAnnotation => {
@@ -35,7 +34,7 @@ export default class extends React.Component {
       .enter()
       .append("rect")
       .style("fill", d => {
-        return this.color(d.title);
+        return this.props.colorScheme(d.title);
       })
       .attr("x", d => {
         return scale(d.duration.start.inSeconds);
