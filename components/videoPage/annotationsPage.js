@@ -368,7 +368,7 @@ function AnnotationsPage(props) {
         style={{
           display: "grid",
           gridTemplateColumns: "10% 75% 15%",
-          gridTemplateRows: "30px 350px auto"
+          gridTemplateRows: "30px 350px 150px"
         }}
       >
         <div
@@ -486,7 +486,7 @@ function AnnotationsPage(props) {
                 gridColumnStart: "1",
                 gridColumnEnd: "1",
                 gridRowStart: "2",
-                gridRowEnd: "2",
+                gridRowEnd: "span 3",
                 alignSelf: "end",
                 justifySelf: "start",
                 fontSize: ".71em"

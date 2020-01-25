@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import RadioButtonGroup from "../../shared/radioButtonGroup";
+import TitleDropBox from "../../shared/TitleDropBox";
 import { googleLogin } from "../../../API/db";
 import {
   stringToSecondsFormat,
@@ -68,10 +68,13 @@ function AnnotationEditForm({
   return (
     <>
       <div
-        className="rainbow-p-around_x-large rainbow-align-content_center"
-        style={{ display: "grid", justifyContent: "center" }}
+        className="input-group input-group-sm mb-3"
+        style={{ padding: "10px" }}
       >
-        <RadioButtonGroup
+        <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
+          Title:
+        </label>
+        <TitleDropBox
           options={annotationTitles}
           selected={title}
           onChange={addTitle}

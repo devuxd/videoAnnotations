@@ -65,25 +65,6 @@ function MainVideoPage() {
     };
   });
 
-  useEffect(() => {
-    document.addEventListener("keyup", ({ code }) => {
-      if (videoId !== null)
-        switch (code) {
-          case "ArrowRight":
-            seekTo(getCurrentTime() + 1);
-            break;
-          case "ArrowLeft":
-            seekTo(getCurrentTime() - 1);
-            break;
-          case "Escape":
-            playVideo(false);
-            break;
-          default:
-            break;
-        }
-    });
-    return () => document.removeEventListener("keyup", ({ code }) => {});
-  }, [videoId]);
   const seekTo = seconds => {
     YTplayerRef.current.seekTo(seconds);
     changeYTplaying(true);

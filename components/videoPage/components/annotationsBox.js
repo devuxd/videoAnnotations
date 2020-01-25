@@ -44,6 +44,7 @@ function AnnotationBox({
             border-radius: 0.4em;
             padding: 5px;
             transition: all 1s;
+            background-color: white;
           }
 
           .arrow-annotation {

@@ -1,10 +1,10 @@
 import React from "react";
 import { Typeahead } from "react-bootstrap-typeahead";
 
-function RadioButtonGroup({ options, onChange, selected, colorScheme }) {
+function TitleDropBox({ options, onChange, selected, colorScheme }) {
   // const color = colorScheme();
   return (
-    <>
+    <div style={{ width: "415px" }}>
       <Typeahead
         allowNew
         newSelectionPrefix="Add a new item"
@@ -16,8 +16,8 @@ function RadioButtonGroup({ options, onChange, selected, colorScheme }) {
         defaultSelected={[selected]}
         id="title-annotation"
       />
-    </>
+    </div>
   );
 }
 
-export default RadioButtonGroup;
+export default TitleDropBox;
