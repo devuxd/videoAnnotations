@@ -356,6 +356,7 @@ function AnnotationsPage(props) {
               ]?.duration.end.time ?? selectedAnnotation.duration.start.time
             }
             colorScheme={props.colorScheme.secondColor}
+            annotationDefualtLength={selectedAnnotation.duration.end.inSeconds}
           />
         )}
       </>
@@ -472,6 +473,7 @@ function AnnotationsPage(props) {
                   .time
               }
               colorScheme={props.colorScheme.mainColor}
+              annotationDefualtLength={props.videoLength}
             />
           )}
         </div>

@@ -71,7 +71,10 @@ function AnnotationEditForm({
         className="input-group input-group-sm mb-3"
         style={{ padding: "10px" }}
       >
-        <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
+        <label
+          htmlFor="StartTime"
+          style={{ margin: "3px", paddingLeft: "5px" }}
+        >
           Title:
         </label>
         <TitleDropBox
@@ -84,7 +87,10 @@ function AnnotationEditForm({
         className="input-group input-group-sm mb-3"
         style={{ padding: "10px" }}
       >
-        <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
+        <label
+          htmlFor="StartTime"
+          style={{ margin: "3px", paddingLeft: "5px" }}
+        >
           Start:
         </label>
         <input
@@ -113,7 +119,7 @@ function AnnotationEditForm({
             <FontAwesomeIcon icon={faClock} />
           </button>
         </div>
-        <label for="EndTime" style={{ margin: "3px", paddingLeft: "5px" }}>
+        <label htmlFor="EndTime" style={{ margin: "3px", paddingLeft: "5px" }}>
           End:
         </label>
         <input
@@ -123,7 +129,7 @@ function AnnotationEditForm({
           className="form-control"
           placeholder="End time  "
           aria-label="Start time"
-          aria-described="button-addon2"
+          aria-describedby="button-addon2"
           style={{ marginLeft: "10px" }}
           defaultValue={selectedAnnotation.duration.end.time}
           ref={refEndTime}
@@ -155,7 +161,7 @@ function AnnotationEditForm({
           </button>
         </div>
       </div>
-      <label for="description">Description: </label>
+      <label htmlFor="description">Description: </label>
       <textarea
         id="description"
         key={selectedAnnotation.id + "textarea"}

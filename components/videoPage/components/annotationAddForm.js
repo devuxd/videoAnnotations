@@ -15,6 +15,7 @@ function AnnotationAddForm({
   annotationTitles,
   newAnnotationId,
   defaultStartTime,
+  annotationDefualtLength,
   colorScheme
 }) {
   // getting references
@@ -36,11 +37,8 @@ function AnnotationAddForm({
             stringToSecondsFormat(refStartTime.current.value) - offsetTime
         },
         end: {
-          time: secondsToStringFormat(
-            stringToSecondsFormat(refStartTime.current.value) + 10
-          ),
-          inSeconds:
-            stringToSecondsFormat(refStartTime.current.value) - offsetTime + 10
+          time: secondsToStringFormat(annotationDefualtLength),
+          inSeconds: annotationDefualtLength
         }
       },
       id: newAnnotationId,
@@ -78,7 +76,10 @@ function AnnotationAddForm({
 
       <div style={{ display: "grid" }}>
         <form className="box-sub-annotation" id="box-sub-annotation">
-          <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
+          <label
+            htmlFor="StartTime"
+            style={{ margin: "3px", paddingLeft: "5px" }}
+          >
             Select an existing title or create new one:
           </label>
           <div
@@ -94,7 +95,7 @@ function AnnotationAddForm({
 
           <div className="input-group input-group-sm mb-3">
             <label
-              for="StartTime"
+              htmlFor="StartTime"
               style={{ margin: "3px", paddingLeft: "5px" }}
             >
               Start:

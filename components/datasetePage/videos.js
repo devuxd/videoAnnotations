@@ -13,7 +13,7 @@ function Video({
     new Set(annotations.map(annotation => annotation.title))
   );
   return (
-    <div class="card">
+    <div className="card">
       <Link
         href="/video/[sheetId]/[videoId]"
         as={`/video/${sheetId}/${videoId}`}
@@ -21,7 +21,7 @@ function Video({
         <a>
           <img
             src={"https://img.youtube.com/vi/" + videoId + "/hqdefault.jpg"}
-            class="card-img-top "
+            className="card-img-top "
             onMouseEnter={e => {
               e.target.style.cursor = "pointer";
               e.target.style.opacity = 0.7;
@@ -33,22 +33,22 @@ function Video({
           />
         </a>
       </Link>
-      <div class="card-body bg-light text-dark">
+      <div className="card-body bg-light text-dark">
         <Link
           href="/video/[sheetId]/[videoId]"
           as={`/video/${sheetId}/${videoId}`}
         >
           <a>
-            <h5 class="card-title">{videoTitle}</h5>
+            <h5 className="card-title">{videoTitle}</h5>
           </a>
         </Link>
-        <p class="card-text">
+        <p className="card-text">
           <VideoInfo video={otherProperties} />
         </p>
         <b>Annotations:</b>
-        <p class="card-text">
+        <p className="card-text">
           {uniqueAnnotation.map(annotation => (
-            <span class="badge badge-light">{annotation}</span>
+            <span className="badge badge-light">{annotation}</span>
           ))}
         </p>
       </div>
