@@ -16,22 +16,22 @@ function AnnotationBox({
 
     const arrowOffset = refElement.getAttribute("width") / 2;
 
-    refArrowElement.current.style.left = `${annotationXStartposition +
-      arrowOffset}px`;
     const backgroundColor = refElement.style.fill;
     refArrowElement.current.style.borderBottomColor = backgroundColor;
     refAnnotationEditForm.current.style.borderColor = backgroundColor;
     if (boxStyle.left !== undefined) return; // this means that the left property is overwritten by the parent
-
+    refArrowElement.current.style.left = `${annotationXStartposition +
+      arrowOffset}px`;
+    let left;
     if (annotationXStartposition + 500 > windowWidth) {
-      refAnnotationEditForm.current.style.left = `${windowWidth - 500}px`;
+      left = windowWidth - 500;
+      refAnnotationEditForm.current.style.left = `${left}px`;
     } else if (annotationXStartposition + arrowOffset < 250) {
-      refAnnotationEditForm.current.style.left = `${annotationXStartposition -
-        20}px`;
+      left = annotationXStartposition - 20;
+      refAnnotationEditForm.current.style.left = `${left}px`;
     } else {
-      refAnnotationEditForm.current.style.left = `${annotationXStartposition +
-        arrowOffset -
-        250}px`;
+      left = annotationXStartposition + arrowOffset - 250;
+      refAnnotationEditForm.current.style.left = `${left}px`;
     }
   });
 

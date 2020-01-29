@@ -38,7 +38,7 @@ function AnnotationAddForm({
         },
         end: {
           time: secondsToStringFormat(annotationDefualtLength),
-          inSeconds: annotationDefualtLength
+          inSeconds: annotationDefualtLength - offsetTime
         }
       },
       id: newAnnotationId,
