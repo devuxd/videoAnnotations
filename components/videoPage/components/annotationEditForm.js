@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import TitleDropBox from "../../shared/TitleDropBox";
@@ -16,10 +16,10 @@ function AnnotationEditForm({
   seekTo,
   annotationTitles
 }) {
-  const refStartTime = React.createRef();
-  const refEndTime = React.createRef();
-  const refDescription = React.createRef();
-  const [title, changeTitle] = useState(selectedAnnotation.title);
+  const refStartTime = useRef(null);
+  const refEndTime = useRef(null);
+  const refDescription = useRef(null);
+  const refTitle = useRef(null);
   // getting the current time of the video when the user ask for it
   const getTime = e => {
     const time = secondsToStringFormat(getCurrentTime());
@@ -47,7 +47,7 @@ function AnnotationEditForm({
         }
       },
       id: selectedAnnotation.id,
-      title: title,
+      title: refTitle.current ?? selectedAnnotation.title,
       description: refDescription.current.value
     };
     try {
@@ -62,7 +62,8 @@ function AnnotationEditForm({
   };
   const addTitle = ([newTitle, ...rest]) => {
     const title = newTitle?.label ?? "";
-    changeTitle(title);
+    refTitle.current = title;
+    handleSubmit();
   };
 
   return (
@@ -79,7 +80,7 @@ function AnnotationEditForm({
         </label>
         <TitleDropBox
           options={annotationTitles}
-          selected={title}
+          selected={selectedAnnotation.title}
           onChange={addTitle}
         />
       </div>

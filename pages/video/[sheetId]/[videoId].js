@@ -74,7 +74,6 @@ function MainVideoPage() {
     changeYTplaying(flag);
   };
   const getCurrentTime = () => {
-    console.log(YTplayerRef.current);
     return YTplayerRef.current.getCurrentTime();
   };
 
@@ -100,10 +99,10 @@ function MainVideoPage() {
     cacheVideoAnnotation(
       localVideoAnnotations,
       localVideoAnnotations.id,
-      localStorage.key(0)
+      localStorage.key(sheetId)
     );
     saveVideoAnnotations(
-      localStorage.key(0),
+      localStorage.key(sheetId),
       `${localVideoAnnotations.id}!A${newAnnotationId}`,
       newAnnotation
     );
@@ -205,6 +204,7 @@ function MainVideoPage() {
             }}
           >
             <AnnotationsPage
+              kye={JSON.stringify(videoAnnotations.annotations)}
               videoLength={videoAnnotations.videoLength}
               annotations={videoAnnotations.annotations}
               player={{ seekTo, getCurrentTime, playVideo }}

@@ -36,6 +36,8 @@ export default class extends React.Component {
       .style("fill", d => {
         return this.props.colorScheme(d.title);
       })
+      .style("stroke", "black")
+      .style("stroke-width", ".3px")
       .attr("x", d => {
         return scale(d.duration.start.inSeconds);
       })
