@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import TitleDropBox from "../../shared/TitleDropBox";
 import { googleLogin } from "../../../API/db";
 import {
   stringToSecondsFormat,
@@ -12,12 +13,13 @@ function AnnotationEditForm({
   getCurrentTime,
   update,
   selectedAnnotationStart,
-  seekTo
+  seekTo,
+  annotationTitles
 }) {
-  const refStartTime = React.createRef();
-  const refEndTime = React.createRef();
-  const refDescription = React.createRef();
-
+  const refStartTime = useRef(null);
+  const refEndTime = useRef(null);
+  const refDescription = useRef(null);
+  const refTitle = useRef(null);
   // getting the current time of the video when the user ask for it
   const getTime = e => {
     const time = secondsToStringFormat(getCurrentTime());
@@ -45,7 +47,7 @@ function AnnotationEditForm({
         }
       },
       id: selectedAnnotation.id,
-      title: selectedAnnotation.title,
+      title: refTitle.current ?? selectedAnnotation.title,
       description: refDescription.current.value
     };
     try {
@@ -58,13 +60,38 @@ function AnnotationEditForm({
   const SeekToEnd = () => {
     seekTo(selectedAnnotation.duration.end.inSeconds + selectedAnnotationStart);
   };
+  const addTitle = ([newTitle, ...rest]) => {
+    const title = newTitle?.label ?? "";
+    refTitle.current = title;
+    handleSubmit();
+  };
+
   return (
     <>
       <div
         className="input-group input-group-sm mb-3"
         style={{ padding: "10px" }}
       >
-        <label for="StartTime" style={{ margin: "3px", paddingLeft: "5px" }}>
+        <label
+          htmlFor="StartTime"
+          style={{ margin: "3px", paddingLeft: "5px" }}
+        >
+          Title:
+        </label>
+        <TitleDropBox
+          options={annotationTitles}
+          selected={selectedAnnotation.title}
+          onChange={addTitle}
+        />
+      </div>
+      <div
+        className="input-group input-group-sm mb-3"
+        style={{ padding: "10px" }}
+      >
+        <label
+          htmlFor="StartTime"
+          style={{ margin: "3px", paddingLeft: "5px" }}
+        >
           Start:
         </label>
         <input
@@ -93,7 +120,7 @@ function AnnotationEditForm({
             <FontAwesomeIcon icon={faClock} />
           </button>
         </div>
-        <label for="EndTime" style={{ margin: "3px", paddingLeft: "5px" }}>
+        <label htmlFor="EndTime" style={{ margin: "3px", paddingLeft: "5px" }}>
           End:
         </label>
         <input
@@ -103,7 +130,7 @@ function AnnotationEditForm({
           className="form-control"
           placeholder="End time  "
           aria-label="Start time"
-          aria-described="button-addon2"
+          aria-describedby="button-addon2"
           style={{ marginLeft: "10px" }}
           defaultValue={selectedAnnotation.duration.end.time}
           ref={refEndTime}
@@ -135,7 +162,7 @@ function AnnotationEditForm({
           </button>
         </div>
       </div>
-      <label for="description">Description: </label>
+      <label htmlFor="description">Description: </label>
       <textarea
         id="description"
         key={selectedAnnotation.id + "textarea"}

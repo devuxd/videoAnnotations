@@ -1,46 +1,33 @@
 import React from "react";
 import { secondsToStringFormat } from "../../API/time";
-export default class VideoInfo extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
-  /**
-   * urlFormatter: function to style Github URLs in a list manner
-   *
-   * @param {*} arr : array of github url strings
-   */
-  urlFormatter(arr) {
-    let rows = [];
-    if (Array.isArray(arr)) {
-      arr.map((item, index) =>
-        rows.push(
+function VideoInfo({
+  video: {
+    videoLength,
+    programmingLanguage,
+    programmingTools,
+    developerGithubURL,
+    githubURL
+  }
+}) {
+  return (
+    <h6>
+      Total Time: {secondsToStringFormat(videoLength)}
+      <br />
+      Programming Language: {programmingLanguage} <br />
+      Programming Tools : {programmingTools} <br />
+      Project URL(s):{" "}
+      <ul style={{ listStyle: "square inside" }}>
+        {githubURL.split(", ").map((item, index) => (
           <li key={index}>
             <a href={item}>{item}</a>
           </li>
-        )
-      );
-    }
-    return rows;
-  }
-
-  render() {
-    return (
-      <h6>
-        Total Time: {secondsToStringFormat(this.props.vidElem.videoLength)}
-        <br />
-        Programming Language: {this.props.vidElem.programmingLanguage} <br />
-        Programming Tools : {this.props.vidElem.programmingTools} <br />
-        Project URL(s):{" "}
-        <ul style={{ listStyle: "square inside" }}>
-          {this.urlFormatter(this.props.vidElem.githubURL.split(", "))}
-        </ul>
-        Developer Github: <span> </span>
-        <a href={this.props.vidElem.developerGithubURL}>
-          {this.props.vidElem.developerGithubURL}
-        </a>{" "}
-        <br />
-      </h6>
-    );
-  }
+        ))}
+      </ul>
+      Developer Github: <span> </span>
+      <a href={developerGithubURL}>{developerGithubURL}</a> <br />
+    </h6>
+  );
 }
+
+export default VideoInfo;

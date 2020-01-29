@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { googleLogin } from "../../../API/db";
-import RadioButtonGroup from "../../shared/radioButtonGroup";
+import RadioButtonGroup from "../../shared/TitleDropBox";
 import {
   stringToSecondsFormat,
   secondsToStringFormat
@@ -15,11 +15,11 @@ function AnnotationAddForm({
   annotationTitles,
   newAnnotationId,
   defaultStartTime,
+  annotationDefualtLength,
   colorScheme
 }) {
   // getting references
   const refStartTime = React.createRef();
-  const refNewTitle = React.createRef();
   const [title, changeTitle] = useState("");
   // getting the current time of the video when the user ask for it
   const getTime = e => {
@@ -37,15 +37,12 @@ function AnnotationAddForm({
             stringToSecondsFormat(refStartTime.current.value) - offsetTime
         },
         end: {
-          time: secondsToStringFormat(
-            stringToSecondsFormat(refStartTime.current.value) + 10
-          ),
-          inSeconds:
-            stringToSecondsFormat(refStartTime.current.value) - offsetTime + 10
+          time: secondsToStringFormat(annotationDefualtLength),
+          inSeconds: annotationDefualtLength
         }
       },
       id: newAnnotationId,
-      title: title + refNewTitle.current.value,
+      title: title,
       description: ""
     };
     try {
@@ -58,9 +55,9 @@ function AnnotationAddForm({
     playVideo(true);
   };
 
-  const addTitle = event => {
-    refNewTitle.current.value = "";
-    changeTitle(event.target.value);
+  const addTitle = ([newTitle, ...rest]) => {
+    const title = newTitle?.label ?? "";
+    changeTitle(title);
   };
 
   return (
@@ -79,50 +76,26 @@ function AnnotationAddForm({
 
       <div style={{ display: "grid" }}>
         <form className="box-sub-annotation" id="box-sub-annotation">
-          {annotationTitles.length > 0 && (
-            <>
-              <label
-                for="StartTime"
-                style={{ margin: "3px", paddingLeft: "5px" }}
-              >
-                Select an existing title or create new one:
-              </label>
-              <div
-                className="rainbow-p-around_x-large rainbow-align-content_center"
-                style={{ display: "grid", justifyContent: "center" }}
-              >
-                <RadioButtonGroup
-                  options={annotationTitles}
-                  selected={title}
-                  onChange={addTitle}
-                  colorScheme={colorScheme}
-                />
-              </div>
-            </>
-          )}
-          <div
-            className="input-group input-group-sm mb-3"
-            style={{ margin: "15px 0px" }}
+          <label
+            htmlFor="StartTime"
+            style={{ margin: "3px", paddingLeft: "5px" }}
           >
-            <label for="NewTitle" style={{ margin: "3px", paddingLeft: "5px" }}>
-              Create new title:
-            </label>
-            <input
-              id="NewTitle"
-              name="NewTitle"
-              autocomplete="on"
-              aria-label="New title"
-              type="text"
-              ref={refNewTitle}
-              className="form-control"
-              placeholder="New title"
-              defaultValue={""}
-              onFocus={() => changeTitle("")}
-            ></input>
+            Select an existing title or create new one:
+          </label>
+          <div
+            className="rainbow-p-around_x-large rainbow-align-content_center"
+            style={{ display: "grid", justifyContent: "center" }}
+          >
+            <RadioButtonGroup
+              options={annotationTitles}
+              selected={title}
+              onChange={addTitle}
+            />
           </div>
+
           <div className="input-group input-group-sm mb-3">
             <label
-              for="StartTime"
+              htmlFor="StartTime"
               style={{ margin: "3px", paddingLeft: "5px" }}
             >
               Start:

@@ -9,7 +9,7 @@ const secondColor = () =>
   d3
     .scaleOrdinal()
     .domain(1)
-    .range(d3.schemeCategory10);
+    .range([...d3.schemeCategory10, ...d3.schemeDark2, ...d3.schemePaired]);
 
 module.exports = {
   mainColor,

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
 import { useRouter } from "next/router";
-import moment from "moment";
 import Layouts from "../../../components/shared/layouts";
 import AnnotationsPage from "../../../components/videoPage/annotationsPage";
 import {
@@ -9,6 +8,7 @@ import {
   saveVideoAnnotations,
   cacheVideoAnnotation
 } from "../../../API/db";
+import { mainColor, secondColor } from "../../../API/color";
 
 /**
  * Dynamic page for each individual video post page
@@ -42,6 +42,11 @@ function MainVideoPage() {
     changeSubAnnotationProgressState
   ] = useState("hide");
 
+  const levelOneColor = useRef(null);
+  const levelTowColor = useRef(null);
+  levelOneColor.current = mainColor();
+  levelTowColor.current = secondColor();
+
   useEffect(() => {
     if (YTplayerRef.current) {
       YTplayerRef.current.wrapper.onmouseover = () => {
@@ -59,55 +64,18 @@ function MainVideoPage() {
       }
     };
   });
-  useEffect(() => {
-    document.addEventListener("keyup", ({ code }) => {
-      switch (code) {
-        case "ArrowRight":
-          seekTo(getCurrentTime() + 1);
-          break;
-        case "ArrowLeft":
-          seekTo(getCurrentTime() - 1);
-          break;
-        case "Escape":
-          if (YTplaying) playVideo(false);
-          else playVideo(true);
 
-          break;
-        default:
-          break;
-      }
-    });
-    return () =>
-      document.removeEventListener("keyup", ({ code }) => {
-        document.addEventListener("keyup", ({ code }) => {
-          switch (code) {
-            case "ArrowRight":
-              seekTo(getCurrentTime() + 1);
-              break;
-            case "ArrowLeft":
-              seekTo(getCurrentTime() - 1);
-              break;
-            case "Escape":
-              if (YTplaying) playVideo(false);
-              else playVideo(true);
-
-              break;
-            default:
-              break;
-          }
-        });
-      });
-  }, [YTplaying]);
   const seekTo = seconds => {
     YTplayerRef.current.seekTo(seconds);
     changeYTplaying(true);
   };
 
   const playVideo = flag => {
-    console.log(flag);
     changeYTplaying(flag);
   };
-  const getCurrentTime = () => YTplayerRef.current.getCurrentTime();
+  const getCurrentTime = () => {
+    return YTplayerRef.current.getCurrentTime();
+  };
 
   const updateAnnotations = newAnnotation => {
     // update the annotation with the newSubAnnotations
@@ -131,10 +99,10 @@ function MainVideoPage() {
     cacheVideoAnnotation(
       localVideoAnnotations,
       localVideoAnnotations.id,
-      localStorage.key(0)
+      localStorage.key(sheetId)
     );
     saveVideoAnnotations(
-      localStorage.key(0),
+      localStorage.key(sheetId),
       `${localVideoAnnotations.id}!A${newAnnotationId}`,
       newAnnotation
     );
@@ -168,9 +136,9 @@ function MainVideoPage() {
             </nav>
             <br />
           </div>
-          <div class="d-flex justify-content-center">
+          <div className="d-flex justify-content-center">
             <div className="spinner-border" style={{ role: "status" }}>
-              <span class="sr-only">Loading...</span>
+              <span className="sr-only">Loading...</span>
             </div>
           </div>
         </Layouts>
@@ -236,6 +204,7 @@ function MainVideoPage() {
             }}
           >
             <AnnotationsPage
+              kye={JSON.stringify(videoAnnotations.annotations)}
               videoLength={videoAnnotations.videoLength}
               annotations={videoAnnotations.annotations}
               player={{ seekTo, getCurrentTime, playVideo }}
@@ -244,6 +213,10 @@ function MainVideoPage() {
               deleteAnotation={deleteAnotation}
               getVideoProgress={getVideoProgress}
               subAnnotationProgressState={subAnnotationProgressState}
+              colorScheme={{
+                mainColor: levelOneColor.current,
+                secondColor: levelTowColor.current
+              }}
             />
           </div>
         </div>

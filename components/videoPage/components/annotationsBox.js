@@ -25,9 +25,13 @@ function AnnotationBox({
 
     if (annotationXStartposition + 500 > windowWidth) {
       refAnnotationEditForm.current.style.left = `${windowWidth - 500}px`;
-    } else {
+    } else if (annotationXStartposition + arrowOffset < 250) {
       refAnnotationEditForm.current.style.left = `${annotationXStartposition -
         20}px`;
+    } else {
+      refAnnotationEditForm.current.style.left = `${annotationXStartposition +
+        arrowOffset -
+        250}px`;
     }
   });
 
@@ -40,6 +44,7 @@ function AnnotationBox({
             border-radius: 0.4em;
             padding: 5px;
             transition: all 1s;
+            background-color: white;
           }
 
           .arrow-annotation {

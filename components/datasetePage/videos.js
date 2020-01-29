@@ -5,22 +5,23 @@ import Link from "next/link";
 /**
  * Videos: component for each video for search result page
  */
-function Video(props) {
-  const video = props.video;
-  const videoId = video.videoURL.replace("https://youtu.be/", "");
+function Video({
+  video: { videoId, videoTitle, annotations, ...otherProperties },
+  sheetId
+}) {
   let uniqueAnnotation = Array.from(
-    new Set(video.annotations.map(annotation => annotation.title))
+    new Set(annotations.map(annotation => annotation.title))
   );
   return (
-    <div class="card">
+    <div className="card">
       <Link
         href="/video/[sheetId]/[videoId]"
-        as={`/video/${props.sheetId}/${videoId}`}
+        as={`/video/${sheetId}/${videoId}`}
       >
         <a>
           <img
             src={"https://img.youtube.com/vi/" + videoId + "/hqdefault.jpg"}
-            class="card-img-top "
+            className="card-img-top "
             onMouseEnter={e => {
               e.target.style.cursor = "pointer";
               e.target.style.opacity = 0.7;
@@ -32,22 +33,22 @@ function Video(props) {
           />
         </a>
       </Link>
-      <div class="card-body bg-light text-dark">
+      <div className="card-body bg-light text-dark">
         <Link
           href="/video/[sheetId]/[videoId]"
-          as={`/video/${props.sheetId}/${videoId}`}
+          as={`/video/${sheetId}/${videoId}`}
         >
           <a>
-            <h5 class="card-title">{video.videoTitle}</h5>
+            <h5 className="card-title">{videoTitle}</h5>
           </a>
         </Link>
-        <p class="card-text">
-          <VideoInfo vidElem={video} />
+        <p className="card-text">
+          <VideoInfo video={otherProperties} />
         </p>
         <b>Annotations:</b>
-        <p class="card-text">
+        <p className="card-text">
           {uniqueAnnotation.map(annotation => (
-            <span class="badge badge-light">{annotation}</span>
+            <span className="badge badge-light">{annotation}</span>
           ))}
         </p>
       </div>

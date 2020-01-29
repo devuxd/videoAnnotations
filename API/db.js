@@ -36,35 +36,39 @@ const cacheVideoAnnotation = (videoAnnotations, videoId, sheetId) => {
   cacheData(newDataset, sheetId);
 };
 const findVideo = (dataset, videoId) =>
-  dataset.find(
-    video => video.videoURL.replace("https://youtu.be/", "") == videoId
-  );
+  dataset.find(video => video.videoId == videoId);
 const cacheData = (dataset, id) =>
   localStorage.setItem(id, JSON.stringify(dataset));
 
 const parse = rowDataset => {
-  const dataset = rowDataset.sheets.map(({ data }, sheetIndex) => {
+  const filteredRowDataset = rowDataset.sheets.filter(
+    ({ data }) => data[0].rowData[1].values[2] !== undefined
+  );
+  const dataset = filteredRowDataset.map(({ data }, sheetIndex) => {
     const videoJSON = {};
     const video = data[0].rowData[1];
     videoJSON.id = `Video${sheetIndex + 1}`;
     videoJSON.videoTitle = video.values[0].userEnteredValue.stringValue;
-    videoJSON.videoURL = video.values[1].userEnteredValue.stringValue;
+    videoJSON.videoPlatform = video.values[1].userEnteredValue.stringValue;
+    videoJSON.videoId = video.values[2].userEnteredValue.stringValue;
     videoJSON.videoLength =
-      video.values[2].userEnteredValue.numberValue * 3600 +
-      video.values[3].userEnteredValue.numberValue * 60 +
-      video.values[4].userEnteredValue.numberValue;
+      video.values[3].userEnteredValue.numberValue * 3600 +
+      video.values[4].userEnteredValue.numberValue * 60 +
+      video.values[5].userEnteredValue.numberValue;
 
     videoJSON.programmingLanguage =
-      video.values[5].userEnteredValue?.stringValue;
+      video.values[6].userEnteredValue?.stringValue;
 
-    videoJSON.programmingTools = video.values[6].userEnteredValue?.stringValue;
+    videoJSON.programmingTools =
+      video.values[7]?.userEnteredValue?.stringValue ?? "";
 
-    videoJSON.githubURL = video.values[7].userEnteredValue?.stringValue;
+    videoJSON.githubURL = video.values[8]?.userEnteredValue?.stringValue ?? "";
 
-    videoJSON.projectSize = video.values[8].userEnteredValue?.numberValue;
+    videoJSON.projectSize =
+      video.values[9]?.userEnteredValue?.numberValue ?? "";
 
     videoJSON.developerGithubURL =
-      video.values[9].userEnteredValue?.stringValue;
+      video.values[10]?.userEnteredValue?.stringValue ?? "";
 
     let annotationsData = data[0].rowData.splice(10, data[0].rowData.length);
     videoJSON.annotations = [];
