@@ -110,6 +110,9 @@ const googleLogin = () => {
             }
           },
           function(error) {
+            alert(
+              "Error Please refersh the pasge and look at the console logs"
+            );
             console.log(JSON.stringify(error, null, 2));
             rej(false);
           }
@@ -153,6 +156,7 @@ const saveVideoAnnotations = (spreadsheetId, range, annotations) =>
           }
         },
         function(error) {
+          alert("Error Please refersh the pasge and look at the console logs");
           console.log(JSON.stringify(error, null, 2));
         }
       )
