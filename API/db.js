@@ -13,7 +13,10 @@ const getDataset = sheetId =>
         cacheData(dataset, sheetId);
         res(dataset);
       })
-      .catch(e => rej(e));
+      .catch(e => {
+        alert(e.message);
+        return rej(e);
+      });
   });
 
 const getVideoAnnotations = (videoId, sheetId) =>
@@ -110,13 +113,16 @@ const googleLogin = () => {
             }
           },
           function(error) {
-            alert(
-              "Error Please refersh the pasge and look at the console logs"
-            );
+            alert(`Message: ${error.error.message}`);
             console.log(JSON.stringify(error, null, 2));
             rej(false);
           }
         )
+        .catch(e => {
+          alert(`Message: ${error.error.message}`);
+          console.log(JSON.stringify(error, null, 2));
+          rej(false);
+        })
     )
   );
 };
@@ -156,10 +162,14 @@ const saveVideoAnnotations = (spreadsheetId, range, annotations) =>
           }
         },
         function(error) {
-          alert("Error Please refersh the pasge and look at the console logs");
+          alert(`Message: ${error.error.message}`);
           console.log(JSON.stringify(error, null, 2));
         }
       )
+      .catch(e => {
+        console.log(JSON.stringify(error, null, 2));
+        alert(e.message);
+      })
   );
 
 module.exports = {

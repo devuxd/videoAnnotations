@@ -309,7 +309,11 @@ function AnnotationsPage(props) {
         {selectedAnnotationState === "showSubAnnotations&Edit" && (
           <AnnotationBox
             selectedAnnotationId={selectedSubAnnotation.id}
-            boxStyle={{ border: "3px solid", maxWidth: "500px" }}
+            boxStyle={{
+              border: "3px solid",
+              maxWidth: "500px",
+              backgroundColor: "white"
+            }}
             windowWidth={windowWidth}
           >
             <AnnotationEditForm
