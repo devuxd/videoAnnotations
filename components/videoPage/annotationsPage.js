@@ -95,6 +95,7 @@ function AnnotationsPage(props) {
           ? newSubAnnotation
           : subAnnotation
     );
+    changeSelectedAnnotation({ ...selectedAnnotation, subAnnotations });
     saveAnnotationChange({ ...selectedAnnotation, subAnnotations });
   };
 
@@ -116,6 +117,7 @@ function AnnotationsPage(props) {
       ...selectedAnnotation,
       subAnnotations: [...selectedAnnotation.subAnnotations, newSubAnnotation]
     };
+    changeSelectedAnnotation(newAnnotation);
     saveAnnotationChange(newAnnotation);
     changeSelectedAnnotationState("showSubAnnotations&Edit");
   };
@@ -269,6 +271,7 @@ function AnnotationsPage(props) {
       <>
         <AnnotationsVis
           annotationData={selectedAnnotation.subAnnotations}
+          key={JSON.stringify(selectedAnnotation.subAnnotations) + windowWidth}
           annotationLength={
             selectedAnnotation.duration.end.inSeconds -
             selectedAnnotation.duration.start.inSeconds
@@ -276,11 +279,6 @@ function AnnotationsPage(props) {
           annotationStart={selectedAnnotation.duration.start.time}
           onAnnotationClick={onSubAnnotationClick}
           divId={"#sub-annotations"}
-          key={
-            JSON.stringify(selectedAnnotation) +
-            windowWidth +
-            selectedAnnotationState
-          }
           windowWidth={windowWidth}
           colorScheme={props.colorScheme.secondColor}
         >

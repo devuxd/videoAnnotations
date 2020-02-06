@@ -11,7 +11,7 @@ function AnnotationBox({
 
   useEffect(() => {
     const refElement = document.getElementById(selectedAnnotationId);
-
+    if (refElement === null) return;
     const annotationXStartposition = Number(refElement.getAttribute("x"));
 
     const arrowOffset = refElement.getAttribute("width") / 2;

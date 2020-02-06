@@ -107,7 +107,7 @@ const googleLogin = () => {
               .getAuthInstance()
               .isSignedIn.listen(signedIn => res(true));
             if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-              res(true);
+              return res(true);
             } else {
               gapi.auth2.getAuthInstance().signIn();
             }
@@ -115,65 +115,71 @@ const googleLogin = () => {
           function(error) {
             alert(`Message: ${error.error.message}`);
             console.log(JSON.stringify(error, null, 2));
-            rej(false);
+            return rej(false);
           }
         )
         .catch(e => {
           alert(`Message: ${error.error.message}`);
           console.log(JSON.stringify(error, null, 2));
-          rej(false);
+          return rej(false);
         })
     )
   );
 };
 
 const saveVideoAnnotations = (spreadsheetId, range, annotations) =>
-  gapi.load("client:auth2", () =>
-    gapi.client
-      .init({
-        apiKey: key,
-        clientId: clientId,
-        scope: "https://www.googleapis.com/auth/spreadsheets",
-        discoveryDocs: [
-          "https://sheets.googleapis.com/$discovery/rest?version=v4"
-        ]
-      })
-      .then(
-        () => {
-          const handleSignedIn = signedIn => {
-            if (signedIn) {
-              gapi.client.sheets.spreadsheets.values
-                .update(
-                  { spreadsheetId, range, valueInputOption: "RAW" },
-                  { values: [[JSON.stringify(annotations)]] }
-                )
-                .then(() => {
-                  console.log("saved");
-                })
-                .catch(e => {
-                  console.log(JSON.stringify(error, null, 2));
-                  alert(e.message);
-                });
+  new Promise((res, rej) =>
+    gapi.load("client:auth2", () =>
+      gapi.client
+        .init({
+          apiKey: key,
+          clientId: clientId,
+          scope: "https://www.googleapis.com/auth/spreadsheets",
+          discoveryDocs: [
+            "https://sheets.googleapis.com/$discovery/rest?version=v4"
+          ]
+        })
+        .then(
+          () => {
+            const handleSignedIn = signedIn => {
+              if (signedIn) {
+                gapi.client.sheets.spreadsheets.values
+                  .update(
+                    { spreadsheetId, range, valueInputOption: "RAW" },
+                    { values: [[JSON.stringify(annotations)]] }
+                  )
+                  .then(() => {
+                    console.log("saved");
+                    return res(true);
+                  })
+                  .catch(e => {
+                    console.log(JSON.stringify(error, null, 2));
+                    alert(e.message);
+                    return rej(false);
+                  });
+              }
+            };
+            gapi.auth2
+              .getAuthInstance()
+              .isSignedIn.listen(signedIn => handleSignedIn(signedIn));
+            if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+              handleSignedIn(true);
+            } else {
+              gapi.auth2.getAuthInstance().signIn();
             }
-          };
-          gapi.auth2
-            .getAuthInstance()
-            .isSignedIn.listen(signedIn => handleSignedIn(signedIn));
-          if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-            handleSignedIn(true);
-          } else {
-            gapi.auth2.getAuthInstance().signIn();
+          },
+          function(error) {
+            alert(`Message: ${error.error.message}`);
+            console.log(JSON.stringify(error, null, 2));
+            return rej(false);
           }
-        },
-        function(error) {
-          alert(`Message: ${error.error.message}`);
+        )
+        .catch(e => {
           console.log(JSON.stringify(error, null, 2));
-        }
-      )
-      .catch(e => {
-        console.log(JSON.stringify(error, null, 2));
-        alert(e.message);
-      })
+          alert(e.message);
+          return rej(false);
+        })
+    )
   );
 
 module.exports = {
