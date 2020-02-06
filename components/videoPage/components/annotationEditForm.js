@@ -31,6 +31,7 @@ function AnnotationEditForm({
   };
 
   const handleSubmit = async () => {
+    //TODO remove inSeonds
     const localNewAnnotation = {
       duration: {
         start: {

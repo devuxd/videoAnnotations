@@ -29,6 +29,7 @@ function AnnotationAddForm({
   playVideo(false);
   const handleSubmit = async e => {
     e.preventDefault();
+    //TODO remove inSeonds
     const localNewAnnotation = {
       duration: {
         start: {

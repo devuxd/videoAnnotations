@@ -26,12 +26,7 @@ function AnnotationsPage(props) {
     const titles = props.annotations
       .map(annotation => annotation.subAnnotations.map(({ title }) => title))
       .flat();
-    changesubAnnotationTitles(
-      Array.from(
-        new Set(titles)
-        // new Set(selectedAnnotation?.subAnnotations.map(({ title }) => title))
-      )
-    );
+    changesubAnnotationTitles(Array.from(new Set(titles)));
   }, [selectedAnnotation]);
 
   const [selectedSubAnnotation, changeSelectedSubAnnotation] = useState(null);
@@ -141,7 +136,6 @@ function AnnotationsPage(props) {
   };
 
   const saveAnnotationChange = newAnnotation => {
-    changeSelectedAnnotation(newAnnotation);
     props.updateAnnotations(newAnnotation);
   };
   // show the annotation or the sub-annotation and never both
@@ -279,9 +273,14 @@ function AnnotationsPage(props) {
             selectedAnnotation.duration.end.inSeconds -
             selectedAnnotation.duration.start.inSeconds
           }
+          annotationStart={selectedAnnotation.duration.start.time}
           onAnnotationClick={onSubAnnotationClick}
           divId={"#sub-annotations"}
-          key={JSON.stringify(selectedAnnotation.subAnnotations) + windowWidth}
+          key={
+            JSON.stringify(selectedAnnotation) +
+            windowWidth +
+            selectedAnnotationState
+          }
           windowWidth={windowWidth}
           colorScheme={props.colorScheme.secondColor}
         >
@@ -407,6 +406,7 @@ function AnnotationsPage(props) {
           <AnnotationsVis
             annotationData={props.annotations}
             annotationLength={props.videoLength}
+            annotationStart={"0:00:00"}
             onAnnotationClick={onAnnotationClick}
             divId={"#video-annotations"}
             key={JSON.stringify(props.annotations) + windowWidth}

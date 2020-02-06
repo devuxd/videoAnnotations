@@ -1,5 +1,9 @@
 import React from "react";
 import * as d3 from "d3";
+import {
+  stringToSecondsFormat,
+  secondsToStringFormat
+} from "../../../API/time";
 /**
  * d3.js scatterplot component to visualize annotations
  */
@@ -25,7 +29,6 @@ export default class extends React.Component {
       .scaleLinear()
       .domain([0, annotationLength])
       .range([0, this.props.windowWidth - 10]);
-
     mini
       .append("g")
       .selectAll("miniItems")
@@ -39,13 +42,26 @@ export default class extends React.Component {
       .style("stroke", "black")
       .style("stroke-width", ".3px")
       .attr("x", d => {
-        return scale(d.duration.start.inSeconds);
+        const start =
+          stringToSecondsFormat(d.duration.start.time) -
+          stringToSecondsFormat(this.props.annotationStart);
+        return scale(start);
       })
-      .attr("id", function(d) {
+      .attr("id", d => {
         return d.id;
       })
-      .attr("width", function(d) {
-        return scale(d.duration.end.inSeconds - d.duration.start.inSeconds);
+      .attr("width", d => {
+        // this really remove the need for calculating the seconds in save.
+
+        const start =
+          stringToSecondsFormat(d.duration.start.time) -
+          stringToSecondsFormat(this.props.annotationStart);
+        const end =
+          stringToSecondsFormat(d.duration.end.time) -
+          stringToSecondsFormat(this.props.annotationStart);
+        let width = end - start;
+        if (width < 1) width = 1;
+        return scale(width);
       })
       .attr("height", 15)
       .on("mouseover", function(d) {

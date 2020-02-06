@@ -149,6 +149,10 @@ const saveVideoAnnotations = (spreadsheetId, range, annotations) =>
                 )
                 .then(() => {
                   console.log("saved");
+                })
+                .catch(e => {
+                  console.log(JSON.stringify(error, null, 2));
+                  alert(e.message);
                 });
             }
           };
