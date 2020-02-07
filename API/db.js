@@ -14,7 +14,9 @@ const getDataset = sheetId =>
         res(dataset);
       })
       .catch(e => {
-        alert(e.message);
+        alert(
+          `Error: unable to retrieve the data, please check you connection, refersh the page and check the data access privilege at google sheets.`
+        );
         return rej(e);
       });
   });
@@ -112,15 +114,19 @@ const googleLogin = () => {
               gapi.auth2.getAuthInstance().signIn();
             }
           },
-          function(error) {
-            alert(`Message: ${error.error.message}`);
-            console.log(JSON.stringify(error, null, 2));
+          function(e) {
+            alert(
+              `Error: unable to save, please check you connection and refersh the page`
+            );
+            console.log(JSON.stringify(e, null, 2));
             return rej(false);
           }
         )
         .catch(e => {
-          alert(`Message: ${error.error.message}`);
-          console.log(JSON.stringify(error, null, 2));
+          alert(
+            `Error: unable to save, please check you connection and refersh the page`
+          );
+          console.log(JSON.stringify(e, null, 2));
           return rej(false);
         })
     )
@@ -149,12 +155,13 @@ const saveVideoAnnotations = (spreadsheetId, range, annotations) =>
                     { values: [[JSON.stringify(annotations)]] }
                   )
                   .then(() => {
-                    console.log("saved");
                     return res(true);
                   })
                   .catch(e => {
-                    console.log(JSON.stringify(error, null, 2));
-                    alert(e.message);
+                    console.log(JSON.stringify(e, null, 2));
+                    alert(
+                      `Error: unable to save, please check you connection and refersh the page`
+                    );
                     return rej(false);
                   });
               }
@@ -168,15 +175,19 @@ const saveVideoAnnotations = (spreadsheetId, range, annotations) =>
               gapi.auth2.getAuthInstance().signIn();
             }
           },
-          function(error) {
-            alert(`Message: ${error.error.message}`);
-            console.log(JSON.stringify(error, null, 2));
+          function(e) {
+            alert(
+              `Error: unable to save, please check you connection and refersh the page`
+            );
+            console.log(JSON.stringify(e, null, 2));
             return rej(false);
           }
         )
         .catch(e => {
-          console.log(JSON.stringify(error, null, 2));
-          alert(e.message);
+          console.log(JSON.stringify(e, null, 2));
+          alert(
+            `Error: unable to save, please check you connection and refersh the page`
+          );
           return rej(false);
         })
     )

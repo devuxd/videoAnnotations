@@ -102,10 +102,11 @@ function MainVideoPage() {
     let localVideoAnnotations = { ...videoAnnotations, annotations };
     try {
       await saveVideoAnnotations(
-        localStorage.key(sheetId),
+        sheetId,
         `${localVideoAnnotations.id}!A${newAnnotationId}`,
         newAnnotation
       );
+      console.log(`saved!`);
     } catch (e) {
       console.log(e.message);
       return;
@@ -114,7 +115,7 @@ function MainVideoPage() {
     cacheVideoAnnotation(
       localVideoAnnotations,
       localVideoAnnotations.id,
-      localStorage.key(sheetId)
+      sheetId
     );
   };
   const deleteAnotation = annotation => {
