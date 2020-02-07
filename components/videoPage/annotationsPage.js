@@ -22,7 +22,7 @@ function AnnotationsPage(props) {
   const selectedSubAnnotation = useRef(null);
 
   // just to force react to rereander :( this is a hack
-  const [UpdatedAnnotation, changeSUpdatedAnnotation] = useState(null);
+  const [UpdatedAnnotation, changeUpdatedAnnotation] = useState(null);
 
   useEffect(() => {
     changeAnnotationTitles(
@@ -32,19 +32,17 @@ function AnnotationsPage(props) {
       .map(annotation => annotation.subAnnotations?.map(({ title }) => title))
       .flat();
     changesubAnnotationTitles(Array.from(new Set(titles)));
-  }, [selectedAnnotation]);
+  }, [selectedAnnotation.current]);
 
-  useEffect(() => {
-    const prevoiusAnnotationId = selectedAnnotation.current?.id;
-    const prevoiusSubAnnotationId = selectedSubAnnotation.current?.id;
+  const prevoiusAnnotationId = selectedAnnotation.current?.id;
+  const prevoiusSubAnnotationId = selectedSubAnnotation.current?.id;
 
-    selectedAnnotation.current = props.annotations.find(
-      annotation => annotation.id === prevoiusAnnotationId
-    );
-    selectedSubAnnotation.current = selectedAnnotation.current?.subAnnotations.find(
-      annotation => annotation.id === prevoiusSubAnnotationId
-    );
-  }, [props.annotations]);
+  selectedAnnotation.current = props.annotations.find(
+    annotation => annotation.id === prevoiusAnnotationId
+  );
+  selectedSubAnnotation.current = selectedAnnotation.current?.subAnnotations.find(
+    annotation => annotation.id === prevoiusSubAnnotationId
+  );
 
   // Stats:
   // 1: showAnnotations -> show only main annotations.
@@ -94,7 +92,7 @@ function AnnotationsPage(props) {
     selectedAnnotation.current = newSelectedAnnotation;
     props.player.seekTo(newSelectedAnnotation.duration.start.inSeconds);
     changeSelectedAnnotationState("showAnnotations&Edit");
-    changeSUpdatedAnnotation(newSelectedAnnotation);
+    changeUpdatedAnnotation(newSelectedAnnotation);
   };
 
   // handel sub-annotation click
@@ -105,7 +103,7 @@ function AnnotationsPage(props) {
     );
     selectedSubAnnotation.current = newSelectedSubAnnotation;
     changeSelectedAnnotationState("showSubAnnotations&Edit");
-    changeSUpdatedAnnotation(newSelectedSubAnnotation);
+    changeUpdatedAnnotation(newSelectedSubAnnotation);
   };
   // ***
 
@@ -117,14 +115,14 @@ function AnnotationsPage(props) {
           ? newSubAnnotation
           : subAnnotation
     );
-    changeSUpdatedAnnotation(newSubAnnotation);
+    changeUpdatedAnnotation({ ...newSubAnnotation });
     props.updateAnnotations({ ...selectedAnnotation.current, subAnnotations });
   };
 
   // when one of the annotation updated -> propagate the update to the main state maintained by [videoId].js
   const updateSelectedAnnotation = newAnnotation => {
     const { subAnnotations } = selectedAnnotation.current;
-    changeSUpdatedAnnotation(newAnnotation);
+    changeUpdatedAnnotation(newAnnotation);
     props.updateAnnotations({ ...newAnnotation, subAnnotations });
   };
 
