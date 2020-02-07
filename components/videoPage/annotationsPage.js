@@ -115,7 +115,7 @@ function AnnotationsPage(props) {
           ? newSubAnnotation
           : subAnnotation
     );
-    changeUpdatedAnnotation({ ...newSubAnnotation });
+    changeUpdatedAnnotation(newSubAnnotation);
     props.updateAnnotations({ ...selectedAnnotation.current, subAnnotations });
   };
 
