@@ -55,6 +55,7 @@ function AnnotationEditForm({
     } catch (e) {
       return;
     }
+    debugger;
     update(localNewAnnotation);
   };
   const SeekToEnd = () => {

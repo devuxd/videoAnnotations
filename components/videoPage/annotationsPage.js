@@ -20,7 +20,9 @@ function AnnotationsPage(props) {
   // keep track of the selected annotation and sub-annotation.
   const selectedAnnotation = useRef(null);
   const selectedSubAnnotation = useRef(null);
-  const [selectedAnnotationId, changeSelectedAnnotationId] = useState(null);
+
+  // just to force react to rereander :( this is a hack
+  const [UpdatedAnnotation, changeSUpdatedAnnotation] = useState(null);
 
   useEffect(() => {
     changeAnnotationTitles(
@@ -92,7 +94,7 @@ function AnnotationsPage(props) {
     selectedAnnotation.current = newSelectedAnnotation;
     props.player.seekTo(newSelectedAnnotation.duration.start.inSeconds);
     changeSelectedAnnotationState("showAnnotations&Edit");
-    changeSelectedAnnotationId(newSelectedAnnotation.id);
+    changeSUpdatedAnnotation(newSelectedAnnotation);
   };
 
   // handel sub-annotation click
@@ -103,7 +105,7 @@ function AnnotationsPage(props) {
     );
     selectedSubAnnotation.current = newSelectedSubAnnotation;
     changeSelectedAnnotationState("showSubAnnotations&Edit");
-    changeSelectedAnnotationId(newSelectedSubAnnotation.id);
+    changeSUpdatedAnnotation(newSelectedSubAnnotation);
   };
   // ***
 
@@ -115,12 +117,14 @@ function AnnotationsPage(props) {
           ? newSubAnnotation
           : subAnnotation
     );
+    changeSUpdatedAnnotation(newSubAnnotation);
     props.updateAnnotations({ ...selectedAnnotation.current, subAnnotations });
   };
 
   // when one of the annotation updated -> propagate the update to the main state maintained by [videoId].js
   const updateSelectedAnnotation = newAnnotation => {
     const { subAnnotations } = selectedAnnotation.current;
+    changeSUpdatedAnnotation(newAnnotation);
     props.updateAnnotations({ ...newAnnotation, subAnnotations });
   };
 
