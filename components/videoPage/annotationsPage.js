@@ -70,27 +70,27 @@ function AnnotationsPage(props) {
 
   // *** Click handlers
   // handel the click on annotation and sub-annotation
-  const onAnnotationClick = newSelectedAnnotation => {
+  const onAnnotationClick = (newSelectedAnnotation, timeout = 0) => {
     document.getElementById("video-annotations").scrollIntoView();
     props.player.seekTo(newSelectedAnnotation.duration.start.inSeconds);
     changeSelectedAnnotationState("showAnnotations&Edit");
     //TODO: remove this timeout and create a one global state with useReducer to avoid double renders
     setTimeout(_ => {
       props.changeSelectedAnnotation(newSelectedAnnotation);
-    }, 500);
+    }, timeout);
   };
 
   // handel sub-annotation click
-  const onSubAnnotationClick = newSelectedSubAnnotation => {
+  const onSubAnnotationClick = (newSelectedSubAnnotation, timeout = 0) => {
     props.player.seekTo(
       props.selectedAnnotation.duration.start.inSeconds +
-        newSelectedSubAnnotation.duration.start.inSeconds
+      newSelectedSubAnnotation.duration.start.inSeconds
     );
     changeSelectedAnnotationState("showSubAnnotations&Edit");
     //TODO: remove this timeout and create a one global state with useReducer to avoid double renders
     setTimeout(_ => {
       props.changeSelectedSubAnnotation(newSelectedSubAnnotation);
-    }, 500);
+    }, timeout);
   };
   // ***
 
@@ -118,7 +118,7 @@ function AnnotationsPage(props) {
 
   const addNewAnnotation = newAnnotation => {
     const annotation = { ...newAnnotation, subAnnotations: [] };
-    onAnnotationClick(annotation);
+    onAnnotationClick(annotation, 500);
     props.addAnnotation(annotation);
   };
   // adding annotation start with only adding title and start time and then call editSubAnnotation to let the user continue
@@ -131,7 +131,7 @@ function AnnotationsPage(props) {
       ]
     };
 
-    onSubAnnotationClick(newSubAnnotation);
+    onSubAnnotationClick(newSubAnnotation, 500);
     props.changeSelectedAnnotation(newAnnotation);
     props.updateAnnotations(newAnnotation);
   };
@@ -360,7 +360,7 @@ function AnnotationsPage(props) {
             annotationTitles={subAnnotationTitles.current}
             newAnnotationId={`${props.selectedAnnotation.id}_${
               props.selectedAnnotation.subAnnotations.length
-            }_${Math.floor(Math.random(10) * 10000)}`}
+              }_${Math.floor(Math.random(10) * 10000)}`}
             defaultStartTime={
               props.selectedAnnotation.subAnnotations[
                 props.selectedAnnotation.subAnnotations.length - 1
