@@ -35,6 +35,7 @@ function MainVideoPage() {
     if (sheetId !== undefined) {
       fetchVideo();
     }
+    return () => {};
   }, [sheetId]);
 
   const [
@@ -93,18 +94,28 @@ function MainVideoPage() {
   };
 
   // update local copy, localStorage copy and then save it in the spreedseet
-  const saveAnnotations = (annotations, newAnnotation, newAnnotationId) => {
+  const saveAnnotations = async (
+    annotations,
+    newAnnotation,
+    newAnnotationId
+  ) => {
     let localVideoAnnotations = { ...videoAnnotations, annotations };
+    try {
+      await saveVideoAnnotations(
+        sheetId,
+        `${localVideoAnnotations.id}!A${newAnnotationId}`,
+        newAnnotation
+      );
+      console.log(`saved!`);
+    } catch (e) {
+      console.log(e.message);
+      return;
+    }
     updateVideoAnnotations(localVideoAnnotations);
     cacheVideoAnnotation(
       localVideoAnnotations,
       localVideoAnnotations.id,
-      localStorage.key(sheetId)
-    );
-    saveVideoAnnotations(
-      localStorage.key(sheetId),
-      `${localVideoAnnotations.id}!A${newAnnotationId}`,
-      newAnnotation
+      sheetId
     );
   };
   const deleteAnotation = annotation => {

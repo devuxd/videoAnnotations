@@ -13,7 +13,12 @@ const getDataset = sheetId =>
         cacheData(dataset, sheetId);
         res(dataset);
       })
-      .catch(e => rej(e));
+      .catch(e => {
+        alert(
+          `Error: unable to retrieve the data, please check you connection, refersh the page and check the data access privilege at google sheets.`
+        );
+        return rej(e);
+      });
   });
 
 const getVideoAnnotations = (videoId, sheetId) =>
@@ -104,58 +109,88 @@ const googleLogin = () => {
               .getAuthInstance()
               .isSignedIn.listen(signedIn => res(true));
             if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-              res(true);
+              return res(true);
             } else {
               gapi.auth2.getAuthInstance().signIn();
             }
           },
-          function(error) {
-            console.log(JSON.stringify(error, null, 2));
-            rej(false);
+          function(e) {
+            alert(
+              `Error: unable to save, please check you connection and refersh the page`
+            );
+            console.log(JSON.stringify(e, null, 2));
+            return rej(false);
           }
         )
+        .catch(e => {
+          alert(
+            `Error: unable to save, please check you connection and refersh the page`
+          );
+          console.log(JSON.stringify(e, null, 2));
+          return rej(false);
+        })
     )
   );
 };
 
 const saveVideoAnnotations = (spreadsheetId, range, annotations) =>
-  gapi.load("client:auth2", () =>
-    gapi.client
-      .init({
-        apiKey: key,
-        clientId: clientId,
-        scope: "https://www.googleapis.com/auth/spreadsheets",
-        discoveryDocs: [
-          "https://sheets.googleapis.com/$discovery/rest?version=v4"
-        ]
-      })
-      .then(
-        () => {
-          const handleSignedIn = signedIn => {
-            if (signedIn) {
-              gapi.client.sheets.spreadsheets.values
-                .update(
-                  { spreadsheetId, range, valueInputOption: "RAW" },
-                  { values: [[JSON.stringify(annotations)]] }
-                )
-                .then(() => {
-                  console.log("saved");
-                });
+  new Promise((res, rej) =>
+    gapi.load("client:auth2", () =>
+      gapi.client
+        .init({
+          apiKey: key,
+          clientId: clientId,
+          scope: "https://www.googleapis.com/auth/spreadsheets",
+          discoveryDocs: [
+            "https://sheets.googleapis.com/$discovery/rest?version=v4"
+          ]
+        })
+        .then(
+          () => {
+            const handleSignedIn = signedIn => {
+              if (signedIn) {
+                gapi.client.sheets.spreadsheets.values
+                  .update(
+                    { spreadsheetId, range, valueInputOption: "RAW" },
+                    { values: [[JSON.stringify(annotations)]] }
+                  )
+                  .then(() => {
+                    return res(true);
+                  })
+                  .catch(e => {
+                    console.log(JSON.stringify(e, null, 2));
+                    alert(
+                      `Error: unable to save, please check you connection and refersh the page`
+                    );
+                    return rej(false);
+                  });
+              }
+            };
+            gapi.auth2
+              .getAuthInstance()
+              .isSignedIn.listen(signedIn => handleSignedIn(signedIn));
+            if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+              handleSignedIn(true);
+            } else {
+              gapi.auth2.getAuthInstance().signIn();
             }
-          };
-          gapi.auth2
-            .getAuthInstance()
-            .isSignedIn.listen(signedIn => handleSignedIn(signedIn));
-          if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-            handleSignedIn(true);
-          } else {
-            gapi.auth2.getAuthInstance().signIn();
+          },
+          function(e) {
+            alert(
+              `Error: unable to save, please check you connection and refersh the page`
+            );
+            console.log(JSON.stringify(e, null, 2));
+            return rej(false);
           }
-        },
-        function(error) {
-          console.log(JSON.stringify(error, null, 2));
-        }
-      )
+        )
+        .catch(e => {
+          console.log(JSON.stringify(e, null, 2));
+          alert(
+            `Error: unable to save, please check you connection and refersh the page`
+          );
+          return rej(false);
+        })
+    )
   );
 
 module.exports = {

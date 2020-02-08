@@ -29,8 +29,8 @@ function AnnotationEditForm({
       refEndTime.current.value = time;
     }
   };
-
   const handleSubmit = async () => {
+    //TODO remove inSeonds
     const localNewAnnotation = {
       duration: {
         start: {
@@ -55,6 +55,7 @@ function AnnotationEditForm({
     } catch (e) {
       return;
     }
+
     update(localNewAnnotation);
   };
   const SeekToEnd = () => {
