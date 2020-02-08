@@ -21,18 +21,29 @@ function AnnotationsPage(props) {
   const selectedAnnotation = useRef(null);
   const selectedSubAnnotation = useRef(null);
 
+  // Stats:
+  // 1: showAnnotations -> show only main annotations.
+  // 2: showAnnotations&Edit -> when one of the main annotations got clicked show edit form.
+  // 3: showAnnotations&Add -> when add annotation button cliked show the add forms.
+  // 4 : showSubAnnotations -> when show sub-annotations button clicked, show all sub annotations for the selected annotations.
+  // 5 : showSubAnnotations&Edit -> when one of the sub-annotation got clicked show edit form for the selected subAnnotation.
+  // 6 : showSubAnnotations&Add -> when the add sub-annotations got clicked, show the add sub-annotation form.
+  const [selectedAnnotationState, changeSelectedAnnotationState] = useState(
+    "showAnnotations"
+  );
+  const annotationTitles = useRef(null);
+  const subAnnotationTitles = useRef(null);
+  const [windowWidth, changeWindowWidth] = useState(0);
   // just to force react to rereander :( this is a hack
   const [UpdatedAnnotation, changeUpdatedAnnotation] = useState(null);
 
-  useEffect(() => {
-    changeAnnotationTitles(
-      Array.from(new Set(props.annotations.map(annotation => annotation.title)))
-    );
-    const titles = props.annotations
-      .map(annotation => annotation.subAnnotations?.map(({ title }) => title))
-      .flat();
-    changesubAnnotationTitles(Array.from(new Set(titles)));
-  }, [selectedAnnotation.current]);
+  annotationTitles.current = Array.from(
+    new Set(props.annotations.map(annotation => annotation.title))
+  );
+  const titles = props.annotations
+    .map(annotation => annotation.subAnnotations?.map(({ title }) => title))
+    .flat();
+  subAnnotationTitles.current = Array.from(new Set(titles));
 
   const prevoiusAnnotationId = selectedAnnotation.current?.id;
   const prevoiusSubAnnotationId = selectedSubAnnotation.current?.id;
@@ -44,19 +55,6 @@ function AnnotationsPage(props) {
     annotation => annotation.id === prevoiusSubAnnotationId
   );
 
-  // Stats:
-  // 1: showAnnotations -> show only main annotations.
-  // 2: showAnnotations&Edit -> when one of the main annotations got clicked show edit form.
-  // 3: showAnnotations&Add -> when add annotation button cliked show the add forms.
-  // 4 : showSubAnnotations -> when show sub-annotations button clicked, show all sub annotations for the selected annotations.
-  // 5 : showSubAnnotations&Edit -> when one of the sub-annotation got clicked show edit form for the selected subAnnotation.
-  // 6 : showSubAnnotations&Add -> when the add sub-annotations got clicked, show the add sub-annotation form.
-  const [selectedAnnotationState, changeSelectedAnnotationState] = useState(
-    "showAnnotations"
-  );
-  const [annotationTitles, changeAnnotationTitles] = useState([]);
-  const [subAnnotationTitles, changesubAnnotationTitles] = useState([]);
-  const [windowWidth, changeWindowWidth] = useState(0);
   useEffect(() => {
     changeWindowWidth(document.getElementById("YTplayer").offsetWidth);
     window.addEventListener("resize", () =>
@@ -217,7 +215,7 @@ function AnnotationsPage(props) {
               selectedAnnotationStart={0}
               key={JSON.stringify(selectedAnnotation.current)}
               seekTo={props.player.seekTo}
-              annotationTitles={annotationTitles}
+              annotationTitles={annotationTitles.current}
             />
             <div
               style={{
@@ -348,7 +346,7 @@ function AnnotationsPage(props) {
                   selectedAnnotation.current.duration.start.inSeconds
                 }
                 seekTo={props.player.seekTo}
-                annotationTitles={subAnnotationTitles}
+                annotationTitles={subAnnotationTitles.current}
               />
               <div
                 style={{
@@ -373,7 +371,7 @@ function AnnotationsPage(props) {
             player={props.player}
             addNewSubAnnotation={addNewSubAnnotation}
             offsetTime={selectedAnnotation.current.duration.start.inSeconds}
-            annotationTitles={subAnnotationTitles}
+            annotationTitles={subAnnotationTitles.current}
             newAnnotationId={`${selectedAnnotation.current.id}_${
               selectedAnnotation.current.subAnnotations.length
             }_${Math.floor(Math.random(10) * 10000)}`}
@@ -417,7 +415,7 @@ function AnnotationsPage(props) {
         >
           <AnnotationsTitles
             key={selectedAnnotation.current}
-            titles={annotationTitles}
+            titles={annotationTitles.current}
             selectedTitle={selectedAnnotation?.title}
             colorScheme={props.colorScheme.mainColor}
           />
@@ -495,7 +493,7 @@ function AnnotationsPage(props) {
               player={props.player}
               addNewSubAnnotation={addNewAnnotation}
               offsetTime={0}
-              annotationTitles={annotationTitles}
+              annotationTitles={annotationTitles.current}
               newAnnotationId={
                 (props.annotations[props.annotations.length - 1]?.id ?? 10) + 1
               }
@@ -527,7 +525,7 @@ function AnnotationsPage(props) {
             >
               <AnnotationsTitles
                 key={selectedSubAnnotation.current}
-                titles={subAnnotationTitles}
+                titles={subAnnotationTitles.current}
                 selectedTitle={selectedSubAnnotation.current?.title}
                 colorScheme={props.colorScheme.secondColor}
               />
