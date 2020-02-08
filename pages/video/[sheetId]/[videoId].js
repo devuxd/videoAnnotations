@@ -26,6 +26,9 @@ function MainVideoPage() {
   const [YTplaying, changeYTplaying] = useState(true);
   const videoProgress = useRef(null);
   const YTplayerRef = useRef(null);
+  const [selectedAnnotation, changeSelectedAnnotation] = useState(null);
+  const [selectedSubAnnotation, changeSelectedSubAnnotation] = useState(null);
+
   useEffect(() => {
     const fetchVideo = async () => {
       let localVideoAnnotations = await getVideoAnnotations(videoId, sheetId);
@@ -215,7 +218,10 @@ function MainVideoPage() {
             }}
           >
             <AnnotationsPage
-              kye={JSON.stringify(videoAnnotations.annotations)}
+              kye={JSON.stringify({
+                ...selectedAnnotation,
+                ...selectedSubAnnotation
+              })}
               videoLength={videoAnnotations.videoLength}
               annotations={videoAnnotations.annotations}
               player={{ seekTo, getCurrentTime, playVideo }}
@@ -228,6 +234,10 @@ function MainVideoPage() {
                 mainColor: levelOneColor.current,
                 secondColor: levelTowColor.current
               }}
+              changeSelectedAnnotation={changeSelectedAnnotation}
+              changeSelectedSubAnnotation={changeSelectedSubAnnotation}
+              selectedAnnotation={selectedAnnotation}
+              selectedSubAnnotation={selectedSubAnnotation}
             />
           </div>
         </div>
