@@ -1,10 +1,10 @@
 import moment from "moment";
 
-const secondsToStringFormat = seconds =>
-  moment("2015-01-01")
-    .startOf("day")
-    .seconds(seconds)
-    .format("H:mm:ss");
+const secondsToStringFormat = seconds => {
+  const hours = Math.floor(moment.duration(seconds, "seconds").asHours());
+  const time = moment.duration(seconds, "seconds");
+  return `${hours}:${time.minutes()}:${time.seconds()}`;
+};
 
 const stringToSecondsFormat = string => moment.duration(string).asSeconds();
 module.exports = {

@@ -33,7 +33,7 @@ function AnnotationsPage(props) {
   const trackingTime = useRef(null);
   const [videoProgress, changeVideoProgress] = useState(0);
   // just to force react to rereander :( this is a hack
-
+  const timeout = useRef(0);
   annotationTitles.current = Array.from(
     new Set(props.annotations.map(annotation => annotation.title))
   );
@@ -70,27 +70,29 @@ function AnnotationsPage(props) {
 
   // *** Click handlers
   // handel the click on annotation and sub-annotation
-  const onAnnotationClick = (newSelectedAnnotation, timeout = 0) => {
+  const onAnnotationClick = newSelectedAnnotation => {
     document.getElementById("video-annotations").scrollIntoView();
     props.player.seekTo(newSelectedAnnotation.duration.start.inSeconds);
     changeSelectedAnnotationState("showAnnotations&Edit");
     //TODO: remove this timeout and create a one global state with useReducer to avoid double renders
     setTimeout(_ => {
       props.changeSelectedAnnotation(newSelectedAnnotation);
-    }, timeout);
+      timeout.current = 0;
+    }, timeout.current);
   };
 
   // handel sub-annotation click
-  const onSubAnnotationClick = (newSelectedSubAnnotation, timeout = 0) => {
+  const onSubAnnotationClick = newSelectedSubAnnotatio => {
     props.player.seekTo(
       props.selectedAnnotation.duration.start.inSeconds +
-      newSelectedSubAnnotation.duration.start.inSeconds
+        newSelectedSubAnnotatio.duration.start.inSeconds
     );
     changeSelectedAnnotationState("showSubAnnotations&Edit");
     //TODO: remove this timeout and create a one global state with useReducer to avoid double renders
     setTimeout(_ => {
-      props.changeSelectedSubAnnotation(newSelectedSubAnnotation);
-    }, timeout);
+      props.changeSelectedSubAnnotation(newSelectedSubAnnotatio);
+      timeout.current = 0;
+    }, timeout.current);
   };
   // ***
 
@@ -102,6 +104,7 @@ function AnnotationsPage(props) {
           ? newSubAnnotation
           : subAnnotation
     );
+    timeout.current = 500;
     const updatedAnnotation = { ...props.selectedAnnotation, subAnnotations };
     props.changeSelectedSubAnnotation(newSubAnnotation);
     props.changeSelectedAnnotation(updatedAnnotation);
@@ -112,13 +115,14 @@ function AnnotationsPage(props) {
   const updateSelectedAnnotation = newAnnotation => {
     const { subAnnotations } = props.selectedAnnotation;
     const updatedAnnotation = { ...newAnnotation, subAnnotations };
+    timeout.current = 500;
     props.changeSelectedAnnotation(updatedAnnotation);
     props.updateAnnotations(updatedAnnotation);
   };
 
   const addNewAnnotation = newAnnotation => {
     const annotation = { ...newAnnotation, subAnnotations: [] };
-    onAnnotationClick(annotation, 500);
+    onAnnotationClick(annotation);
     props.addAnnotation(annotation);
   };
   // adding annotation start with only adding title and start time and then call editSubAnnotation to let the user continue
@@ -131,7 +135,7 @@ function AnnotationsPage(props) {
       ]
     };
 
-    onSubAnnotationClick(newSubAnnotation, 500);
+    onSubAnnotationClick(newSubAnnotation);
     props.changeSelectedAnnotation(newAnnotation);
     props.updateAnnotations(newAnnotation);
   };
@@ -360,7 +364,7 @@ function AnnotationsPage(props) {
             annotationTitles={subAnnotationTitles.current}
             newAnnotationId={`${props.selectedAnnotation.id}_${
               props.selectedAnnotation.subAnnotations.length
-              }_${Math.floor(Math.random(10) * 10000)}`}
+            }_${Math.floor(Math.random(10) * 10000)}`}
             defaultStartTime={
               props.selectedAnnotation.subAnnotations[
                 props.selectedAnnotation.subAnnotations.length - 1
