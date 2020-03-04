@@ -12,7 +12,7 @@ function AnnotationEditForm({
   selectedAnnotation,
   getCurrentTime,
   update,
-  selectedAnnotationStart,
+  offsetTime,
   seekTo,
   annotationTitles
 }) {
@@ -36,14 +36,12 @@ function AnnotationEditForm({
         start: {
           time: refStartTime.current.value,
           inSeconds:
-            stringToSecondsFormat(refStartTime.current.value) -
-            selectedAnnotationStart
+            stringToSecondsFormat(refStartTime.current.value) - offsetTime
         },
         end: {
           time: refEndTime.current.value,
           inSeconds:
-            stringToSecondsFormat(refEndTime.current.value) -
-            selectedAnnotationStart
+            stringToSecondsFormat(refEndTime.current.value) - offsetTime
         }
       },
       id: selectedAnnotation.id,
@@ -59,7 +57,7 @@ function AnnotationEditForm({
     update(localNewAnnotation);
   };
   const SeekToEnd = () => {
-    seekTo(selectedAnnotation.duration.end.inSeconds + selectedAnnotationStart);
+    seekTo(selectedAnnotation.duration.end.inSeconds + offsetTime);
   };
   const addTitle = ([newTitle, ...rest]) => {
     const title = newTitle?.label ?? "";
@@ -83,6 +81,7 @@ function AnnotationEditForm({
           options={annotationTitles}
           selected={selectedAnnotation.title}
           onChange={addTitle}
+          key={selectedAnnotation.id}
         />
       </div>
       <div

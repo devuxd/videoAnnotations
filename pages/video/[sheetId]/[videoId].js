@@ -26,6 +26,7 @@ function MainVideoPage() {
   const [YTplaying, changeYTplaying] = useState(true);
   const videoProgress = useRef(null);
   const YTplayerRef = useRef(null);
+
   useEffect(() => {
     const fetchVideo = async () => {
       let localVideoAnnotations = await getVideoAnnotations(videoId, sheetId);
@@ -215,7 +216,6 @@ function MainVideoPage() {
             }}
           >
             <AnnotationsPage
-              kye={JSON.stringify(videoAnnotations.annotations)}
               videoLength={videoAnnotations.videoLength}
               annotations={videoAnnotations.annotations}
               player={{ seekTo, getCurrentTime, playVideo }}

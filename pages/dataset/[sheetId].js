@@ -75,11 +75,9 @@ function Dataset() {
         <h3>
           Total Time:
           {secondsToStringFormat(
-            dataset.reduce(
-              (prevoiusValue, currentValue) =>
-                prevoiusValue + currentValue.videoLength,
-              0
-            )
+            dataset.reduce((prevoiusValue, currentValue) => {
+              return prevoiusValue + currentValue.videoLength;
+            }, 0)
           )}
         </h3>
         <br />
