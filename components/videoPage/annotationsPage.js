@@ -135,17 +135,18 @@ function AnnotationsPage(props) {
     props.updateAnnotations(newAnnotation);
   };
 
-  const deleteAnotation = (annotation = getSelectedAnnotation()) => {
+  const deleteAnotation = () => {
     changeSelectedAnnotationId(null);
     changeSelectedAnnotationState("showAnnotations");
-    props.deleteAnotation(annotation);
+    props.deleteAnotation(getSelectedAnnotation());
   };
 
-  const deleteSubAnotation = annotation => {
+  const deleteSubAnotation = () => {
     const selectedAnnotation = getSelectedAnnotation();
+    const selectedSubAnnotation = getSelectedSubAnnotation();
     changeSelectedAnnotationState("showSubAnnotations");
     const subAnnotations = selectedAnnotation.subAnnotations.filter(
-      subAnnotation => subAnnotation.id !== annotation.id
+      subAnnotation => subAnnotation.id !== selectedSubAnnotation.id
     );
     const updatedAnnotation = { ...selectedAnnotation, subAnnotations };
     changeSelectedSubAnnotationId(null);
