@@ -1,8 +1,7 @@
 import React from "react";
 import { Typeahead } from "react-bootstrap-typeahead";
 
-function TitleDropBox({ options, onChange, selected, colorScheme }) {
-  // const color = colorScheme();
+function TitleDropBox({ options, onChange, selected }) {
   return (
     <div style={{ width: "415px" }}>
       <Typeahead
@@ -15,6 +14,7 @@ function TitleDropBox({ options, onChange, selected, colorScheme }) {
         }}
         defaultSelected={[selected]}
         id="title-annotation"
+        key={selected}
       />
     </div>
   );
