@@ -150,7 +150,6 @@ function AnnotationEditForm({
             style={{ width: "42px", paddingTop: "1px" }}
             data-placement="bottom"
             title="Get current time"
-            onBlur={handleSubmit}
           >
             <FontAwesomeIcon icon={faClock} />
           </button>
