@@ -108,14 +108,16 @@ function AnnotationEditForm({
         />
         <div className="input-group-append">
           <button
-            onClick={getTime}
+            onClick={e => {
+              getTime(e);
+              handleSubmit();
+            }}
             className="btn btn-outline-secondary"
             type="button"
             id="start"
             style={{ width: "42px", paddingTop: "1px" }}
             data-placement="bottom"
             title="Get current time"
-            onBlur={handleSubmit}
           >
             <FontAwesomeIcon icon={faClock} />
           </button>
@@ -138,7 +140,10 @@ function AnnotationEditForm({
         />
         <div className="input-group-append">
           <button
-            onClick={getTime}
+            onClick={e => {
+              getTime(e);
+              handleSubmit();
+            }}
             className="btn btn-outline-secondary"
             type="button"
             id="end"

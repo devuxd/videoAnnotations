@@ -443,7 +443,7 @@ function AnnotationsPage(props) {
             className="btn btn btn-outline-secondary btn-sm"
             onClick={() => {
               changeSelectedAnnotationState("showAnnotations&Add");
-              props.changeSelectedAnnotation(null);
+              changeSelectedAnnotationId(null);
             }}
           >
             Add annotation
