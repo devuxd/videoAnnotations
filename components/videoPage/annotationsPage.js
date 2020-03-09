@@ -262,7 +262,10 @@ function AnnotationsPage(props) {
             <button
               type="button"
               className="btn btn-danger btn-sm"
-              onClick={() => deleteAnotation()}
+              onClick={() => {
+                if (window.confirm("Delete this annotation?"))
+                  deleteAnotation();
+              }}
             >
               Delete annotation
             </button>
@@ -342,7 +345,10 @@ function AnnotationsPage(props) {
                 <button
                   type="button"
                   className="btn btn-danger btn-sm"
-                  onClick={() => deleteSubAnotation()}
+                  onClick={() => {
+                    if (window.confirm("Delete this annotation?"))
+                      deleteSubAnotation();
+                  }}
                 >
                   Delete sub-annotation
                 </button>
