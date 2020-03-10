@@ -87,13 +87,13 @@ function Dataset() {
               {dataset.map((video, index) => {
                 if ((index + 1) % 2 === 0)
                   return (
-                    <div key={index}>
+                    <React.Fragment key={index}>
                       <div className="col">
                         <Videos video={video} sheetId={sheetId} />
                       </div>
                       <div className="w-100"></div>
                       <br />
-                    </div>
+                    </React.Fragment>
                   );
                 return (
                   <div className="col" key={index}>
