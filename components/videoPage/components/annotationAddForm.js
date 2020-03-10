@@ -15,8 +15,7 @@ function AnnotationAddForm({
   annotationTitles,
   newAnnotationId,
   defaultStartTime,
-  annotationDefualtLength,
-  colorScheme
+  annotationDefualtLength
 }) {
   // getting references
   const refStartTime = React.createRef();

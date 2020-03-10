@@ -6,7 +6,8 @@ import AnnotationsPage from "../../../components/videoPage/annotationsPage";
 import {
   getVideoAnnotations,
   saveVideoAnnotations,
-  cacheVideoAnnotation
+  cacheVideoAnnotation,
+  getAnnotationsTitle
 } from "../../../API/db";
 import { mainColor, secondColor } from "../../../API/color";
 
@@ -43,11 +44,11 @@ function MainVideoPage() {
     subAnnotationProgressState,
     changeSubAnnotationProgressState
   ] = useState("hide");
-
+  const annotationsTitle = getAnnotationsTitle();
   const levelOneColor = useRef(null);
   const levelTowColor = useRef(null);
-  levelOneColor.current = mainColor();
-  levelTowColor.current = secondColor();
+  levelOneColor.current = mainColor(annotationsTitle.annotations);
+  levelTowColor.current = secondColor(annotationsTitle.subAnnotations);
 
   useEffect(() => {
     if (YTplayerRef.current) {
@@ -228,6 +229,7 @@ function MainVideoPage() {
                 mainColor: levelOneColor.current,
                 secondColor: levelTowColor.current
               }}
+              annotationsTitle={annotationsTitle}
             />
           </div>
         </div>

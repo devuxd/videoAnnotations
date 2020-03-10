@@ -133,6 +133,24 @@ const googleLogin = () => {
   );
 };
 
+//TODO: read this from google sheets instead of the current mocking of the data,
+const getAnnotationsTitle = () => {
+  return {
+    annotations: ["Development", "Debugging", "Irrelevant"],
+    subAnnotations: [
+      "Interacting with a file of code(None)",
+      "Interacting with a file of code(Log)",
+      "Interacting with a file of code(Edit)",
+      "Testing the program and reading the outputs",
+      "Interacting with a file of code(Breakpoint)",
+      "Interacting with a file of code(Edit, Log)",
+      "Interacting with a file of code(Edit, Breakpoint)",
+      "Interacting with a file of code(Log, Breakpoint)",
+      "Interacting with external resources"
+    ]
+  };
+};
+
 const saveVideoAnnotations = (spreadsheetId, range, annotations) =>
   new Promise((res, rej) =>
     gapi.load("client:auth2", () =>
@@ -199,5 +217,6 @@ module.exports = {
   getVideoAnnotations,
   saveVideoAnnotations,
   googleLogin,
-  cacheVideoAnnotation
+  cacheVideoAnnotation,
+  getAnnotationsTitle
 };

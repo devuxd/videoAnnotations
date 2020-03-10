@@ -42,13 +42,15 @@ function Video({
             <h5 className="card-title">{videoTitle}</h5>
           </a>
         </Link>
-        <p className="card-text">
+        <div className="card-text">
           <VideoInfo video={otherProperties} />
-        </p>
+        </div>
         <b>Annotations:</b>
         <p className="card-text">
-          {uniqueAnnotation.map(annotation => (
-            <span className="badge badge-light">{annotation}</span>
+          {uniqueAnnotation.map((annotation, index) => (
+            <span className="badge badge-light" key={index}>
+              {annotation}
+            </span>
           ))}
         </p>
       </div>

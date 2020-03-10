@@ -202,7 +202,7 @@ function AnnotationsPage(props) {
           update={updateSelectedAnnotation}
           offsetTime={0}
           seekTo={props.player.seekTo}
-          annotationTitles={annotationTitles.current}
+          annotationTitles={props.annotationsTitle.annotations}
           kye={selectedAnnotationId}
         />
         <div
@@ -331,7 +331,7 @@ function AnnotationsPage(props) {
                 update={updateSubAnnotations}
                 offsetTime={getSelectedAnnotation().duration.start.inSeconds}
                 seekTo={props.player.seekTo}
-                annotationTitles={subAnnotationTitles.current}
+                annotationTitles={props.annotationsTitle.subAnnotations}
                 key={selectedSubAnnotationId}
               />
               <div
@@ -360,7 +360,7 @@ function AnnotationsPage(props) {
             player={props.player}
             addNewSubAnnotation={addNewSubAnnotation}
             offsetTime={getSelectedAnnotation().duration.start.inSeconds}
-            annotationTitles={subAnnotationTitles.current}
+            annotationTitles={props.annotationsTitle.subAnnotations}
             newAnnotationId={`${selectedAnnotationId}_${
               getSelectedAnnotation().subAnnotations.length
             }_${Math.floor(Math.random(10) * 10000)}`}
@@ -370,7 +370,6 @@ function AnnotationsPage(props) {
               ]?.duration.end.time ??
               getSelectedAnnotation().duration.start.time
             }
-            colorScheme={props.colorScheme.secondColor}
             annotationDefualtLength={
               getSelectedAnnotation().duration.end.inSeconds
             }
@@ -483,7 +482,7 @@ function AnnotationsPage(props) {
               player={props.player}
               addNewSubAnnotation={addNewAnnotation}
               offsetTime={0}
-              annotationTitles={annotationTitles.current}
+              annotationTitles={props.annotationsTitle.annotations}
               newAnnotationId={
                 (props.annotations[props.annotations.length - 1]?.id ?? 10) + 1
               }
@@ -491,7 +490,6 @@ function AnnotationsPage(props) {
                 props.annotations[props.annotations.length - 1]?.duration.end
                   .time
               }
-              colorScheme={props.colorScheme.mainColor}
               annotationDefualtLength={props.videoLength}
             />
           )}
