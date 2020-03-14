@@ -10,7 +10,7 @@ import AnnotationEditForm from "./components/annotationEditForm";
 import AnnotationAddForm from "./components/annotationAddForm";
 import AnnotationsTitles from "./components/annotationsTitles";
 import AnnotationBox from "./components/annotationsBox";
-
+import { stringToSecondsFormat } from "../../API/time";
 //    ===  ===  ===== =====     <- these are the annotations.
 //    ^                         <- this this the selected annotation
 //    ==== ====== ===== =====   <- these are the sub-annotations related to the selected annotation.
@@ -82,7 +82,7 @@ function AnnotationsPage(props) {
   // handel the click on annotation and sub-annotation
   const onAnnotationClick = annotation => {
     document.getElementById("video-annotations").scrollIntoView();
-    props.player.seekTo(annotation.duration.start.inSeconds);
+    props.player.seekTo(stringToSecondsFormat(annotation.duration.start.time));
     changeSelectedAnnotationState("showAnnotations&Edit");
     changeSelectedAnnotationId(annotation.id);
   };
@@ -90,8 +90,7 @@ function AnnotationsPage(props) {
   // handel sub-annotation click
   const onSubAnnotationClick = subAnnotatio => {
     props.player.seekTo(
-      getSelectedAnnotation().duration.start.inSeconds +
-        subAnnotatio.duration.start.inSeconds
+      stringToSecondsFormat(subAnnotatio.duration.start.time)
     );
     changeSelectedAnnotationState("showSubAnnotations&Edit");
     changeSelectedSubAnnotationId(subAnnotatio.id);
@@ -200,7 +199,6 @@ function AnnotationsPage(props) {
           selectedAnnotation={getSelectedAnnotation()}
           getCurrentTime={props.player.getCurrentTime}
           update={updateSelectedAnnotation}
-          offsetTime={0}
           seekTo={props.player.seekTo}
           annotationTitles={props.annotationsTitle.annotations}
           kye={selectedAnnotationId}
@@ -284,8 +282,8 @@ function AnnotationsPage(props) {
             JSON.stringify(getSelectedAnnotation().subAnnotations) + windowWidth
           }
           annotationLength={
-            getSelectedAnnotation().duration.end.inSeconds -
-            getSelectedAnnotation().duration.start.inSeconds
+            stringToSecondsFormat(getSelectedAnnotation().duration.end.time) -
+            stringToSecondsFormat(getSelectedAnnotation().duration.start.time)
           }
           annotationStart={getSelectedAnnotation().duration.start.time}
           onAnnotationClick={onSubAnnotationClick}
@@ -305,9 +303,15 @@ function AnnotationsPage(props) {
               className="progress-bar bg-danger"
               style={{
                 width: `${((videoProgress -
-                  getSelectedAnnotation().duration.start.inSeconds) /
-                  (getSelectedAnnotation().duration.end.inSeconds -
-                    getSelectedAnnotation().duration.start.inSeconds)) *
+                  stringToSecondsFormat(
+                    getSelectedAnnotation().duration.start.time
+                  )) /
+                  (stringToSecondsFormat(
+                    getSelectedAnnotation().duration.end.time
+                  ) -
+                    stringToSecondsFormat(
+                      getSelectedAnnotation().duration.start.time
+                    ))) *
                   100}%`
               }}
             ></div>
@@ -329,7 +333,6 @@ function AnnotationsPage(props) {
                 getCurrentTime={props.player.getCurrentTime}
                 selectedAnnotation={getSelectedSubAnnotation()}
                 update={updateSubAnnotations}
-                offsetTime={getSelectedAnnotation().duration.start.inSeconds}
                 seekTo={props.player.seekTo}
                 annotationTitles={props.annotationsTitle.subAnnotations}
                 key={selectedSubAnnotationId}
@@ -359,7 +362,6 @@ function AnnotationsPage(props) {
           <AnnotationAddForm
             player={props.player}
             addNewSubAnnotation={addNewSubAnnotation}
-            offsetTime={getSelectedAnnotation().duration.start.inSeconds}
             annotationTitles={props.annotationsTitle.subAnnotations}
             newAnnotationId={`${selectedAnnotationId}_${
               getSelectedAnnotation().subAnnotations.length
@@ -370,9 +372,9 @@ function AnnotationsPage(props) {
               ]?.duration.end.time ??
               getSelectedAnnotation().duration.start.time
             }
-            annotationDefualtLength={
-              getSelectedAnnotation().duration.end.inSeconds
-            }
+            annotationDefualtLength={stringToSecondsFormat(
+              getSelectedAnnotation().duration.end.time
+            )}
           />
         )}
       </>
@@ -481,7 +483,6 @@ function AnnotationsPage(props) {
             <AnnotationAddForm
               player={props.player}
               addNewSubAnnotation={addNewAnnotation}
-              offsetTime={0}
               annotationTitles={props.annotationsTitle.annotations}
               newAnnotationId={
                 (props.annotations[props.annotations.length - 1]?.id ?? 10) + 1
