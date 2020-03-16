@@ -13,8 +13,10 @@ function AnnotationsTitles({ titles, selectedTitle, colorScheme }) {
             marginBottom: "2px",
             color: "white",
             border: title === selectedTitle ? "2px black solid" : "none",
-            backgroundColor: colorScheme(title)
+            backgroundColor: colorScheme(title),
+            cursor: "default"
           }}
+          title={`<bold>${title}</bold>`}
         >
           {title}
         </span>

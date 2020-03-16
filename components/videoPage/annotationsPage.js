@@ -13,7 +13,7 @@ import AnnotationBox from "./components/annotationsBox";
 import { stringToSecondsFormat } from "../../API/time";
 //    ===  ===  ===== =====     <- these are the annotations.
 //    ^                         <- this this the selected annotation
-//    ==== ====== ===== =====   <- these are the sub-annotations related to the selected annotation.
+//    ==== ====== ===== =====   <- these are the sub-annotations related to the selected annotation.+++
 //           ^                  <- this is the selected sub-annotation.
 
 function AnnotationsPage(props) {
@@ -40,6 +40,19 @@ function AnnotationsPage(props) {
   annotationTitles.current = Array.from(
     new Set(props.annotations.map(annotation => annotation.title))
   );
+  // I have to reduce the annotations array to contain each unique annotations plus time and occurances
+  // TitleData --> {title, totalTime, NumberOfOccurance}
+  const titleData = props.annotations.reduce((newArray, annotation, index) => {
+    const isFound = newArray.find(({ title }) => title === annotation.title);
+    debugger;
+    if (isFound) {
+      return newArray;
+    } else {
+      return [...newArray, { title: annotation.title }];
+    }
+  }, []);
+  console.log(titleData);
+
   const titles = props.annotations
     .map(annotation => annotation.subAnnotations?.map(({ title }) => title))
     .flat();
