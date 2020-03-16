@@ -10,7 +10,7 @@ import AnnotationEditForm from "./components/annotationEditForm";
 import AnnotationAddForm from "./components/annotationAddForm";
 import AnnotationsTitles from "./components/annotationsTitles";
 import AnnotationBox from "./components/annotationsBox";
-import { stringToSecondsFormat } from "../../API/time";
+import { stringToSecondsFormat, secondsToStringFormat } from "../../API/time";
 //    ===  ===  ===== =====     <- these are the annotations.
 //    ^                         <- this this the selected annotation
 //    ==== ====== ===== =====   <- these are the sub-annotations related to the selected annotation.+++
@@ -43,12 +43,29 @@ function AnnotationsPage(props) {
   // I have to reduce the annotations array to contain each unique annotations plus time and occurances
   // TitleData --> {title, totalTime, NumberOfOccurance}
   const titleData = props.annotations.reduce((newArray, annotation, index) => {
-    const isFound = newArray.find(({ title }) => title === annotation.title);
-    debugger;
-    if (isFound) {
+    const indexOfExistingAnnotation = newArray.findIndex(
+      ({ title }) => title === annotation.title
+    );
+    if (indexOfExistingAnnotation > -1) {
+      const localAnnotation = newArray[indexOfExistingAnnotation];
+      const currentTotalTime = stringToSecondsFormat(localAnnotation.totalTime);
+      localAnnotation.NumberOfOccurance += 1;
+      localAnnotation.totalTime = secondsToStringFormat(
+        stringToSecondsFormat(annotation.duration.end.time) -
+          stringToSecondsFormat(annotation.duration.start.time) +
+          currentTotalTime
+      );
       return newArray;
     } else {
-      return [...newArray, { title: annotation.title }];
+      const newElement = {
+        title: annotation.title,
+        NumberOfOccurance: 1,
+        totalTime: secondsToStringFormat(
+          stringToSecondsFormat(annotation.duration.end.time) -
+            stringToSecondsFormat(annotation.duration.start.time)
+        )
+      };
+      return [...newArray, newElement];
     }
   }, []);
   console.log(titleData);
