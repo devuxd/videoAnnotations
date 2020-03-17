@@ -10,7 +10,7 @@ import AnnotationEditForm from "./components/annotationEditForm";
 import AnnotationAddForm from "./components/annotationAddForm";
 import AnnotationsTitles from "./components/annotationsTitles";
 import AnnotationBox from "./components/annotationsBox";
-import { stringToSecondsFormat, secondsToStringFormat } from "../../API/time";
+import { stringToSecondsFormat, getDurationInSeconds } from "../../API/time";
 //    ===  ===  ===== =====     <- these are the annotations.
 //    ^                         <- this this the selected annotation
 //    ==== ====== ===== =====   <- these are the sub-annotations related to the selected annotation.+++
@@ -40,35 +40,6 @@ function AnnotationsPage(props) {
   annotationTitles.current = Array.from(
     new Set(props.annotations.map(annotation => annotation.title))
   );
-  // I have to reduce the annotations array to contain each unique annotations plus time and occurances
-  // TitleData --> {title, totalTime, NumberOfOccurance}
-  const titleData = props.annotations.reduce((newArray, annotation, index) => {
-    const indexOfExistingAnnotation = newArray.findIndex(
-      ({ title }) => title === annotation.title
-    );
-    if (indexOfExistingAnnotation > -1) {
-      const localAnnotation = newArray[indexOfExistingAnnotation];
-      const currentTotalTime = stringToSecondsFormat(localAnnotation.totalTime);
-      localAnnotation.NumberOfOccurance += 1;
-      localAnnotation.totalTime = secondsToStringFormat(
-        stringToSecondsFormat(annotation.duration.end.time) -
-          stringToSecondsFormat(annotation.duration.start.time) +
-          currentTotalTime
-      );
-      return newArray;
-    } else {
-      const newElement = {
-        title: annotation.title,
-        NumberOfOccurance: 1,
-        totalTime: secondsToStringFormat(
-          stringToSecondsFormat(annotation.duration.end.time) -
-            stringToSecondsFormat(annotation.duration.start.time)
-        )
-      };
-      return [...newArray, newElement];
-    }
-  }, []);
-  console.log(titleData);
 
   const titles = props.annotations
     .map(annotation => annotation.subAnnotations?.map(({ title }) => title))
@@ -103,6 +74,7 @@ function AnnotationsPage(props) {
 
   const getSelectedAnnotation = () =>
     props.annotations.find(({ id }) => id === selectedAnnotationId);
+
   const getSelectedSubAnnotation = () =>
     getSelectedAnnotation().subAnnotations.find(
       ({ id }) => id === selectedSubAnnotationId
@@ -438,6 +410,8 @@ function AnnotationsPage(props) {
             titles={annotationTitles.current}
             selectedTitle={getSelectedAnnotation()?.title}
             colorScheme={props.colorScheme.mainColor}
+            annotations={props.annotations}
+            totalTime={props.videoLength}
           />
         </div>
         <div
@@ -547,6 +521,11 @@ function AnnotationsPage(props) {
                 titles={subAnnotationTitles.current}
                 selectedTitle={getSelectedSubAnnotation()?.title}
                 colorScheme={props.colorScheme.secondColor}
+                annotations={getSelectedAnnotation().subAnnotations}
+                totalTime={getDurationInSeconds(
+                  getSelectedAnnotation().duration.end.time,
+                  getSelectedAnnotation().duration.start.time
+                )}
               />
             </div>
             <div
