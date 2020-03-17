@@ -12,30 +12,34 @@ function AnnotationsTitles({
   annotations,
   totalTime
 }) {
-  const uniqueTitles = annotationData(annotations, totalTime);
-  console.log(uniqueTitles);
+  const uniqueTitles = annotationData(annotations, totalTime).sort(
+    (title1, title2) => title2.timePresentage - title1.timePresentage
+  );
   return (
     <>
-      {uniqueTitles.map(({ title, timePresentage }, index) => (
-        <div>
-          <span
-            key={index}
-            className="badge badge-pill"
-            id={`${title}-badge`}
-            style={{
-              marginBottom: "2px",
-              color: "white",
-              border: title === selectedTitle ? "2px black solid" : "none",
-              backgroundColor: colorScheme(title),
-              cursor: "default"
-            }}
-            title={`<bold>${title}</bold>`}
-          >
-            {title}
-          </span>
-          {Math.round(timePresentage)}%
-        </div>
-      ))}
+      {uniqueTitles.map(
+        ({ title, timePresentage, NumberOfOccurance }, index) => (
+          <div>
+            <span
+              key={index}
+              className="badge badge-pill"
+              id={`${title}-badge`}
+              style={{
+                marginBottom: "2px",
+                color: "white",
+                border: title === selectedTitle ? "2px black solid" : "none",
+                backgroundColor: colorScheme(title),
+                cursor: "default",
+                display: "block"
+              }}
+              title={`${NumberOfOccurance} session`}
+            >
+              {" "}
+              {title}: {" " + timePresentage.toFixed(1)}%
+            </span>
+          </div>
+        )
+      )}
     </>
   );
 }

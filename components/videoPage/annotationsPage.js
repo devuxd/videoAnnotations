@@ -398,11 +398,11 @@ function AnnotationsPage(props) {
           disabled
           style={{
             gridColumnStart: "1",
-            gridColumnEnd: "1",
+            gridColumnEnd: "span 2",
             gridRowStart: "2",
             gridRowEnd: "2",
             alignSelf: "flex-start",
-            justifySelf: "center"
+            justifySelf: "start"
           }}
         >
           <AnnotationsTitles
@@ -473,7 +473,11 @@ function AnnotationsPage(props) {
               selectedAnnotationId={selectedAnnotationId}
               boxStyle={
                 selectedAnnotationState.startsWith("showAnnotations")
-                  ? { border: "3px solid", maxWidth: "500px" }
+                  ? {
+                      border: "3px solid",
+                      maxWidth: "500px",
+                      backgroundColor: "white"
+                    }
                   : { borderTop: "3px solid", left: "0px" }
               }
               windowWidth={windowWidth}
@@ -512,8 +516,7 @@ function AnnotationsPage(props) {
                 gridRowStart: "2",
                 gridRowEnd: "span 3",
                 alignSelf: "end",
-                justifySelf: "start",
-                fontSize: ".71em"
+                justifySelf: "start"
               }}
             >
               <AnnotationsTitles
@@ -553,9 +556,10 @@ function AnnotationsPage(props) {
               <button
                 type="button"
                 className="btn btn-outline-secondary btn-sm "
-                onClick={() =>
-                  changeSelectedAnnotationState("showAnnotations&Edit")
-                }
+                onClick={() => {
+                  changeSelectedAnnotationState("showAnnotations&Edit");
+                  changeSelectedSubAnnotationId(null);
+                }}
               >
                 Close sub-annotations
               </button>
