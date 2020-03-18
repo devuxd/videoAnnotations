@@ -11,7 +11,7 @@ function VideoInfo({
   }
 }) {
   return (
-    <h6>
+    <>
       Total Time: {secondsToStringFormat(videoLength)}
       <br />
       Programming Language: {programmingLanguage} <br />
@@ -26,7 +26,7 @@ function VideoInfo({
       </ul>
       Developer Github: <span> </span>
       <a href={developerGithubURL}>{developerGithubURL}</a> <br />
-    </h6>
+    </>
   );
 }
 

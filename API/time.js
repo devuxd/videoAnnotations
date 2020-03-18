@@ -13,8 +13,16 @@ const secondsToStringFormat = TotalTimeInSeconds => {
   return `${hours}:${minutes}:${seconds}`;
 };
 
+const getDurationInSeconds = (end, start) => {
+  return stringToSecondsFormat(end) - stringToSecondsFormat(start);
+};
+const getDurationInString = (end, start) => {
+  return secondsToStringFormat(getDurationInSeconds(end, start));
+};
 const stringToSecondsFormat = string => moment.duration(string).asSeconds();
 module.exports = {
   secondsToStringFormat,
-  stringToSecondsFormat
+  stringToSecondsFormat,
+  getDurationInString,
+  getDurationInSeconds
 };

@@ -15,8 +15,7 @@ function AnnotationAddForm({
   annotationTitles,
   newAnnotationId,
   defaultStartTime,
-  annotationDefualtLength,
-  colorScheme
+  annotationDefualtLength
 }) {
   // getting references
   const refStartTime = React.createRef();
@@ -33,13 +32,10 @@ function AnnotationAddForm({
     const localNewAnnotation = {
       duration: {
         start: {
-          time: refStartTime.current.value,
-          inSeconds:
-            stringToSecondsFormat(refStartTime.current.value) - offsetTime
+          time: refStartTime.current.value
         },
         end: {
-          time: secondsToStringFormat(annotationDefualtLength),
-          inSeconds: annotationDefualtLength - offsetTime
+          time: secondsToStringFormat(annotationDefualtLength)
         }
       },
       id: newAnnotationId,
@@ -52,7 +48,7 @@ function AnnotationAddForm({
       return;
     }
     addNewSubAnnotation(localNewAnnotation);
-    seekTo(localNewAnnotation.duration.start.inSeconds + offsetTime);
+    seekTo(stringToSecondsFormat(localNewAnnotation.duration.start.time));
     playVideo(true);
   };
 
