@@ -4,10 +4,12 @@ import { getDataset } from "../../API/db";
 import Videos from "../../components/datasetePage/videos";
 import { useRouter } from "next/router";
 import { secondsToStringFormat } from "../../API/time";
+import { totalTime, getAnnotationsTime } from "../../API/statstics";
 
 function Dataset() {
   const [dataset, updateDataset] = useState([]);
   const [datasetIsStillLoading, updateDatasetIsStillLoading] = useState(true);
+  const [tabId, updateTabId] = useState(0);
   const router = useRouter();
   const { sheetId } = router.query;
   useEffect(() => {
@@ -52,8 +54,51 @@ function Dataset() {
       </div>
     );
   }
+  const getTabcontent = () => {
+    if (tabId === 0) {
+      return (
+        <div className="row">
+          {dataset.map((video, index) => {
+            if ((index + 1) % 2 === 0)
+              return (
+                <React.Fragment key={index}>
+                  <div className="col">
+                    <Videos video={video} sheetId={sheetId} />
+                  </div>
+                  <div className="w-100"></div>
+                  <br />
+                </React.Fragment>
+              );
+            return (
+              <div className="col" key={index}>
+                <Videos video={video} sheetId={sheetId} />
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+    if (tabId === 1) {
+      const annotationsTotolaTime = getAnnotationsTime(dataset);
+      return (
+        <>
+          <h3>
+            Total Time:{" "}
+            {secondsToStringFormat(
+              totalTime(dataset.map(video => video.videoLength))
+            )}
+          </h3>
+          {annotationsTotolaTime.map(annotation => (
+            <h3>
+              {annotation[0]}: {secondsToStringFormat(annotation[1])}
+            </h3>
+          ))}
+        </>
+      );
+    }
+  };
   return (
-    <div style={{ fontFamily: "Lato" }}>
+    <div>
       <Layouts>
         <div>
           <nav className="navbar navbar-expand-lg navbar-light bg-white">
@@ -72,36 +117,30 @@ function Dataset() {
           </nav>
           <br />
         </div>
-        <h3>
-          Total Time:
-          {secondsToStringFormat(
-            dataset.reduce((prevoiusValue, currentValue) => {
-              return prevoiusValue + currentValue.videoLength;
-            }, 0)
-          )}
-        </h3>
-        <br />
-        <div className="card-deck" style={{ margin: "0px;!import" }}>
+        <div>
           <div className="container">
-            <div className="row">
-              {dataset.map((video, index) => {
-                if ((index + 1) % 2 === 0)
-                  return (
-                    <React.Fragment key={index}>
-                      <div className="col">
-                        <Videos video={video} sheetId={sheetId} />
-                      </div>
-                      <div className="w-100"></div>
-                      <br />
-                    </React.Fragment>
-                  );
-                return (
-                  <div className="col" key={index}>
-                    <Videos video={video} sheetId={sheetId} />
-                  </div>
-                );
-              })}
-            </div>
+            <ul class="nav nav-tabs">
+              <li class="nav-item">
+                <a
+                  class={`nav-link ${tabId === 0 ? "active" : ""}`}
+                  onClick={() => updateTabId(0)}
+                  href="#"
+                >
+                  Dataset
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class={`nav-link ${tabId === 1 ? "active" : ""}`}
+                  onClick={() => updateTabId(1)}
+                  href="#"
+                >
+                  Statstics
+                </a>
+              </li>
+            </ul>
+            <br />
+            {getTabcontent()}
           </div>
         </div>
       </Layouts>

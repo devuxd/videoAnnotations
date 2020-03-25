@@ -15,6 +15,7 @@ function AnnotationsTitles({
   const uniqueTitles = annotationData(annotations, totalTime).sort(
     (title1, title2) => title2.timePresentage - title1.timePresentage
   );
+  // console.table(uniqueTitles);
   return (
     <>
       {uniqueTitles.map(
@@ -54,11 +55,15 @@ const annotationData = (annotations, totalTime) =>
       const localAnnotation = newArray[indexOfExistingAnnotation];
       const currentTotalTime = stringToSecondsFormat(localAnnotation.totalTime);
       localAnnotation.NumberOfOccurance += 1;
-      localAnnotation.totalTime = secondsToStringFormat(
+
+      localAnnotation.totalTimeInSeconds =
         getDurationInSeconds(
           annotation.duration.end.time,
           annotation.duration.start.time
-        ) + currentTotalTime
+        ) + currentTotalTime;
+
+      localAnnotation.totalTime = secondsToStringFormat(
+        localAnnotation.totalTimeInSeconds
       );
       localAnnotation.timePresentage =
         (stringToSecondsFormat(localAnnotation.totalTime) / totalTime) * 100;
@@ -67,11 +72,14 @@ const annotationData = (annotations, totalTime) =>
       const newElement = {
         title: annotation.title,
         NumberOfOccurance: 1,
-        totalTime: getDurationInString(
+        totalTimeInSeconds: getDurationInSeconds(
           annotation.duration.end.time,
           annotation.duration.start.time
         )
       };
+      newElement.totalTime = secondsToStringFormat(
+        newElement.totalTimeInSeconds
+      );
       newElement.timePresentage =
         (stringToSecondsFormat(newElement.totalTime) / totalTime) * 100;
       return [...newArray, newElement];
