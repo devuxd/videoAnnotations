@@ -134,7 +134,6 @@ function AnnotationsPage(props) {
     };
 
     onSubAnnotationClick(newSubAnnotation);
-    changeSelectedAnnotationId(newAnnotation.id);
     props.updateAnnotations(newAnnotation);
   };
 
@@ -207,36 +206,6 @@ function AnnotationsPage(props) {
   const getEditAnnotation = () => {
     return (
       <>
-        <div
-          style={{
-            display: "grid",
-            justifyContent: "right",
-            alignContent: "end",
-            gridTemplateColumns: "20px"
-          }}
-        >
-          <button
-            style={{
-              display: "inline-block",
-              padding: "0px",
-              width: "0px",
-              height: "7px",
-              border: "0px",
-              color: "darkred",
-              position: "relative",
-              bottom: "12px",
-              left: "10px",
-              outline: "0px"
-            }}
-            title="close annotation"
-            onClick={() => {
-              changeSelectedAnnotationState("showAnnotations");
-              changeSelectedAnnotationId(null);
-            }}
-          >
-            <FontAwesomeIcon style={{ width: "15px" }} icon={faWindowClose} />
-          </button>
-        </div>
         <AnnotationEditForm
           selectedAnnotation={getSelectedAnnotation()}
           getCurrentTime={props.player.getCurrentTime}
@@ -388,43 +357,49 @@ function AnnotationsPage(props) {
         </AnnotationsVis>
         {selectedAnnotationState === "showSubAnnotations&Edit" &&
           getSelectedSubAnnotation() && (
-            <AnnotationBox
-              selectedAnnotationId={selectedSubAnnotationId}
-              boxStyle={{
-                border: "3px solid",
-                maxWidth: "500px",
-                backgroundColor: "white"
+            <div
+              onClick={e => {
+                changeSelectedSubAnnotationId(null);
               }}
-              windowWidth={windowWidth}
             >
-              <AnnotationEditForm
-                getCurrentTime={props.player.getCurrentTime}
-                selectedAnnotation={getSelectedSubAnnotation()}
-                update={updateSubAnnotations}
-                seekTo={props.player.seekTo}
-                annotationTitles={props.annotationsTitle.subAnnotations}
-                key={selectedSubAnnotationId}
-              />
-              <div
-                style={{
-                  display: "grid",
-                  justifyContent: "end",
-                  alignContent: "end",
-                  height: "40px"
+              <AnnotationBox
+                selectedAnnotationId={selectedSubAnnotationId}
+                boxStyle={{
+                  border: "3px solid",
+                  width: "500px",
+                  backgroundColor: "white"
                 }}
+                windowWidth={windowWidth}
               >
-                <button
-                  type="button"
-                  className="btn btn-danger btn-sm"
-                  onClick={() => {
-                    if (window.confirm("Delete this annotation?"))
-                      deleteSubAnotation();
+                <AnnotationEditForm
+                  getCurrentTime={props.player.getCurrentTime}
+                  selectedAnnotation={getSelectedSubAnnotation()}
+                  update={updateSubAnnotations}
+                  seekTo={props.player.seekTo}
+                  annotationTitles={props.annotationsTitle.subAnnotations}
+                  key={selectedSubAnnotationId}
+                />
+                <div
+                  style={{
+                    display: "grid",
+                    justifyContent: "end",
+                    alignContent: "end",
+                    height: "40px"
                   }}
                 >
-                  Delete sub-annotation
-                </button>
-              </div>
-            </AnnotationBox>
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-sm"
+                    onClick={() => {
+                      if (window.confirm("Delete this annotation?"))
+                        deleteSubAnotation();
+                    }}
+                  >
+                    Delete sub-annotation
+                  </button>
+                </div>
+              </AnnotationBox>
+            </div>
           )}
         {selectedAnnotationState === "showSubAnnotations&Add" && (
           <AnnotationAddForm
@@ -535,22 +510,34 @@ function AnnotationsPage(props) {
           }}
         >
           {getSelectedAnnotation() && (
-            <AnnotationBox
-              selectedAnnotationId={selectedAnnotationId}
-              boxStyle={
-                selectedAnnotationState.startsWith("showAnnotations")
-                  ? {
-                      border: "3px solid",
-                      maxWidth: "500px",
-                      backgroundColor: "white"
-                    }
-                  : { borderTop: "3px solid", left: "0px" }
-              }
-              windowWidth={windowWidth}
-              key={windowWidth}
+            <div
+              onClick={() => {
+                if (selectedAnnotationState.startsWith("showSubAnnotation")) {
+                  changeSelectedAnnotationState("showAnnotations&Edit");
+                }
+                if (selectedAnnotationState.startsWith("showAnnotation")) {
+                  changeSelectedAnnotationId(null);
+                  changeSelectedAnnotationState("showAnnotations");
+                }
+              }}
             >
-              {getAnnotationsSection()}
-            </AnnotationBox>
+              <AnnotationBox
+                selectedAnnotationId={selectedAnnotationId}
+                boxStyle={
+                  selectedAnnotationState.startsWith("showAnnotations")
+                    ? {
+                        border: "3px solid",
+                        maxWidth: "500px",
+                        backgroundColor: "white"
+                      }
+                    : { borderTop: "3px solid", left: "0px" }
+                }
+                windowWidth={windowWidth}
+                key={windowWidth}
+              >
+                {getAnnotationsSection()}
+              </AnnotationBox>
+            </div>
           )}
 
           {selectedAnnotationState === "showAnnotations&Add" && (
@@ -559,7 +546,9 @@ function AnnotationsPage(props) {
               addNewSubAnnotation={addNewAnnotation}
               annotationTitles={props.annotationsTitle.annotations}
               newAnnotationId={
-                (props.annotations[props.annotations.length - 1]?.id ?? 10) + 1
+                (props.annotations.sort((a, b) => a.id - b.id)[
+                  props.annotations.length - 1
+                ]?.id ?? 10) + 1
               }
               defaultStartTime={
                 props.annotations[props.annotations.length - 1]?.duration.end
@@ -616,18 +605,6 @@ function AnnotationsPage(props) {
                 disabled={selectedAnnotationState === "showSubAnnotations&Add"}
               >
                 Add sub-annotation
-              </button>
-              <br />
-              <br />
-              <button
-                type="button"
-                className="btn btn-outline-secondary btn-sm "
-                onClick={() => {
-                  changeSelectedAnnotationState("showAnnotations&Edit");
-                  changeSelectedSubAnnotationId(null);
-                }}
-              >
-                Close sub-annotations
               </button>
             </div>
           </>
