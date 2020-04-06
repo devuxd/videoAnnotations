@@ -35,7 +35,6 @@ function AnnotationsTitles({
               }}
               title={`${NumberOfOccurance} session`}
             >
-              {" "}
               {title}: {" " + timePresentage.toFixed(1)}%
             </span>
           </div>

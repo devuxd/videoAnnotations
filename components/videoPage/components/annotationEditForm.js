@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClock,
+  faArrowRight,
+  faArrowLeft
+} from "@fortawesome/free-solid-svg-icons";
 import TitleDropBox from "../../shared/TitleDropBox";
 import { googleLogin } from "../../../API/db";
 import {
@@ -12,8 +16,9 @@ function AnnotationEditForm({
   selectedAnnotation,
   getCurrentTime,
   update,
-  seekTo,
-  annotationTitles
+  onAnnotationClick,
+  annotationTitles,
+  annotationNavigation
 }) {
   const refStartTime = useRef(null);
   const refEndTime = useRef(null);
@@ -51,9 +56,7 @@ function AnnotationEditForm({
 
     update(localNewAnnotation);
   };
-  const SeekToEnd = () => {
-    seekTo(stringToSecondsFormat(selectedAnnotation.duration.end.time));
-  };
+
   const addTitle = ([newTitle, ...rest]) => {
     const title = newTitle?.label ?? "";
     refTitle.current = title;
@@ -64,20 +67,50 @@ function AnnotationEditForm({
     <>
       <div
         className="input-group input-group-sm mb-3"
-        style={{ padding: "10px" }}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "10% 82% 10%"
+        }}
       >
-        <label
-          htmlFor="StartTime"
-          style={{ margin: "3px", paddingLeft: "5px" }}
+        <button
+          onClick={() => {
+            const annotation = annotationNavigation.getPreviousAnnotation(
+              selectedAnnotation.id
+            );
+            if (annotation != undefined) onAnnotationClick(annotation);
+          }}
+          className="btn btn-outline-secondary"
+          type="button"
+          id="end"
+          style={{ width: "37px", paddingTop: "1px" }}
+          data-placement="bottom"
+          title="Previous annotation"
         >
-          Title:
-        </label>
+          <FontAwesomeIcon icon={faArrowLeft} />
+        </button>
+
         <TitleDropBox
           options={annotationTitles}
           selected={selectedAnnotation.title}
           onChange={addTitle}
           key={selectedAnnotation.id}
         />
+        <button
+          onClick={() => {
+            const annotation = annotationNavigation.getNextAnnotation(
+              selectedAnnotation.id
+            );
+            if (annotation != undefined) onAnnotationClick(annotation);
+          }}
+          className="btn btn-outline-secondary"
+          type="button"
+          id="end"
+          style={{ width: "37px", paddingTop: "1px" }}
+          data-placement="bottom"
+          title="Next annotation"
+        >
+          <FontAwesomeIcon icon={faArrowRight} />
+        </button>
       </div>
       <div
         className="input-group input-group-sm mb-3"
@@ -147,17 +180,6 @@ function AnnotationEditForm({
             title="Get current time"
           >
             <FontAwesomeIcon icon={faClock} />
-          </button>
-          <button
-            onClick={SeekToEnd}
-            className="btn btn-outline-secondary"
-            type="button"
-            id="end"
-            style={{ width: "37px", paddingTop: "1px" }}
-            data-placement="bottom"
-            title="Seek to end"
-          >
-            <FontAwesomeIcon icon={faArrowRight} />
           </button>
         </div>
       </div>

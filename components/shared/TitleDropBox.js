@@ -3,7 +3,7 @@ import { Typeahead } from "react-bootstrap-typeahead";
 
 function TitleDropBox({ options, onChange, selected }) {
   return (
-    <div style={{ width: "415px" }}>
+    <div style={{ paddingRight: "10px" }}>
       <Typeahead
         allowNew
         newSelectionPrefix="Add a new item"

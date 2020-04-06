@@ -201,6 +201,33 @@ function AnnotationsPage(props) {
       array.findIndex(annotation => annotation.id === id) + 1;
     return array[nextElementId];
   };
+  const getPreviousAnnotation = id => {
+    // make sure that the array is order by time
+    if (id === undefined) return undefined;
+    const array = sortAnootations(props.annotations);
+    const previousElementId =
+      array.findIndex(annotation => annotation.id === id) - 1;
+    return array[previousElementId];
+  };
+
+  const getNextSubAnnotation = id => {
+    // make sure that the array is order by time
+    if (id === undefined) return undefined;
+    const selectedSubAnnotation = getSelectedAnnotation();
+    const array = sortAnootations(selectedSubAnnotation.subAnnotations);
+    const nextElementId =
+      array.findIndex(annotation => annotation.id === id) + 1;
+    return array[nextElementId];
+  };
+  const getPreviousSubAnnotation = id => {
+    // make sure that the array is order by time
+    if (id === undefined) return undefined;
+    const selectedSubAnnotation = getSelectedAnnotation();
+    const array = sortAnootations(selectedSubAnnotation.subAnnotations);
+    const previousElementId =
+      array.findIndex(annotation => annotation.id === id) - 1;
+    return array[previousElementId];
+  };
 
   // this show up when an annotation got selected.
   const getEditAnnotation = () => {
@@ -210,9 +237,10 @@ function AnnotationsPage(props) {
           selectedAnnotation={getSelectedAnnotation()}
           getCurrentTime={props.player.getCurrentTime}
           update={updateSelectedAnnotation}
-          seekTo={props.player.seekTo}
           annotationTitles={props.annotationsTitle.annotations}
           kye={selectedAnnotationId}
+          annotationNavigation={{ getNextAnnotation, getPreviousAnnotation }}
+          onAnnotationClick={onAnnotationClick}
         />
         <div
           style={{
@@ -375,9 +403,13 @@ function AnnotationsPage(props) {
                   getCurrentTime={props.player.getCurrentTime}
                   selectedAnnotation={getSelectedSubAnnotation()}
                   update={updateSubAnnotations}
-                  seekTo={props.player.seekTo}
                   annotationTitles={props.annotationsTitle.subAnnotations}
                   key={selectedSubAnnotationId}
+                  annotationNavigation={{
+                    getNextAnnotation: getNextSubAnnotation,
+                    getPreviousAnnotation: getPreviousSubAnnotation
+                  }}
+                  onAnnotationClick={onSubAnnotationClick}
                 />
                 <div
                   style={{
