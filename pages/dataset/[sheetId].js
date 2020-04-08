@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Layouts from "../../components/shared/layouts";
 import { getDataset } from "../../API/db";
-import Videos from "../../components/datasetePage/videos";
+import VideosPage from "../../components/datasetePage/videosPage";
+import StatsticsPage from "../../components/datasetePage/statsticsPage";
 import { useRouter } from "next/router";
-import { secondsToStringFormat } from "../../API/time";
-import { totalTime, getAnnotationsTime } from "../../API/statstics";
 
 function Dataset() {
   const [dataset, updateDataset] = useState([]);
@@ -63,7 +62,7 @@ function Dataset() {
               return (
                 <React.Fragment key={index}>
                   <div className="col">
-                    <Videos video={video} sheetId={sheetId} />
+                    <VideosPage video={video} sheetId={sheetId} />
                   </div>
                   <div className="w-100"></div>
                   <br />
@@ -71,7 +70,7 @@ function Dataset() {
               );
             return (
               <div className="col" key={index}>
-                <Videos video={video} sheetId={sheetId} />
+                <VideosPage video={video} sheetId={sheetId} />
               </div>
             );
           })}
@@ -79,22 +78,7 @@ function Dataset() {
       );
     }
     if (tabId === 1) {
-      const annotationsTotolaTime = getAnnotationsTime(dataset);
-      return (
-        <>
-          <h3>
-            Total Time:{" "}
-            {secondsToStringFormat(
-              totalTime(dataset.map(video => video.videoLength))
-            )}
-          </h3>
-          {annotationsTotolaTime.map(annotation => (
-            <h3>
-              {annotation[0]}: {secondsToStringFormat(annotation[1])}
-            </h3>
-          ))}
-        </>
-      );
+      return <StatsticsPage dataset={dataset} />;
     }
   };
   return (

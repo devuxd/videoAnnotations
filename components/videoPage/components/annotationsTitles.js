@@ -1,7 +1,6 @@
 import React from "react";
 import {
   getDurationInSeconds,
-  getDurationInString,
   stringToSecondsFormat,
   secondsToStringFormat
 } from "../../../API/time";

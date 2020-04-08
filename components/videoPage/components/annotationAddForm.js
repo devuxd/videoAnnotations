@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { googleLogin } from "../../../API/db";
-import RadioButtonGroup from "../../shared/TitleDropBox";
+import RadioButtonGroup from "./TitleDropBox";
 import {
   stringToSecondsFormat,
   secondsToStringFormat

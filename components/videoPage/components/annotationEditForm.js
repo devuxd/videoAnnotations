@@ -1,16 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClock,
   faArrowRight,
   faArrowLeft
 } from "@fortawesome/free-solid-svg-icons";
-import TitleDropBox from "../../shared/TitleDropBox";
+import TitleDropBox from "./TitleDropBox";
 import { googleLogin } from "../../../API/db";
-import {
-  stringToSecondsFormat,
-  secondsToStringFormat
-} from "../../../API/time";
+import { secondsToStringFormat } from "../../../API/time";
 
 function AnnotationEditForm({
   selectedAnnotation,

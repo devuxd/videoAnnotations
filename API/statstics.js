@@ -5,25 +5,46 @@ const totalTime = array =>
     return prevoiusValue + currentValue;
   }, 0);
 
-const getAnnotationsTime = array => {
-  const annotationMap = new Map();
-  array.forEach(element => {
-    element.annotations.forEach(annotation => {
-      const currentTime = getDurationInSeconds(
-        annotation.duration.end.time,
-        annotation.duration.start.time
+const getAnnotationsStatstics = annotations => {
+  const annotationStatstics = annotations.reduce(
+    (prevoiusValue, currentValue) => {
+      const index = prevoiusValue.findIndex(
+        annotation => annotation.title === currentValue.title
       );
-      if (annotationMap.has(annotation.title)) {
-        const prevTime = annotationMap.get(annotation.title);
-        annotationMap.set(annotation.title, prevTime + currentTime);
-      } else {
-        annotationMap.set(annotation.title, currentTime);
+      if (index === -1) {
+        return [
+          ...prevoiusValue,
+          {
+            title: currentValue.title,
+            totalTime:
+              currentValue.totalTime ??
+              getDurationInSeconds(
+                currentValue.duration.end.time,
+                currentValue.duration.start.time
+              ),
+            subAnnotations: currentValue.subAnnotations ?? [],
+            counts: currentValue.counts ?? 1
+          }
+        ];
       }
-    });
-  });
-  return Array.from(annotationMap);
+      prevoiusValue[index].totalTime +=
+        currentValue.totalTime ??
+        getDurationInSeconds(
+          currentValue.duration.end.time,
+          currentValue.duration.start.time
+        );
+      prevoiusValue[index].subAnnotations = [
+        ...prevoiusValue[index].subAnnotations,
+        ...(currentValue.subAnnotations || [])
+      ];
+      prevoiusValue[index].counts += currentValue.counts ?? 1;
+      return prevoiusValue;
+    },
+    []
+  );
+  return annotationStatstics;
 };
 module.exports = {
-  totalTime,
-  getAnnotationsTime
+  getAnnotationsStatstics,
+  totalTime
 };

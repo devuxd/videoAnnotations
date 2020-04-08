@@ -385,11 +385,7 @@ function AnnotationsPage(props) {
         </AnnotationsVis>
         {selectedAnnotationState === "showSubAnnotations&Edit" &&
           getSelectedSubAnnotation() && (
-            <div
-              onClick={e => {
-                changeSelectedSubAnnotationId(null);
-              }}
-            >
+            <div>
               <AnnotationBox
                 selectedAnnotationId={selectedSubAnnotationId}
                 boxStyle={{
@@ -546,10 +542,6 @@ function AnnotationsPage(props) {
               onClick={() => {
                 if (selectedAnnotationState.startsWith("showSubAnnotation")) {
                   changeSelectedAnnotationState("showAnnotations&Edit");
-                }
-                if (selectedAnnotationState.startsWith("showAnnotation")) {
-                  changeSelectedAnnotationId(null);
-                  changeSelectedAnnotationState("showAnnotations");
                 }
               }}
             >

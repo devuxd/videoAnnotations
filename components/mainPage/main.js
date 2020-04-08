@@ -1,5 +1,5 @@
 import React from "react";
-import FileUpload from "./fileUpload";
+import FileUpload from "./components/fileUpload";
 function Main() {
   return (
     <div className="container" style={{ padding: "15%" }}>

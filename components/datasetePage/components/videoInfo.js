@@ -1,5 +1,5 @@
 import React from "react";
-import { secondsToStringFormat } from "../../API/time";
+import { secondsToStringFormat } from "../../../API/time";
 
 function VideoInfo({
   video: {
