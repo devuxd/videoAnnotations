@@ -146,7 +146,8 @@ const getAnnotationsTitle = () => {
       "Interacting with a file of code(Edit, Log)",
       "Interacting with a file of code(Edit, Breakpoint)",
       "Interacting with a file of code(Log, Breakpoint)",
-      "Interacting with external resources"
+      "Searching for information",
+      "Others"
     ]
   };
 };

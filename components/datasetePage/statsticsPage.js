@@ -22,7 +22,13 @@ export default function StatsticsPage({ dataset }) {
         <br />
         Number of occurance: {annotation.counts}
         <br />
-        <PiChart data={subannotationsStatstics} key={tabId} />
+        {subannotationsStatstics.length > 0 && (
+          <PiChart
+            data={subannotationsStatstics}
+            key={tabId}
+            totalTime={annotation.totalTime}
+          />
+        )}
       </>
     );
   };
