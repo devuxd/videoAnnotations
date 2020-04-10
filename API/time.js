@@ -20,6 +20,14 @@ const getDurationInString = (end, start) => {
   return secondsToStringFormat(getDurationInSeconds(end, start));
 };
 const stringToSecondsFormat = string => moment.duration(string).asSeconds();
+if (typeof window !== "undefined") {
+  window.util = {
+    secondsToStringFormat,
+    stringToSecondsFormat,
+    getDurationInString,
+    getDurationInSeconds
+  };
+}
 module.exports = {
   secondsToStringFormat,
   stringToSecondsFormat,

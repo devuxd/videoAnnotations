@@ -1,11 +1,11 @@
 import React from "react";
-import VideoInfo from "../shared/videoInfo";
+import VideoInfo from "./components/videoInfo";
 import Link from "next/link";
 
 /**
  * Videos: component for each video for search result page
  */
-function Video({
+function VideosPage({
   video: { videoId, videoTitle, annotations, ...otherProperties },
   sheetId
 }) {
@@ -58,4 +58,4 @@ function Video({
   );
 }
 
-export default Video;
+export default VideosPage;

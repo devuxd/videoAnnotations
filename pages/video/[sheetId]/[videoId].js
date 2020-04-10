@@ -9,6 +9,8 @@ import {
   cacheVideoAnnotation,
   getAnnotationsTitle
 } from "../../../API/db";
+import { stringToSecondsFormat } from "../../../API/time";
+
 import { mainColor, secondColor } from "../../../API/color";
 
 /**
@@ -80,7 +82,7 @@ function MainVideoPage() {
     return YTplayerRef.current.getCurrentTime();
   };
 
-  const updateAnnotations = newAnnotation => {
+  const updateAnnotations = async newAnnotation => {
     // update the annotation with the newSubAnnotations
     const annotations = videoAnnotations.annotations.map(currentAnnotation => {
       if (currentAnnotation.id == newAnnotation.id) {
@@ -88,11 +90,73 @@ function MainVideoPage() {
       }
       return currentAnnotation;
     });
-    saveAnnotations(annotations, newAnnotation, newAnnotation.id);
+    try {
+      const localVideoAnnotations = await saveAnnotations(
+        annotations,
+        newAnnotation,
+        newAnnotation.id
+      );
+      updateVideoAnnotations(localVideoAnnotations);
+    } catch (e) {
+      return;
+    }
   };
-  const addAnnotation = newAnnotation => {
+  const addAnnotation = async newAnnotation => {
     const annotations = [...videoAnnotations.annotations, newAnnotation];
-    saveAnnotations(annotations, newAnnotation, newAnnotation.id);
+    try {
+      const localVideoAnnotations = await saveAnnotations(
+        annotations,
+        newAnnotation,
+        newAnnotation.id
+      );
+      updateVideoAnnotations(localVideoAnnotations);
+    } catch (e) {
+      return;
+    }
+  };
+  const deleteAnnotation = async annotation => {
+    const annotations = videoAnnotations.annotations.filter(
+      currentAnnotation => currentAnnotation.id !== annotation.id
+    );
+    try {
+      const localVideoAnnotations = await saveAnnotations(
+        annotations,
+        {},
+        annotation.id
+      );
+      updateVideoAnnotations(localVideoAnnotations);
+    } catch (e) {
+      return;
+    }
+  };
+  const mergeAnnotation = async (
+    mergedAnnotation,
+    shouldBeRemovedAnnotation
+  ) => {
+    let annotations = videoAnnotations.annotations.map(currentAnnotation => {
+      if (currentAnnotation.id == mergedAnnotation.id) {
+        return mergedAnnotation;
+      }
+      return currentAnnotation;
+    });
+    try {
+      await saveAnnotations(annotations, mergedAnnotation, mergedAnnotation.id);
+    } catch (e) {
+      return;
+    }
+    annotations = annotations.filter(
+      currentAnnotation => currentAnnotation.id !== shouldBeRemovedAnnotation.id
+    );
+    try {
+      const localVideoAnnotations = await saveAnnotations(
+        annotations,
+        {},
+        shouldBeRemovedAnnotation.id
+      );
+      updateVideoAnnotations(localVideoAnnotations);
+    } catch (e) {
+      return;
+    }
   };
 
   // update local copy, localStorage copy and then save it in the spreedseet
@@ -109,22 +173,11 @@ function MainVideoPage() {
         newAnnotation
       );
       console.log(`saved!`);
+      return localVideoAnnotations;
     } catch (e) {
       console.log(e.message);
-      return;
+      return new Error("Unable to save!");
     }
-    updateVideoAnnotations(localVideoAnnotations);
-    cacheVideoAnnotation(
-      localVideoAnnotations,
-      localVideoAnnotations.id,
-      sheetId
-    );
-  };
-  const deleteAnotation = annotation => {
-    const annotations = videoAnnotations.annotations.filter(
-      currentAnnotation => currentAnnotation.id !== annotation.id
-    );
-    saveAnnotations(annotations, {}, annotation.id);
   };
   const getVideoProgress = () => videoProgress.current;
 
@@ -222,7 +275,7 @@ function MainVideoPage() {
               player={{ seekTo, getCurrentTime, playVideo }}
               updateAnnotations={updateAnnotations}
               addAnnotation={addAnnotation}
-              deleteAnotation={deleteAnotation}
+              deleteAnnotation={deleteAnnotation}
               getVideoProgress={getVideoProgress}
               subAnnotationProgressState={subAnnotationProgressState}
               colorScheme={{
@@ -230,6 +283,7 @@ function MainVideoPage() {
                 secondColor: levelTowColor.current
               }}
               annotationsTitle={annotationsTitle}
+              mergeAnnotation={mergeAnnotation}
             />
           </div>
         </div>

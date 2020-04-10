@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { googleLogin } from "../../../API/db";
-import RadioButtonGroup from "../../shared/TitleDropBox";
+import RadioButtonGroup from "./TitleDropBox";
 import {
   stringToSecondsFormat,
   secondsToStringFormat
@@ -65,7 +65,7 @@ function AnnotationAddForm({
             border-radius: 0.4em;
             border: 3px solid;
             padding: 5px;
-            margin: 20px auto;
+            margin: 20px 30%;
             transition: left 1s;
           }
         `}
@@ -79,10 +79,7 @@ function AnnotationAddForm({
           >
             Select an existing title or create new one:
           </label>
-          <div
-            className="rainbow-p-around_x-large rainbow-align-content_center"
-            style={{ display: "grid", justifyContent: "center" }}
-          >
+          <div>
             <RadioButtonGroup
               options={annotationTitles}
               selected={title}
@@ -90,7 +87,10 @@ function AnnotationAddForm({
             />
           </div>
 
-          <div className="input-group input-group-sm mb-3">
+          <div
+            className="input-group input-group-sm mb-3"
+            style={{ paddingTop: "15px" }}
+          >
             <label
               htmlFor="StartTime"
               style={{ margin: "3px", paddingLeft: "5px" }}

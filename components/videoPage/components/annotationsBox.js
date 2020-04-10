@@ -73,6 +73,10 @@ function AnnotationBox({
         className="box-annotation"
         id="box-annotation"
         style={boxStyle}
+        onClick={e => {
+          // this to stop the propagating  the click on the parent div
+          e.stopPropagation();
+        }}
       >
         {children}
       </div>
