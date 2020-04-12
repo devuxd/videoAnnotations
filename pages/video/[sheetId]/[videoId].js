@@ -166,11 +166,32 @@ function MainVideoPage() {
     newAnnotationId
   ) => {
     let localVideoAnnotations = { ...videoAnnotations, annotations };
+    const range = [];
+    const annotationsToBeSaved = [];
+    range.push(`${localVideoAnnotations.id}!A${newAnnotationId}`);
+    if (JSON.stringify(annotations).length > 50000) {
+      range.push(`${localVideoAnnotations.id}!B${newAnnotationId}`);
+      const firstHalf = {
+        ...newAnnotation,
+        subAnnotations: newAnnotation.subAnnotations.slice(
+          0,
+          newAnnotation.subAnnotations.length / 2
+        )
+      };
+      const secondHalf = newAnnotation.subAnnotations.slice(
+        newAnnotation.subAnnotations.length / 2,
+        newAnnotation.subAnnotations.length
+      );
+      annotationsToBeSaved.push(firstHalf);
+      annotationsToBeSaved.push(secondHalf);
+    } else {
+      annotationsToBeSaved.push(newAnnotation);
+    }
     try {
-      await saveVideoAnnotations(
-        sheetId,
-        `${localVideoAnnotations.id}!A${newAnnotationId}`,
-        newAnnotation
+      await Promise.all(
+        annotationsToBeSaved.map((annotation, index) =>
+          saveVideoAnnotations(sheetId, range[index], annotation)
+        )
       );
       console.log(`saved!`);
       return localVideoAnnotations;
