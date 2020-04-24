@@ -92,12 +92,12 @@ function AnnotationsPage(props) {
   };
 
   // handel sub-annotation click
-  const onSubAnnotationClick = subAnnotatio => {
+  const onSubAnnotationClick = subAnnotation => {
+    changeSelectedSubAnnotationId(subAnnotation.id);
     props.player.seekTo(
-      stringToSecondsFormat(subAnnotatio.duration.start.time)
+      stringToSecondsFormat(subAnnotation.duration.start.time)
     );
     changeSelectedAnnotationState("showSubAnnotations&Edit");
-    changeSelectedSubAnnotationId(subAnnotatio.id);
   };
   // ***
 
@@ -187,10 +187,12 @@ function AnnotationsPage(props) {
     props.mergeAnnotation(mergedAnnotation, nextAnnotation);
   };
   const sortAnootations = annotations =>
-    annotations.sort(
-      (annotationA, annotationB) =>
-        stringToSecondsFormat(annotationA.duration.start.time) -
-        stringToSecondsFormat(annotationB.duration.start.time)
+    Array.from(
+      annotations.sort(
+        (annotationA, annotationB) =>
+          stringToSecondsFormat(annotationA.duration.start.time) -
+          stringToSecondsFormat(annotationB.duration.start.time)
+      )
     );
 
   const getNextAnnotation = id => {
@@ -384,7 +386,7 @@ function AnnotationsPage(props) {
           <div id="sub-annotations"></div>
         </AnnotationsVis>
         {selectedAnnotationState === "showSubAnnotations&Edit" &&
-          getSelectedSubAnnotation() && (
+          getSelectedSubAnnotation() != undefined && (
             <div>
               <AnnotationBox
                 selectedAnnotationId={selectedSubAnnotationId}
@@ -438,9 +440,7 @@ function AnnotationsPage(props) {
               getSelectedAnnotation().subAnnotations.length
             }_${Math.floor(Math.random(10) * 10000)}`}
             defaultStartTime={
-              getSelectedAnnotation().subAnnotations[
-                getSelectedAnnotation().subAnnotations.length - 1
-              ]?.duration.end.time ??
+              getSelectedSubAnnotation()?.duration.end.time ??
               getSelectedAnnotation().duration.start.time
             }
             annotationDefualtLength={stringToSecondsFormat(
@@ -523,7 +523,7 @@ function AnnotationsPage(props) {
             className="btn btn btn-outline-secondary btn-sm"
             onClick={() => {
               changeSelectedAnnotationState("showAnnotations&Add");
-              changeSelectedAnnotationId(null);
+              // changeSelectedAnnotationId(null);
             }}
           >
             Add annotation
@@ -537,32 +537,35 @@ function AnnotationsPage(props) {
             gridRowEnd: "2"
           }}
         >
-          {getSelectedAnnotation() && (
-            <div
-              onClick={() => {
-                if (selectedAnnotationState.startsWith("showSubAnnotation")) {
-                  changeSelectedAnnotationState("showAnnotations&Edit");
-                }
-              }}
-            >
-              <AnnotationBox
-                selectedAnnotationId={selectedAnnotationId}
-                boxStyle={
-                  selectedAnnotationState.startsWith("showAnnotations")
-                    ? {
-                        border: "3px solid",
-                        maxWidth: "500px",
-                        backgroundColor: "white"
-                      }
-                    : { borderTop: "3px solid", left: "0px" }
-                }
-                windowWidth={windowWidth}
-                key={windowWidth}
+          {selectedAnnotationState !== "showAnnotations&Add" &&
+            selectedAnnotationId !== null && (
+              <div
+                onClick={() => {
+                  if (selectedAnnotationState.startsWith("showSubAnnotation")) {
+                    changeSelectedAnnotationState("showAnnotations&Edit");
+                  }
+                }}
               >
-                {getAnnotationsSection()}
-              </AnnotationBox>
-            </div>
-          )}
+                {getSelectedAnnotation() != undefined && (
+                  <AnnotationBox
+                    selectedAnnotationId={selectedAnnotationId}
+                    boxStyle={
+                      selectedAnnotationState.startsWith("showAnnotations")
+                        ? {
+                            border: "3px solid",
+                            maxWidth: "500px",
+                            backgroundColor: "white"
+                          }
+                        : { borderTop: "3px solid", left: "0px" }
+                    }
+                    windowWidth={windowWidth}
+                    key={windowWidth}
+                  >
+                    {getAnnotationsSection()}
+                  </AnnotationBox>
+                )}
+              </div>
+            )}
 
           {selectedAnnotationState === "showAnnotations&Add" && (
             <AnnotationAddForm
@@ -575,8 +578,9 @@ function AnnotationsPage(props) {
                 ]?.id ?? 10) + 1
               }
               defaultStartTime={
-                props.annotations[props.annotations.length - 1]?.duration.end
-                  .time
+                getSelectedAnnotation()?.duration.end.time ??
+                sortAnootations(props.annotations).pop()?.duration.end.time ??
+                "0:00:00"
               }
               annotationDefualtLength={props.videoLength}
             />
