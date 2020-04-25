@@ -16,24 +16,31 @@ function AnnotationBox({
 
     const arrowOffset =
       refElement.getAttribute("width") / 2 > 8
-        ? refElement.getAttribute("width") / 2
-        : 0;
+        ? refElement.getAttribute("width") / 4
+        : -15;
 
     const backgroundColor = refElement.style.fill;
     refArrowElement.current.style.borderBottomColor = backgroundColor;
     refAnnotationEditForm.current.style.borderColor = backgroundColor;
     if (boxStyle.left !== undefined) return; // this means that the left property is overwritten by the parent
-    refArrowElement.current.style.left = `${annotationXStartposition -
-      10 +
-      arrowOffset}px`;
+    if (arrowOffset > windowWidth) {
+      //happens only if any of the subannotion is longer than the main annotaion
+      refArrowElement.current.style.left = `${windowWidth - 30}px`;
+    } else {
+      refArrowElement.current.style.left = `${annotationXStartposition +
+        arrowOffset}px`;
+    }
     let left;
-    if (annotationXStartposition + 500 > windowWidth) {
+    if (annotationXStartposition + arrowOffset + 500 > windowWidth) {
+      //right
       left = windowWidth - 500;
       refAnnotationEditForm.current.style.left = `${left}px`;
     } else if (annotationXStartposition + arrowOffset < 250) {
-      left = annotationXStartposition - 20;
+      //left
+      left = annotationXStartposition + arrowOffset - 50;
       refAnnotationEditForm.current.style.left = `${left}px`;
     } else {
+      //middel
       left = annotationXStartposition + arrowOffset - 250;
       refAnnotationEditForm.current.style.left = `${left}px`;
     }

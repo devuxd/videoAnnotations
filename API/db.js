@@ -84,9 +84,20 @@ const parse = rowDataset => {
         annotation.values?.[0].userEnteredValue.stringValue != "{}"
     );
 
-    videoJSON.annotations = filteredAnnotationsData.map(annotation =>
-      JSON.parse(annotation.values[0].userEnteredValue.stringValue)
-    );
+    videoJSON.annotations = filteredAnnotationsData.map(annotation => {
+      const returnedAnnotation = JSON.parse(
+        annotation.values[0].userEnteredValue.stringValue
+      );
+      if (annotation.values.length === 2) {
+        const remainingSubAnnotations = JSON.parse(
+          annotation.values[1].userEnteredValue.stringValue
+        );
+        returnedAnnotation.subAnnotations = returnedAnnotation.subAnnotations.concat(
+          remainingSubAnnotations
+        );
+      }
+      return returnedAnnotation;
+    });
     return videoJSON;
   });
   return dataset;
@@ -146,7 +157,7 @@ const getAnnotationsTitle = () => {
       "Interacting with a file of code(Edit, Log)",
       "Interacting with a file of code(Edit, Breakpoint)",
       "Interacting with a file of code(Log, Breakpoint)",
-      "Searching for information",
+      "Information needs",
       "Others"
     ]
   };

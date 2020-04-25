@@ -29,7 +29,7 @@ function MainVideoPage() {
   const [YTplaying, changeYTplaying] = useState(true);
   const videoProgress = useRef(null);
   const YTplayerRef = useRef(null);
-
+  const loadingIndicator = useRef(null);
   useEffect(() => {
     const fetchVideo = async () => {
       let localVideoAnnotations = await getVideoAnnotations(videoId, sheetId);
@@ -166,16 +166,40 @@ function MainVideoPage() {
     newAnnotationId
   ) => {
     let localVideoAnnotations = { ...videoAnnotations, annotations };
+    const range = [];
+    const annotationsToBeSaved = [];
+    range.push(`${localVideoAnnotations.id}!A${newAnnotationId}`);
+    if (JSON.stringify(newAnnotation).length > 50000) {
+      range.push(`${localVideoAnnotations.id}!B${newAnnotationId}`);
+      const firstHalf = {
+        ...newAnnotation,
+        subAnnotations: newAnnotation.subAnnotations.slice(
+          0,
+          newAnnotation.subAnnotations.length / 2
+        )
+      };
+      const secondHalf = newAnnotation.subAnnotations.slice(
+        newAnnotation.subAnnotations.length / 2,
+        newAnnotation.subAnnotations.length
+      );
+      annotationsToBeSaved.push(firstHalf);
+      annotationsToBeSaved.push(secondHalf);
+    } else {
+      annotationsToBeSaved.push(newAnnotation);
+    }
     try {
-      await saveVideoAnnotations(
-        sheetId,
-        `${localVideoAnnotations.id}!A${newAnnotationId}`,
-        newAnnotation
+      loadingIndicator.current.style.display = "block";
+      await Promise.all(
+        annotationsToBeSaved.map((annotation, index) =>
+          saveVideoAnnotations(sheetId, range[index], annotation)
+        )
       );
       console.log(`saved!`);
+      loadingIndicator.current.style.display = "none";
       return localVideoAnnotations;
     } catch (e) {
       console.log(e.message);
+      loadingIndicator.current.style.display = "none";
       return new Error("Unable to save!");
     }
   };
@@ -260,7 +284,19 @@ function MainVideoPage() {
               progressInterval={100}
             />
           </div>
-
+          <div
+            style={{
+              gridColumnStart: "3",
+              gridColumnEnd: "3",
+              gridRowStart: "3",
+              gridRowEnd: "span 3",
+              placeSelf: "center",
+              display: "none"
+            }}
+            ref={loadingIndicator}
+          >
+            Synching changes ....
+          </div>
           <div
             style={{
               gridColumnStart: "1",
