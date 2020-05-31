@@ -259,6 +259,7 @@ function MainVideoPage() {
           style={{
             display: "grid",
             gridTemplateColumns: "10% 75% 15%",
+            gridAutoRows: "minmax(800px, auto)",
             gridTemplateRows: "800px 400px"
           }}
         >

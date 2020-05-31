@@ -46,11 +46,11 @@ export default function StatsticsPage({ dataset }) {
                 </h3>
             ))} */}
 
-      <ul class="nav nav-pills nav-fill">
+      <ul className="nav nav-pills nav-fill">
         {annotationsStatstics.map((annotation, index) => (
-          <li class="nav-item">
+          <li className="nav-item">
             <a
-              class={`nav-link ${tabId === index ? "active" : ""}`}
+              className={`nav-link ${tabId === index ? "active" : ""}`}
               onClick={() => updateTabId(index)}
               href="#"
             >

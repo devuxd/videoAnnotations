@@ -144,7 +144,7 @@ const googleLogin = () => {
   );
 };
 
-//TODO: read this from google sheets instead of the current mocking of the data,
+//TODO: read this from google sheets instead of the current mocking of the data. This is should not be hard coded!
 const getAnnotationsTitle = () => {
   return {
     annotations: ["Development", "Debugging", "Irrelevant"],
@@ -157,7 +157,7 @@ const getAnnotationsTitle = () => {
       "Interacting with a file of code(Edit, Log)",
       "Interacting with a file of code(Edit, Breakpoint)",
       "Interacting with a file of code(Log, Breakpoint)",
-      "Information needs",
+      "Seeking information",
       "Others"
     ]
   };

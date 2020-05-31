@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Layouts from "../../components/shared/layouts";
 import { getDataset } from "../../API/db";
 import VideosPage from "../../components/datasetePage/videosPage";
@@ -11,6 +11,7 @@ function Dataset() {
   const [tabId, updateTabId] = useState(0);
   const router = useRouter();
   const { sheetId } = router.query;
+  const rotateRef = useRef([]);
   useEffect(() => {
     const fetchDataset = async () => {
       const localDataSet = await getDataset(sheetId);
@@ -53,27 +54,39 @@ function Dataset() {
       </div>
     );
   }
+  const rotate = (domId, action) => {
+    if (action === "open")
+      rotateRef.current[domId].style.transform = "rotateY(180deg)";
+    else rotateRef.current[domId].style.transform = "";
+  };
   const getTabcontent = () => {
     if (tabId === 0) {
       return (
-        <div className="row">
-          {dataset.map((video, index) => {
-            if ((index + 1) % 2 === 0)
-              return (
-                <React.Fragment key={index}>
-                  <div className="col">
-                    <VideosPage video={video} sheetId={sheetId} />
-                  </div>
-                  <div className="w-100"></div>
-                  <br />
-                </React.Fragment>
-              );
-            return (
-              <div className="col" key={index}>
-                <VideosPage video={video} sheetId={sheetId} />
-              </div>
-            );
-          })}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "50% 50%",
+            gridAutoRows: "minmax(800px, 400px)",
+            gridGap: "10px"
+          }}
+        >
+          {dataset.map((video, index) => (
+            <div
+              key={index}
+              style={{
+                transformStyle: "preserve-3d",
+                transition: "all .8s ease"
+              }}
+              ref={e => (rotateRef.current[index] = e)}
+            >
+              <VideosPage
+                video={video}
+                sheetId={sheetId}
+                domId={index}
+                rotate={rotate}
+              />
+            </div>
+          ))}
         </div>
       );
     }
@@ -81,6 +94,7 @@ function Dataset() {
       return <StatsticsPage dataset={dataset} />;
     }
   };
+
   return (
     <div>
       <Layouts>
@@ -103,19 +117,19 @@ function Dataset() {
         </div>
         <div>
           <div className="container">
-            <ul class="nav nav-tabs">
-              <li class="nav-item">
+            <ul className="nav nav-tabs">
+              <li className="nav-item">
                 <a
-                  class={`nav-link ${tabId === 0 ? "active" : ""}`}
+                  className={`nav-link ${tabId === 0 ? "active" : ""}`}
                   onClick={() => updateTabId(0)}
                   href="#"
                 >
                   Dataset
                 </a>
               </li>
-              <li class="nav-item">
+              <li className="nav-item">
                 <a
-                  class={`nav-link ${tabId === 1 ? "active" : ""}`}
+                  className={`nav-link ${tabId === 1 ? "active" : ""}`}
                   onClick={() => updateTabId(1)}
                   href="#"
                 >
