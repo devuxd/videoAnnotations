@@ -20,6 +20,8 @@ function VideosPage({ video, sheetId, domId, rotate }) {
             height: 100%;
             border-radius: 10px;
             backface-visibility: hidden;
+            background-color: #f8f9fa;
+            border: 1px solid lightgray;
           }
           .videoStatstic {
             position: absolute;
@@ -30,6 +32,7 @@ function VideosPage({ video, sheetId, domId, rotate }) {
             border-radius: 10px;
             backface-visibility: hidden;
             transform: rotateY(180deg);
+            background-color: lightgray;
           }
         `}
       </style>
@@ -43,7 +46,11 @@ function VideosPage({ video, sheetId, domId, rotate }) {
           ></VideoInfo>
         </div>
         <div className="videoStatstic">
-          <VideoStatstic rotate={rotate} domId={domId}></VideoStatstic>
+          <VideoStatstic
+            rotate={rotate}
+            domId={domId}
+            video={video}
+          ></VideoStatstic>
         </div>
       </div>
     </>

@@ -6,10 +6,8 @@ import AnnotationsPage from "../../../components/videoPage/annotationsPage";
 import {
   getVideoAnnotations,
   saveVideoAnnotations,
-  cacheVideoAnnotation,
   getAnnotationsTitle
 } from "../../../API/db";
-import { stringToSecondsFormat } from "../../../API/time";
 
 import { mainColor, secondColor } from "../../../API/color";
 
