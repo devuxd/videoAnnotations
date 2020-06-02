@@ -2,6 +2,8 @@ import { secondsToStringFormat } from "../../API/time";
 import { totalTime, getAnnotationsStatstics } from "../../API/statstics";
 import { useState } from "react";
 import PiChart from "./components/piChart";
+import { secondColor } from "../../API/color";
+import { getAnnotationsTitle } from "../../API/db";
 
 export default function StatsticsPage({ dataset }) {
   let annotationsStatstics = dataset.reduce((prev, current) => {
@@ -10,6 +12,7 @@ export default function StatsticsPage({ dataset }) {
   annotationsStatstics = getAnnotationsStatstics(annotationsStatstics);
 
   const [tabId, updateTabId] = useState(0);
+  const color = secondColor(getAnnotationsTitle().subAnnotations);
 
   const getTabcontent = () => {
     const annotation = annotationsStatstics[tabId];
@@ -27,6 +30,7 @@ export default function StatsticsPage({ dataset }) {
             data={subannotationsStatstics}
             key={tabId}
             totalTime={annotation.totalTime}
+            color={color}
           />
         )}
       </>
@@ -46,11 +50,11 @@ export default function StatsticsPage({ dataset }) {
                 </h3>
             ))} */}
 
-      <ul class="nav nav-pills nav-fill">
+      <ul className="nav nav-pills nav-fill">
         {annotationsStatstics.map((annotation, index) => (
-          <li class="nav-item">
+          <li className="nav-item">
             <a
-              class={`nav-link ${tabId === index ? "active" : ""}`}
+              className={`nav-link ${tabId === index ? "active" : ""}`}
               onClick={() => updateTabId(index)}
               href="#"
             >

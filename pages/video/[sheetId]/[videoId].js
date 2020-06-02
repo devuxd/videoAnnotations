@@ -6,10 +6,8 @@ import AnnotationsPage from "../../../components/videoPage/annotationsPage";
 import {
   getVideoAnnotations,
   saveVideoAnnotations,
-  cacheVideoAnnotation,
   getAnnotationsTitle
 } from "../../../API/db";
-import { stringToSecondsFormat } from "../../../API/time";
 
 import { mainColor, secondColor } from "../../../API/color";
 
@@ -259,6 +257,7 @@ function MainVideoPage() {
           style={{
             display: "grid",
             gridTemplateColumns: "10% 75% 15%",
+            gridAutoRows: "minmax(800px, auto)",
             gridTemplateRows: "800px 400px"
           }}
         >

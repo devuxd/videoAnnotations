@@ -1,21 +1,18 @@
 import { useEffect } from "react";
-import { secondColor } from "../../../API/color";
 import * as d3 from "d3";
-import { getAnnotationsTitle } from "../../../API/db";
 import { secondsToStringFormat } from "../../../API/time";
-export default function PiChart({ data, totalTime }) {
+export default function PiChart({ data, totalTime, id, color }) {
   useEffect(() => renderChart(), []);
   const sortedData = data.sort((a, b) => b.totalTime - a.totalTime);
-  const color = secondColor(getAnnotationsTitle().subAnnotations);
   const renderChart = () => {
     const margin = { top: 10, right: 10, bottom: 10, left: 200 },
-      width = 460 - margin.right,
+      width = data.length * 60 - margin.right,
       height = 490;
     // append the svg object to the body of the page
     var svg = d3
-      .select("#my_dataviz")
+      .select(`#my_dataviz${id}`)
       .append("svg")
-      .attr("width", width + margin.left + margin.right + 200)
+      .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom + 200)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -67,9 +64,9 @@ export default function PiChart({ data, totalTime }) {
       })
       .on("mouseover", function(d) {
         d3
-          .select("#tooltip")
-          .style("left", d3.event.pageX + 10 + "px")
-          .style("top", d3.event.pageY + 10 + "px")
+          .select(`#tooltip${id}`)
+          // .style("left", d3.event.pageX + 10 + "px")
+          // .style("top", d3.event.pageY + 10 + "px")
           .style("opacity", 1)
           .style("background-color", "rgba(0, 0, 0, 0.65)")
           .style("color", "white")
@@ -78,7 +75,7 @@ export default function PiChart({ data, totalTime }) {
         `);
       })
       .on("mouseout", function(d) {
-        d3.select("#tooltip").style("opacity", 0);
+        d3.select(`#tooltip${id}`).style("opacity", 0);
       });
 
     // Animation
@@ -113,11 +110,11 @@ export default function PiChart({ data, totalTime }) {
       });
 
     // tooltip
-    d3.select("#my_dataviz")
+    d3.select(`#my_dataviz${id}`)
       .append("div")
-      .attr("id", "tooltip")
+      .attr("id", `tooltip${id}`)
       .attr("style", "position: absolute; opacity: 0;");
   };
 
-  return <div id="my_dataviz"></div>;
+  return <div id={`my_dataviz${id}`}></div>;
 }
