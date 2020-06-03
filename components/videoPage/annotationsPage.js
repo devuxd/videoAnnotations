@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
   faArrowRight,
-  faWindowClose
+  faWindowClose,
 } from "@fortawesome/free-solid-svg-icons";
 import AnnotationEditForm from "./components/annotationEditForm";
 import AnnotationAddForm from "./components/annotationAddForm";
@@ -29,8 +29,10 @@ function AnnotationsPage(props) {
   );
   const annotationTitles = useRef();
   const subAnnotationTitles = useRef();
+  const currentAnnotationId = useRef();
+  const currentSubAnnotationId = useRef();
+  const trackingTime = useRef();
   const [windowWidth, changeWindowWidth] = useState(0);
-  const trackingTime = useRef(null);
   const [videoProgress, changeVideoProgress] = useState(0);
   const [selectedAnnotationId, changeSelectedAnnotationId] = useState(null);
   const [selectedSubAnnotationId, changeSelectedSubAnnotationId] = useState(
@@ -48,14 +50,32 @@ function AnnotationsPage(props) {
       );
   });
   useEffect(() => {
-    if (
-      props.subAnnotationProgressState === "show" &&
-      selectedAnnotationState === "showSubAnnotations&Edit"
-    ) {
-      trackingTime.current = setInterval(
-        () => changeVideoProgress(props.getVideoProgress()),
-        100
-      );
+    if (props.subAnnotationProgressState === "show") {
+      trackingTime.current = setInterval(() => {
+        const currentTime = props.getVideoProgress();
+        const {
+          previwedAnnotation,
+          previwedSubAnnotation,
+        } = getAnnotationDuringTime(currentTime);
+        changeVideoProgress(currentTime);
+        // if there is selected annotation and the video timeline not within the annotation
+        //start and end, then change the selected annotation
+        if (
+          selectedAnnotationId &&
+          previwedAnnotation &&
+          previwedAnnotation?.id != currentAnnotationId.current
+        ) {
+          onAnnotationClick(previwedAnnotation, false);
+        }
+
+        if (
+          selectedSubAnnotationId &&
+          previwedSubAnnotation &&
+          previwedSubAnnotation?.id != currentSubAnnotationId.current
+        ) {
+          onSubAnnotationClick(previwedSubAnnotation, false);
+        }
+      }, 1000);
     } else {
       clearInterval(trackingTime.current);
     }
@@ -84,34 +104,40 @@ function AnnotationsPage(props) {
   };
   // *** Click handlers
   // handel the click on annotation and sub-annotation
-  const onAnnotationClick = annotation => {
-    document.getElementById("video-annotations").scrollIntoView();
-    props.player.seekTo(stringToSecondsFormat(annotation.duration.start.time));
+  const onAnnotationClick = (annotation, seek = true) => {
+    if (seek) {
+      const seekTo = annotation.duration.start.time;
+      props.player.seekTo(stringToSecondsFormat(seekTo));
+    }
+    currentAnnotationId.current = annotation.id;
     changeSelectedAnnotationState("showAnnotations&Edit");
+    changeSelectedSubAnnotationId(null);
     changeSelectedAnnotationId(annotation.id);
   };
 
   // handel sub-annotation click
-  const onSubAnnotationClick = subAnnotation => {
+  const onSubAnnotationClick = (subAnnotation, seek = true) => {
+    if (seek) {
+      const seekTo = stringToSecondsFormat(subAnnotation.duration.start.time);
+      props.player.seekTo(seekTo);
+    }
     changeSelectedSubAnnotationId(subAnnotation.id);
-    props.player.seekTo(
-      stringToSecondsFormat(subAnnotation.duration.start.time)
-    );
+    currentSubAnnotationId.current = subAnnotation.id;
     changeSelectedAnnotationState("showSubAnnotations&Edit");
   };
   // ***
 
   // when one of the annotation updated -> propagate the update to the main state maintained by [videoId].js
-  const updateSelectedAnnotation = newAnnotation => {
+  const updateSelectedAnnotation = (newAnnotation) => {
     const { subAnnotations } = getSelectedAnnotation();
     const updatedAnnotation = { ...newAnnotation, subAnnotations };
     props.updateAnnotations(updatedAnnotation);
   };
 
   // when one of the sub-annotation updated -> propagate this update to local state and the main state maintained by [videoId].js
-  const updateSubAnnotations = newSubAnnotation => {
+  const updateSubAnnotations = (newSubAnnotation) => {
     const subAnnotations = getSelectedAnnotation().subAnnotations.map(
-      subAnnotation =>
+      (subAnnotation) =>
         subAnnotation.id === newSubAnnotation.id
           ? newSubAnnotation
           : subAnnotation
@@ -120,17 +146,17 @@ function AnnotationsPage(props) {
     props.updateAnnotations(updatedAnnotation);
   };
 
-  const addNewAnnotation = newAnnotation => {
+  const addNewAnnotation = (newAnnotation) => {
     const annotation = { ...newAnnotation, subAnnotations: [] };
     onAnnotationClick(annotation);
     props.addAnnotation(annotation);
   };
   // adding annotation start with only adding title and start time and then call editSubAnnotation to let the user continue
-  const addNewSubAnnotation = newSubAnnotation => {
+  const addNewSubAnnotation = (newSubAnnotation) => {
     const selectedAnnotation = getSelectedAnnotation();
     const newAnnotation = {
       ...selectedAnnotation,
-      subAnnotations: [...selectedAnnotation.subAnnotations, newSubAnnotation]
+      subAnnotations: [...selectedAnnotation.subAnnotations, newSubAnnotation],
     };
 
     onSubAnnotationClick(newSubAnnotation);
@@ -148,7 +174,7 @@ function AnnotationsPage(props) {
     const selectedSubAnnotation = getSelectedSubAnnotation();
     changeSelectedAnnotationState("showSubAnnotations");
     const subAnnotations = selectedAnnotation.subAnnotations.filter(
-      subAnnotation => subAnnotation.id !== selectedSubAnnotation.id
+      (subAnnotation) => subAnnotation.id !== selectedSubAnnotation.id
     );
     const updatedAnnotation = { ...selectedAnnotation, subAnnotations };
     changeSelectedSubAnnotationId(null);
@@ -171,22 +197,22 @@ function AnnotationsPage(props) {
       description: `${selectedAnnotation.description} \n ${nextAnnotation.description}`,
       duration: {
         start: {
-          time: selectedAnnotation.duration.start.time
+          time: selectedAnnotation.duration.start.time,
         },
         end: {
-          time: nextAnnotation.duration.end.time
-        }
+          time: nextAnnotation.duration.end.time,
+        },
       },
       id: selectedAnnotation.id,
       subAnnotations: [
         ...selectedAnnotation.subAnnotations,
-        ...nextAnnotation.subAnnotations
+        ...nextAnnotation.subAnnotations,
       ],
-      title: selectedAnnotation.title
+      title: selectedAnnotation.title,
     };
     props.mergeAnnotation(mergedAnnotation, nextAnnotation);
   };
-  const sortAnootations = annotations =>
+  const sortAnootations = (annotations) =>
     Array.from(
       annotations.sort(
         (annotationA, annotationB) =>
@@ -195,41 +221,63 @@ function AnnotationsPage(props) {
       )
     );
 
-  const getNextAnnotation = id => {
-    // make sure that the array is order by time
+  const getNextAnnotation = (id) => {
     if (id === undefined) return undefined;
+    // make sure that the array is order by time
     const array = sortAnootations(props.annotations);
     const nextElementId =
-      array.findIndex(annotation => annotation.id === id) + 1;
+      array.findIndex((annotation) => annotation.id === id) + 1;
     return array[nextElementId];
   };
-  const getPreviousAnnotation = id => {
-    // make sure that the array is order by time
+  const getPreviousAnnotation = (id) => {
     if (id === undefined) return undefined;
+    // make sure that the array is order by time
     const array = sortAnootations(props.annotations);
     const previousElementId =
-      array.findIndex(annotation => annotation.id === id) - 1;
+      array.findIndex((annotation) => annotation.id === id) - 1;
     return array[previousElementId];
   };
 
-  const getNextSubAnnotation = id => {
+  const getNextSubAnnotation = (id) => {
     // make sure that the array is order by time
     if (id === undefined) return undefined;
     const selectedSubAnnotation = getSelectedAnnotation();
     const array = sortAnootations(selectedSubAnnotation.subAnnotations);
     const nextElementId =
-      array.findIndex(annotation => annotation.id === id) + 1;
+      array.findIndex((annotation) => annotation.id === id) + 1;
     return array[nextElementId];
   };
-  const getPreviousSubAnnotation = id => {
+  const getPreviousSubAnnotation = (id) => {
     // make sure that the array is order by time
     if (id === undefined) return undefined;
     const selectedSubAnnotation = getSelectedAnnotation();
     const array = sortAnootations(selectedSubAnnotation.subAnnotations);
     const previousElementId =
-      array.findIndex(annotation => annotation.id === id) - 1;
+      array.findIndex((annotation) => annotation.id === id) - 1;
     return array[previousElementId];
   };
+
+  const getAnnotationDuringTime = (timeInSeconds) => {
+    const previwedAnnotation = props.annotations.find((annotation) => {
+      return (
+        stringToSecondsFormat(annotation.duration.start.time) <=
+          timeInSeconds &&
+        stringToSecondsFormat(annotation.duration.end.time) >= timeInSeconds
+      );
+    });
+    const previwedSubAnnotation = getSelectedAnnotation().subAnnotations.find(
+      (annotation) => {
+        return (
+          stringToSecondsFormat(annotation.duration.start.time) <=
+            timeInSeconds &&
+          stringToSecondsFormat(annotation.duration.end.time) >= timeInSeconds
+        );
+      }
+    );
+    return { previwedAnnotation, previwedSubAnnotation };
+  };
+
+  /* Rendering functions  */
 
   // this show up when an annotation got selected.
   const getEditAnnotation = () => {
@@ -247,7 +295,7 @@ function AnnotationsPage(props) {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "25% 50% 25%"
+            gridTemplateColumns: "25% 50% 25%",
           }}
         >
           <div
@@ -255,7 +303,7 @@ function AnnotationsPage(props) {
               gridColumnStart: "1",
               gridColumnEnd: "1",
               alignSelf: "start",
-              justifySelf: "start"
+              justifySelf: "start",
             }}
           >
             <button
@@ -274,7 +322,7 @@ function AnnotationsPage(props) {
               gridColumnStart: "2",
               gridColumnEnd: "2",
               alignSelf: "center",
-              justifySelf: "center"
+              justifySelf: "center",
             }}
           >
             <button
@@ -290,7 +338,7 @@ function AnnotationsPage(props) {
                   justifyContent: "center",
                   alignContent: "center",
                   gridTemplateColumns: " 10% 80% 10%",
-                  width: "200px"
+                  width: "200px",
                 }}
               >
                 <p style={{ display: "inline-block", margin: "0 auto" }}>
@@ -316,7 +364,7 @@ function AnnotationsPage(props) {
                 gridColumnStart: "3",
                 gridColumnEnd: "3",
                 alignSelf: "end",
-                justifySelf: "end"
+                justifySelf: "end",
               }}
             >
               <button
@@ -363,23 +411,25 @@ function AnnotationsPage(props) {
             style={{
               height: "4px",
               display:
-                props.subAnnotationProgressState === "hide" ? "table" : "flex"
+                props.subAnnotationProgressState === "hide" ? "table" : "flex",
             }}
           >
             <div
               className="progress-bar bg-danger"
               style={{
-                width: `${((videoProgress -
-                  stringToSecondsFormat(
-                    getSelectedAnnotation().duration.start.time
-                  )) /
-                  (stringToSecondsFormat(
-                    getSelectedAnnotation().duration.end.time
-                  ) -
+                width: `${
+                  ((videoProgress -
                     stringToSecondsFormat(
                       getSelectedAnnotation().duration.start.time
-                    ))) *
-                  100}%`
+                    )) /
+                    (stringToSecondsFormat(
+                      getSelectedAnnotation().duration.end.time
+                    ) -
+                      stringToSecondsFormat(
+                        getSelectedAnnotation().duration.start.time
+                      ))) *
+                  100
+                }%`,
               }}
             ></div>
           </div>
@@ -393,7 +443,7 @@ function AnnotationsPage(props) {
                 boxStyle={{
                   border: "3px solid",
                   width: "500px",
-                  backgroundColor: "white"
+                  backgroundColor: "white",
                 }}
                 windowWidth={windowWidth}
               >
@@ -405,7 +455,7 @@ function AnnotationsPage(props) {
                   key={selectedSubAnnotationId}
                   annotationNavigation={{
                     getNextAnnotation: getNextSubAnnotation,
-                    getPreviousAnnotation: getPreviousSubAnnotation
+                    getPreviousAnnotation: getPreviousSubAnnotation,
                   }}
                   onAnnotationClick={onSubAnnotationClick}
                 />
@@ -414,7 +464,7 @@ function AnnotationsPage(props) {
                     display: "grid",
                     justifyContent: "end",
                     alignContent: "end",
-                    height: "40px"
+                    height: "40px",
                   }}
                 >
                   <button
@@ -458,7 +508,7 @@ function AnnotationsPage(props) {
         style={{
           display: "grid",
           gridTemplateColumns: "10% 75% 15%",
-          gridTemplateRows: "30px 350px 150px"
+          gridTemplateRows: "30px 350px 150px",
         }}
       >
         <div
@@ -471,7 +521,7 @@ function AnnotationsPage(props) {
             gridRowStart: "2",
             gridRowEnd: "2",
             alignSelf: "flex-start",
-            justifySelf: "start"
+            justifySelf: "start",
           }}
         >
           <AnnotationsTitles
@@ -488,7 +538,7 @@ function AnnotationsPage(props) {
             gridColumnStart: "2",
             gridColumnEnd: "2",
             gridRowStart: "1",
-            gridRowEnd: "1"
+            gridRowEnd: "1",
           }}
         >
           <AnnotationsVis
@@ -515,7 +565,7 @@ function AnnotationsPage(props) {
             gridRowStart: "1",
             gridRowEnd: "1",
             justifySelf: "center",
-            alignSelf: "start"
+            alignSelf: "start",
           }}
         >
           <button
@@ -534,7 +584,7 @@ function AnnotationsPage(props) {
             gridColumnStart: "2",
             gridColumnEnd: "2",
             gridRowStart: "2",
-            gridRowEnd: "2"
+            gridRowEnd: "2",
           }}
         >
           {selectedAnnotationState !== "showAnnotations&Add" &&
@@ -554,7 +604,7 @@ function AnnotationsPage(props) {
                         ? {
                             border: "3px solid",
                             maxWidth: "500px",
-                            backgroundColor: "white"
+                            backgroundColor: "white",
                           }
                         : { borderTop: "3px solid", left: "0px" }
                     }
@@ -599,7 +649,7 @@ function AnnotationsPage(props) {
                 gridRowStart: "2",
                 gridRowEnd: "span 3",
                 alignSelf: "end",
-                justifySelf: "start"
+                justifySelf: "start",
               }}
             >
               <AnnotationsTitles
@@ -621,7 +671,7 @@ function AnnotationsPage(props) {
                 gridRowStart: "2",
                 gridRowEnd: "2",
                 justifySelf: "center",
-                alignSelf: "center"
+                alignSelf: "center",
               }}
             >
               <button
