@@ -6,7 +6,7 @@ import AnnotationsPage from "../../../components/videoPage/annotationsPage";
 import {
   getVideoAnnotations,
   saveVideoAnnotations,
-  getAnnotationsTitle
+  getAnnotationsTitle,
 } from "../../../API/db";
 
 import { mainColor, secondColor } from "../../../API/color";
@@ -21,7 +21,7 @@ function MainVideoPage() {
   const [videoAnnotations, updateVideoAnnotations] = useState();
   const [
     videoAnnotationIsStillLoading,
-    updateVideoAnnotationIsStillLoading
+    updateVideoAnnotationIsStillLoading,
   ] = useState(true);
   const { videoId, sheetId } = useRouter().query;
   const [YTplaying, changeYTplaying] = useState(true);
@@ -42,7 +42,7 @@ function MainVideoPage() {
 
   const [
     subAnnotationProgressState,
-    changeSubAnnotationProgressState
+    changeSubAnnotationProgressState,
   ] = useState("hide");
   const annotationsTitle = getAnnotationsTitle();
   const levelOneColor = useRef(null);
@@ -68,26 +68,28 @@ function MainVideoPage() {
     };
   });
 
-  const seekTo = seconds => {
+  const seekTo = (seconds) => {
     YTplayerRef.current.seekTo(seconds);
     changeYTplaying(true);
   };
 
-  const playVideo = flag => {
+  const playVideo = (flag) => {
     changeYTplaying(flag);
   };
   const getCurrentTime = () => {
     return YTplayerRef.current.getCurrentTime();
   };
 
-  const updateAnnotations = async newAnnotation => {
+  const updateAnnotations = async (newAnnotation) => {
     // update the annotation with the newSubAnnotations
-    const annotations = videoAnnotations.annotations.map(currentAnnotation => {
-      if (currentAnnotation.id == newAnnotation.id) {
-        return newAnnotation;
+    const annotations = videoAnnotations.annotations.map(
+      (currentAnnotation) => {
+        if (currentAnnotation.id == newAnnotation.id) {
+          return newAnnotation;
+        }
+        return currentAnnotation;
       }
-      return currentAnnotation;
-    });
+    );
     try {
       const localVideoAnnotations = await saveAnnotations(
         annotations,
@@ -99,7 +101,7 @@ function MainVideoPage() {
       return;
     }
   };
-  const addAnnotation = async newAnnotation => {
+  const addAnnotation = async (newAnnotation) => {
     const annotations = [...videoAnnotations.annotations, newAnnotation];
     try {
       const localVideoAnnotations = await saveAnnotations(
@@ -112,9 +114,9 @@ function MainVideoPage() {
       return;
     }
   };
-  const deleteAnnotation = async annotation => {
+  const deleteAnnotation = async (annotation) => {
     const annotations = videoAnnotations.annotations.filter(
-      currentAnnotation => currentAnnotation.id !== annotation.id
+      (currentAnnotation) => currentAnnotation.id !== annotation.id
     );
     try {
       const localVideoAnnotations = await saveAnnotations(
@@ -131,7 +133,7 @@ function MainVideoPage() {
     mergedAnnotation,
     shouldBeRemovedAnnotation
   ) => {
-    let annotations = videoAnnotations.annotations.map(currentAnnotation => {
+    let annotations = videoAnnotations.annotations.map((currentAnnotation) => {
       if (currentAnnotation.id == mergedAnnotation.id) {
         return mergedAnnotation;
       }
@@ -143,7 +145,8 @@ function MainVideoPage() {
       return;
     }
     annotations = annotations.filter(
-      currentAnnotation => currentAnnotation.id !== shouldBeRemovedAnnotation.id
+      (currentAnnotation) =>
+        currentAnnotation.id !== shouldBeRemovedAnnotation.id
     );
     try {
       const localVideoAnnotations = await saveAnnotations(
@@ -174,7 +177,7 @@ function MainVideoPage() {
         subAnnotations: newAnnotation.subAnnotations.slice(
           0,
           newAnnotation.subAnnotations.length / 2
-        )
+        ),
       };
       const secondHalf = newAnnotation.subAnnotations.slice(
         newAnnotation.subAnnotations.length / 2,
@@ -216,7 +219,7 @@ function MainVideoPage() {
                     display: "block",
                     marginLeft: "1%",
                     marginRight: "0px",
-                    marginBottom: "7%"
+                    marginBottom: "7%",
                   }}
                   src="https://i.ibb.co/JmfYfBD/observedev.png"
                 />
@@ -245,7 +248,7 @@ function MainVideoPage() {
                   display: "block",
                   marginLeft: "1%",
                   marginRight: "0px",
-                  marginBottom: "7%"
+                  marginBottom: "7%",
                 }}
                 src="https://i.ibb.co/JmfYfBD/observedev.png"
               />
@@ -257,8 +260,7 @@ function MainVideoPage() {
           style={{
             display: "grid",
             gridTemplateColumns: "10% 75% 15%",
-            gridAutoRows: "minmax(800px, auto)",
-            gridTemplateRows: "800px 400px"
+            gridTemplateRows: "800px 400px",
           }}
         >
           <div
@@ -266,7 +268,7 @@ function MainVideoPage() {
               gridColumnStart: "2",
               gridColumnEnd: "2",
               gridRowStart: "1",
-              gridRowEnd: "span 1"
+              gridRowEnd: "span 1",
             }}
             id="YTplayer"
           >
@@ -290,7 +292,7 @@ function MainVideoPage() {
               gridRowStart: "3",
               gridRowEnd: "span 3",
               placeSelf: "center",
-              display: "none"
+              display: "none",
             }}
             ref={loadingIndicator}
           >
@@ -301,7 +303,7 @@ function MainVideoPage() {
               gridColumnStart: "1",
               gridColumnEnd: "span 3",
               gridRowStart: "2",
-              gridRowEnd: "span 2"
+              gridRowEnd: "span 2",
             }}
           >
             <AnnotationsPage
@@ -315,7 +317,7 @@ function MainVideoPage() {
               subAnnotationProgressState={subAnnotationProgressState}
               colorScheme={{
                 mainColor: levelOneColor.current,
-                secondColor: levelTowColor.current
+                secondColor: levelTowColor.current,
               }}
               annotationsTitle={annotationsTitle}
               mergeAnnotation={mergeAnnotation}
