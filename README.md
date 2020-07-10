@@ -1,1 +1,1 @@
-# observe.dev observedev.devuxd.vercel.app
+# observe.dev
