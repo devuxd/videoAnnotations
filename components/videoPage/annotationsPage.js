@@ -50,7 +50,7 @@ function AnnotationsPage(props) {
       );
   });
   useEffect(() => {
-    if (props.subAnnotationProgressState === "show") {
+    if (props.subAnnotationProgressState === "show" && selectedAnnotationId) {
       trackingTime.current = setInterval(() => {
         const currentTime = props.getVideoProgress();
         const {
@@ -61,7 +61,6 @@ function AnnotationsPage(props) {
         // if there is selected annotation and the video timeline not within the annotation
         //start and end, then change the selected annotation
         if (
-          selectedAnnotationId &&
           previwedAnnotation &&
           previwedAnnotation?.id != currentAnnotationId.current
         ) {
@@ -265,12 +264,12 @@ function AnnotationsPage(props) {
         stringToSecondsFormat(annotation.duration.end.time) >= timeInSeconds
       );
     });
-    const previwedSubAnnotation = getSelectedAnnotation().subAnnotations.find(
+    const previwedSubAnnotation = getSelectedAnnotation()?.subAnnotations.find(
       (annotation) => {
         return (
           stringToSecondsFormat(annotation.duration.start.time) <=
             timeInSeconds &&
-          stringToSecondsFormat(annotation.duration.end.time) >= timeInSeconds
+          stringToSecondsFormat(annotation.duration.end.time) > timeInSeconds
         );
       }
     );
