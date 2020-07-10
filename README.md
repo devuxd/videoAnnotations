@@ -1,1 +1,1 @@
-# observe.dev https://observedev.devuxd.now.sh/
+# observe.dev observedev.devuxd.vercel.app
