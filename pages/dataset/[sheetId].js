@@ -17,8 +17,9 @@ function Dataset() {
       const localDataSet = await getDataset(sheetId);
       updateDataset(localDataSet);
       updateDatasetIsStillLoading(false);
+      window.dataset = localDataSet;
     };
-    // sheetId might be undefined, not sure why userRouter does this 😒`
+    // sheetId might be undefined, not sure why userRouter does this 😒
     if (sheetId !== undefined) {
       fetchDataset();
     }
@@ -37,7 +38,7 @@ function Dataset() {
                     display: "block",
                     marginLeft: "1%",
                     marginRight: "0px",
-                    marginBottom: "7%"
+                    marginBottom: "7%",
                   }}
                   src="https://i.ibb.co/JmfYfBD/observedev.png"
                 />
@@ -67,7 +68,7 @@ function Dataset() {
             display: "grid",
             gridTemplateColumns: "50% 50%",
             gridAutoRows: "minmax(800px, 400px)",
-            gridGap: "10px"
+            gridGap: "10px",
           }}
         >
           {dataset.map((video, index) => (
@@ -75,9 +76,9 @@ function Dataset() {
               key={index}
               style={{
                 transformStyle: "preserve-3d",
-                transition: "all .8s ease"
+                transition: "all .8s ease",
               }}
-              ref={e => (rotateRef.current[index] = e)}
+              ref={(e) => (rotateRef.current[index] = e)}
             >
               <VideosPage
                 video={video}
@@ -107,7 +108,7 @@ function Dataset() {
                   display: "block",
                   marginLeft: "1%",
                   marginRight: "0px",
-                  marginBottom: "7%"
+                  marginBottom: "7%",
                 }}
                 src="https://i.ibb.co/JmfYfBD/observedev.png"
               />
