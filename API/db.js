@@ -1,19 +1,18 @@
 const fetch = require("node-fetch");
-const { key, clientId } = require("./config"); // create file in API folder and call it config.js
 
-const getDataset = sheetId =>
+const getDataset = (sheetId) =>
   new Promise((res, rej) => {
     if (sheetId === undefined) rej("sheet id cannot be undefined");
     return fetch(
-      `https://content-sheets.googleapis.com/v4/spreadsheets/${sheetId}?includeGridData=true&fields=sheets(data(rowData(values(hyperlink%2Cnote%2CuserEnteredValue))))&key=${key}`
+      `https://content-sheets.googleapis.com/v4/spreadsheets/${sheetId}?includeGridData=true&fields=sheets(data(rowData(values(hyperlink%2Cnote%2CuserEnteredValue))))&key=${process.env.NEXT_PUBLIC_key}`
     )
-      .then(response => response.json())
-      .then(rowDataset => parse(rowDataset))
-      .then(dataset => {
+      .then((response) => response.json())
+      .then((rowDataset) => parse(rowDataset))
+      .then((dataset) => {
         cacheData(dataset, sheetId);
         res(dataset);
       })
-      .catch(e => {
+      .catch((e) => {
         alert(
           `Error: unable to retrieve the data, please check you connection, refersh the page and check the data access privilege at google sheets.`
         );
@@ -28,24 +27,24 @@ const getVideoAnnotations = (videoId, sheetId) =>
       return res(findVideo(dataset, videoId));
     } else {
       return res(
-        getDataset(sheetId).then(dataset => findVideo(dataset, videoId))
+        getDataset(sheetId).then((dataset) => findVideo(dataset, videoId))
       );
     }
   });
 
 const cacheVideoAnnotation = (videoAnnotations, videoId, sheetId) => {
   const dataset = JSON.parse(localStorage.getItem(sheetId));
-  const newDataset = dataset.map(video =>
+  const newDataset = dataset.map((video) =>
     video.id === videoId ? videoAnnotations : video
   );
   cacheData(newDataset, sheetId);
 };
 const findVideo = (dataset, videoId) =>
-  dataset.find(video => video.videoId == videoId);
+  dataset.find((video) => video.videoId == videoId);
 const cacheData = (dataset, id) =>
   localStorage.setItem(id, JSON.stringify(dataset));
 
-const parse = rowDataset => {
+const parse = (rowDataset) => {
   const filteredRowDataset = rowDataset.sheets.filter(
     ({ data }) => data[0].rowData[1].values[2] !== undefined
   );
@@ -79,12 +78,12 @@ const parse = rowDataset => {
     videoJSON.annotations = [];
     //remove empty cells or deleted item
     const filteredAnnotationsData = annotationsData.filter(
-      annotation =>
+      (annotation) =>
         annotation.values?.[0].userEnteredValue != undefined &&
         annotation.values?.[0].userEnteredValue.stringValue != "{}"
     );
 
-    videoJSON.annotations = filteredAnnotationsData.map(annotation => {
+    videoJSON.annotations = filteredAnnotationsData.map((annotation) => {
       const returnedAnnotation = JSON.parse(
         annotation.values[0].userEnteredValue.stringValue
       );
@@ -107,25 +106,25 @@ const googleLogin = () => {
     gapi.load("client:auth2", () =>
       gapi.client
         .init({
-          apiKey: key,
-          clientId: clientId,
+          apiKey: process.env.NEXT_PUBLIC_key,
+          clientId: process.env.NEXT_PUBLIC_clientId,
           scope: "https://www.googleapis.com/auth/spreadsheets",
           discoveryDocs: [
-            "https://sheets.googleapis.com/$discovery/rest?version=v4"
-          ]
+            "https://sheets.googleapis.com/$discovery/rest?version=v4",
+          ],
         })
         .then(
           () => {
             gapi.auth2
               .getAuthInstance()
-              .isSignedIn.listen(signedIn => res(true));
+              .isSignedIn.listen((signedIn) => res(true));
             if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
               return res(true);
             } else {
               gapi.auth2.getAuthInstance().signIn();
             }
           },
-          function(e) {
+          function (e) {
             alert(
               `Error: unable to save, please check you connection and refersh the page`
             );
@@ -133,7 +132,7 @@ const googleLogin = () => {
             return rej(false);
           }
         )
-        .catch(e => {
+        .catch((e) => {
           alert(
             `Error: unable to save, please check you connection and refersh the page`
           );
@@ -158,8 +157,8 @@ const getAnnotationsTitle = () => {
       "Interacting with a file of code(Edit, Breakpoint)",
       "Interacting with a file of code(Log, Breakpoint)",
       "Seeking information",
-      "Others"
-    ]
+      "Others",
+    ],
   };
 };
 
@@ -168,16 +167,16 @@ const saveVideoAnnotations = (spreadsheetId, range, annotations) =>
     gapi.load("client:auth2", () =>
       gapi.client
         .init({
-          apiKey: key,
-          clientId: clientId,
+          apiKey: process.env.NEXT_PUBLIC_key,
+          clientId: process.env.NEXT_PUBLIC_clientId,
           scope: "https://www.googleapis.com/auth/spreadsheets",
           discoveryDocs: [
-            "https://sheets.googleapis.com/$discovery/rest?version=v4"
-          ]
+            "https://sheets.googleapis.com/$discovery/rest?version=v4",
+          ],
         })
         .then(
           () => {
-            const handleSignedIn = signedIn => {
+            const handleSignedIn = (signedIn) => {
               if (signedIn) {
                 gapi.client.sheets.spreadsheets.values
                   .update(
@@ -187,7 +186,7 @@ const saveVideoAnnotations = (spreadsheetId, range, annotations) =>
                   .then(() => {
                     return res(true);
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     console.log(JSON.stringify(e, null, 2));
                     alert(
                       `Error: unable to save, please check you connection and refersh the page`
@@ -198,14 +197,14 @@ const saveVideoAnnotations = (spreadsheetId, range, annotations) =>
             };
             gapi.auth2
               .getAuthInstance()
-              .isSignedIn.listen(signedIn => handleSignedIn(signedIn));
+              .isSignedIn.listen((signedIn) => handleSignedIn(signedIn));
             if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
               handleSignedIn(true);
             } else {
               gapi.auth2.getAuthInstance().signIn();
             }
           },
-          function(e) {
+          function (e) {
             alert(
               `Error: unable to save, please check you connection and refersh the page`
             );
@@ -213,7 +212,7 @@ const saveVideoAnnotations = (spreadsheetId, range, annotations) =>
             return rej(false);
           }
         )
-        .catch(e => {
+        .catch((e) => {
           console.log(JSON.stringify(e, null, 2));
           alert(
             `Error: unable to save, please check you connection and refersh the page`
@@ -230,5 +229,5 @@ module.exports = {
   saveVideoAnnotations,
   googleLogin,
   cacheVideoAnnotation,
-  getAnnotationsTitle
+  getAnnotationsTitle,
 };

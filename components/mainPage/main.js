@@ -1,21 +1,22 @@
 import React from "react";
 import FileUpload from "./components/fileUpload";
+import Image from "next/image";
+
 function Main() {
   return (
     <div className="container" style={{ padding: "15%" }}>
       <div className="row">
         <div className="col-lrg">
-          <a href="/">
-            <img
-              style={{
-                width: "70%",
-                display: "block",
-                marginLeft: "auto",
-                marginRight: "auto"
-              }}
-              src="../static/observedev.png"
-            />
-          </a>
+          <div style={{ width: "30%", height: "30%", margin: "0px auto" }}>
+            <a href="/">
+              <Image
+                width={1}
+                height={1}
+                layout={"responsive"}
+                src="/observedevIcon.png"
+              />
+            </a>
+          </div>
           <br />
           <br />
           <br />

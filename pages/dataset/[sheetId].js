@@ -4,6 +4,7 @@ import { getDataset } from "../../API/db";
 import VideosPage from "../../components/datasetePage/videosPage";
 import StatsticsPage from "../../components/datasetePage/statsticsPage";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 function Dataset() {
   const [dataset, updateDataset] = useState([]);
@@ -31,18 +32,16 @@ function Dataset() {
         <Layouts>
           <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-white">
-              <a className="navbar-brand" style={{ width: "20%" }} href="/">
-                <img
-                  style={{
-                    width: "100%",
-                    display: "block",
-                    marginLeft: "1%",
-                    marginRight: "0px",
-                    marginBottom: "7%",
-                  }}
-                  src="https://i.ibb.co/JmfYfBD/observedev.png"
-                />
-              </a>
+              <div style={{ width: "30%", height: "30%" }}>
+                <a className="navbar-brand" style={{ width: "20%" }} href="/">
+                  <Image
+                    width={100}
+                    height={100}
+                    layout={"responsive"}
+                    src="/observedevIcon.png"
+                  />
+                </a>
+              </div>
             </nav>
             <br />
           </div>{" "}
@@ -101,18 +100,16 @@ function Dataset() {
       <Layouts>
         <div>
           <nav className="navbar navbar-expand-lg navbar-light bg-white">
-            <a className="navbar-brand" style={{ width: "20%" }} href="/">
-              <img
-                style={{
-                  width: "100%",
-                  display: "block",
-                  marginLeft: "1%",
-                  marginRight: "0px",
-                  marginBottom: "7%",
-                }}
-                src="https://i.ibb.co/JmfYfBD/observedev.png"
-              />
-            </a>
+            <div style={{ width: "30%", height: "30%" }}>
+              <a className="navbar-brand" style={{ width: "20%" }} href="/">
+                <Image
+                  width={1}
+                  height={1}
+                  layout={"responsive"}
+                  src="/observedevIcon.png"
+                />
+              </a>
+            </div>
           </nav>
           <br />
         </div>
