@@ -64,3 +64,4 @@ out/
 
 API/config.js
 .now
+.env.local

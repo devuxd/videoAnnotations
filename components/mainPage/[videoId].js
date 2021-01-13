@@ -214,7 +214,7 @@ function MainVideoPage() {
           <div>
             <nav className="navbar navbar-eannotationpand-lg navbar-light bg-white">
               <a className="navbar-brand" style={{ width: "20%" }} href="/">
-                <Image width={15} src=" /observedevIcon.png" />
+                <Image width={15} height={15} src="/observedevIcon.png" />
               </a>
             </nav>
             <br />
@@ -234,7 +234,7 @@ function MainVideoPage() {
         <div id="nav-bar">
           <nav className="navbar navbar-expand-lg navbar-light bg-white">
             <a className="navbar-brand" style={{ width: "20%" }} href="/">
-              <Image width={15} src="/observedevIcon.png" />
+              <Image width={15} height={15} src="/observedevIcon.png" />
             </a>
           </nav>
           <br />
