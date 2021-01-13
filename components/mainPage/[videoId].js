@@ -8,9 +8,9 @@ import {
   saveVideoAnnotations,
   getAnnotationsTitle,
 } from "../../../API/db";
+import Image from "next/Image";
 
 import { mainColor, secondColor } from "../../../API/color";
-import Image from "next/image";
 
 /**
  * Dynamic page for each individual video post page
@@ -234,7 +234,7 @@ function MainVideoPage() {
         <div id="nav-bar">
           <nav className="navbar navbar-expand-lg navbar-light bg-white">
             <a className="navbar-brand" style={{ width: "20%" }} href="/">
-              <Image width={15} src=" /observedevIcon.png" />
+              <Image width={15} src="/observedevIcon.png" />
             </a>
           </nav>
           <br />

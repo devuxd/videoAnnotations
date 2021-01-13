@@ -1,5 +1,7 @@
 import React from "react";
-import FileUpload from "./components/fileUpload";
+import FileUpload from "../../components/mainPage/components/fileUpload";
+import Image from "next/image";
+
 function Main() {
   return (
     <div className="container" style={{ padding: "15%" }}>

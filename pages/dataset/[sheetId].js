@@ -4,6 +4,7 @@ import { getDataset } from "../../API/db";
 import VideosPage from "../../components/datasetePage/videosPage";
 import StatsticsPage from "../../components/datasetePage/statsticsPage";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 function Dataset() {
   const [dataset, updateDataset] = useState([]);
@@ -32,16 +33,7 @@ function Dataset() {
           <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-white">
               <a className="navbar-brand" style={{ width: "20%" }} href="/">
-                <img
-                  style={{
-                    width: "100%",
-                    display: "block",
-                    marginLeft: "1%",
-                    marginRight: "0px",
-                    marginBottom: "7%",
-                  }}
-                  src="https://i.ibb.co/JmfYfBD/observedev.png"
-                />
+                <Image width={15} src=" /observedevIcon.png" />
               </a>
             </nav>
             <br />
@@ -102,16 +94,7 @@ function Dataset() {
         <div>
           <nav className="navbar navbar-expand-lg navbar-light bg-white">
             <a className="navbar-brand" style={{ width: "20%" }} href="/">
-              <img
-                style={{
-                  width: "100%",
-                  display: "block",
-                  marginLeft: "1%",
-                  marginRight: "0px",
-                  marginBottom: "7%",
-                }}
-                src="https://i.ibb.co/JmfYfBD/observedev.png"
-              />
+              <Image width={15} src=" /observedevIcon.png" />
             </a>
           </nav>
           <br />
