@@ -2,7 +2,7 @@ import React from "react";
 import * as d3 from "d3";
 import {
   stringToSecondsFormat,
-  secondsToStringFormat
+  secondsToStringFormat,
 } from "../../../API/time";
 /**
  * d3.js scatterplot component to visualize annotations
@@ -12,7 +12,7 @@ export default class extends React.Component {
     super(props);
   }
 
-  mouseClick = selectedAnnotation => {
+  mouseClick = (selectedAnnotation) => {
     this.props.onAnnotationClick(selectedAnnotation);
   };
   componentDidMount() {
@@ -36,21 +36,21 @@ export default class extends React.Component {
       .data(annotationData)
       .enter()
       .append("rect")
-      .style("fill", d => {
+      .style("fill", (d) => {
         return this.props.colorScheme(d.title);
       })
       .style("stroke", "black")
       .style("stroke-width", ".3px")
-      .attr("x", d => {
+      .attr("x", (d) => {
         const start =
           stringToSecondsFormat(d.duration.start.time) -
           stringToSecondsFormat(this.props.annotationStart);
         return scale(start);
       })
-      .attr("id", d => {
+      .attr("id", (d) => {
         return d.id;
       })
-      .attr("width", d => {
+      .attr("width", (d) => {
         // this really remove the need for calculating the seconds in save.
 
         const start =
@@ -64,13 +64,13 @@ export default class extends React.Component {
         return scale(width);
       })
       .attr("height", 15)
-      .on("mouseover", function(d) {
+      .on("mouseover", function () {
         d3.select(this).style("cursor", "pointer");
       })
-      .on("mouseleave", function(d) {
+      .on("mouseleave", function () {
         d3.select(this).style("cursor", "default");
       })
-      .on("click", function(d) {
+      .on("click", function (_, d) {
         mouseClick(d);
       });
   }
