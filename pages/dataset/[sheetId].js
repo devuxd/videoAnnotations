@@ -108,7 +108,7 @@ function Dataset() {
               videos.reduce((a, b) => a + b.videoLength, 0)
             )}`}
             <a
-              download={""}
+              download={"data.json"}
               href={`data:text/json;charset=utf-8,${encodeURIComponent(
                 JSON.stringify(videos)
               )}`}
