@@ -11,14 +11,14 @@ function VideoInfo({
     githubURL,
     videoId,
     videoTitle,
-    annotations
+    annotations,
   },
   rotate,
   domId,
-  sheetId
+  sheetId,
 }) {
   let uniqueAnnotation = Array.from(
-    new Set(annotations.map(annotation => annotation.title))
+    new Set(annotations.map((annotation) => annotation.title))
   );
   return (
     <div className="card-body bg-light text-dark">
@@ -46,7 +46,7 @@ function VideoInfo({
         Total Time: {secondsToStringFormat(videoLength)}
         <br />
         Programming Language: {programmingLanguage} <br />
-        Programming Tools : {programmingTools} <br />
+        Programming Tools: {programmingTools} <br />
         Project URL(s):{" "}
         <ul style={{ listStyle: "square inside" }}>
           {githubURL.split(", ").map((item, index) => (
@@ -55,10 +55,10 @@ function VideoInfo({
             </li>
           ))}
         </ul>
-        Developer Github:
-        <a href={developerGithubURL}>{developerGithubURL}</a> <br />
+        Developer Github: <a href={developerGithubURL}>{developerGithubURL}</a>{" "}
+        <br />
       </div>
-      <b>Annotations:</b>
+      <b>Epsiodes:</b>
       <p className="card-text">
         {uniqueAnnotation.map((annotation, index) => (
           <span className="badge badge-light" key={index}>
@@ -71,7 +71,7 @@ function VideoInfo({
         className="btn btn-info"
         onClick={() => rotate(domId, "open")}
       >
-        Insight
+        Episodes Distribution
       </button>
     </div>
   );
