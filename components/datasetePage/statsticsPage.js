@@ -38,18 +38,6 @@ export default function StatsticsPage({ dataset }) {
   };
   return (
     <>
-      {/* <h3>
-                Total Time:{" "}
-                {secondsToStringFormat(
-                    totalTime(dataset.map(video => video.videoLength))
-                )}
-            </h3>
-            {annotationsTotolaTime.map(annotation => (
-                <h3>
-                    {annotation[0]}: {secondsToStringFormat(annotation[1])}
-                </h3>
-            ))} */}
-
       <ul className="nav nav-pills nav-fill">
         {annotationsStatstics.map((annotation, index) => (
           <li className="nav-item">
@@ -68,7 +56,7 @@ export default function StatsticsPage({ dataset }) {
         style={{
           backgroundColor: "#f4f4f4",
           padding: "20px",
-          margin: "15px 0px"
+          margin: "15px 0px",
         }}
       >
         {getTabcontent()}
