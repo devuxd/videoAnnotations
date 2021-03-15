@@ -22,7 +22,7 @@ export default function PiChart({ data, totalTime, id, color }) {
       .scaleBand()
       .range([0, width])
       .domain(
-        sortedData.map(function(d) {
+        sortedData.map(function (d) {
           return d.title;
         })
       )
@@ -49,24 +49,20 @@ export default function PiChart({ data, totalTime, id, color }) {
       .data(sortedData)
       .enter()
       .append("rect")
-      .attr("x", function(d) {
+      .attr("x", function (d) {
         return x(d.title);
       })
       .attr("width", x.bandwidth())
-      .attr("fill", function(d) {
+      .attr("fill", function (d) {
         return color(d.title);
       })
-      .attr("height", function(d) {
-        return height - y(0);
-      })
-      .attr("y", function(d) {
-        return y(0);
-      })
-      .on("mouseover", function(d) {
+      .attr("height", () => height - y(0))
+      .attr("y", () => y(0))
+      .on("mouseover", function (event, d) {
         d3
           .select(`#tooltip${id}`)
-          // .style("left", d3.event.pageX + 10 + "px")
-          // .style("top", d3.event.pageY + 10 + "px")
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY + 10 + "px")
           .style("opacity", 1)
           .style("background-color", "rgba(0, 0, 0, 0.65)")
           .style("color", "white")
@@ -74,23 +70,21 @@ export default function PiChart({ data, totalTime, id, color }) {
         ${((d.totalTime / totalTime) * 100).toFixed(1)}% of total time.
         `);
       })
-      .on("mouseout", function(d) {
-        d3.select(`#tooltip${id}`).style("opacity", 0);
-      });
+      .on("mouseout", () => d3.select(`#tooltip${id}`).style("opacity", 0));
 
     // Animation
     svg
       .selectAll("rect")
       .transition()
       .duration(800)
-      .attr("y", function(d) {
+      .attr("y", function (d) {
         return y(d.totalTime / 60);
       })
-      .attr("height", function(d) {
+      .attr("height", function (d) {
         return height - y(d.totalTime / 60);
       })
 
-      .delay(function(d, i) {
+      .delay(function (d, i) {
         return i * 100;
       });
     svg
@@ -98,14 +92,14 @@ export default function PiChart({ data, totalTime, id, color }) {
       .data(sortedData)
       .enter()
       .append("text")
-      .attr("x", function(d) {
+      .attr("x", function (d) {
         return x(d.title) + 30;
       })
-      .attr("y", function(d) {
+      .attr("y", function (d) {
         return y((d.totalTime + 120) / 60);
       })
       .attr("text-anchor", "middle")
-      .text(function(d) {
+      .text(function (d) {
         return `${secondsToStringFormat(d.totalTime)}`;
       });
 
