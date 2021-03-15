@@ -16,6 +16,13 @@ export default function StatsticsPage({ dataset }) {
 
   const getTabcontent = () => {
     const annotation = annotationsStatstics[tabId];
+    if (annotation === undefined)
+      return (
+        <>
+          {" "}
+          <h3>No data available to show!</h3>
+        </>
+      );
     const subannotationsStatstics = getAnnotationsStatstics(
       annotation.subAnnotations
     );
